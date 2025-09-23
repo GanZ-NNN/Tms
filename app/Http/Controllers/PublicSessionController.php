@@ -17,8 +17,8 @@ class PublicSessionController extends Controller
         $sessions = Session::with(['program', 'trainer'])
                             ->where('status', 'scheduled')
                             ->where('start_at', '>=', now()) // เอาเฉพาะรอบอบรมในอนาคต
-                            ->orderBy('start_at', 'asc')
-                            ->paginate(9);
+                            ->orderBy('start_at', 'asc');
+                            // ->paginate(9);
 
         // ส่งข้อมูลไปที่ View ของหน้าแรก
         return view('welcome', compact('sessions'));
