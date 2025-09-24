@@ -55,7 +55,7 @@ Route::middleware('auth')->group(function () {
 
 
 // === Admin Only Routes (ต้อง Login และเป็น Admin) ===
-Route::middleware(['auth', 'verified', /* 'is.admin' */]) // <-- คุณต้องสร้าง Middleware 'is.admin' เอง
+Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้องสร้าง Middleware 'is.admin' เอง
      ->prefix('admin')
      ->name('admin.')
      ->group(function () {
