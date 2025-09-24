@@ -1,5 +1,6 @@
 <?php
 
+use Faker\Provider\Image;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,9 +14,11 @@ return new class extends Migration
     {
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
+            $table->string('image')->nullable();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
             $table->string('title');
-            $table->text('description')->nullable();
-            // เราจะสร้างคอลัมน์ category_id และ owner_id ในไฟล์ migration แยกต่างหากเพื่อความชัดเจน
+            $table->text('detail')->nullable();
+            $table->unsignedInteger('capacity');
             $table->timestamps();
         });
     }

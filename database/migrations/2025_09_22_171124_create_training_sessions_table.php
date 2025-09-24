@@ -14,6 +14,14 @@ return new class extends Migration
         // *** แก้ไขชื่อตารางตรงนี้ ***
         Schema::create('training_sessions', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('program_id')->constrained()->onDelete('cascade');
+            $table->foreignId('trainer_id')->constrained('trainers')->onDelete('cascade');
+            $table->unsignedInteger('session_number');
+            $table->string('location')->nullable();
+            $table->dateTime('start_at');
+            $table->dateTime('end_at');
+            $table->dateTime('registration_start_at');
+            $table->dateTime('registration_end_at');
             $table->timestamps();
         });
     }
