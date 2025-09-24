@@ -18,10 +18,11 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
+use App\Http\Controllers\HomeController;
 
 
 // === Public Routes (ทุกคนเข้าได้ ไม่ต้อง Login) ===
-Route::get('/', [PublicSessionController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sessions/{session}', [PublicSessionController::class, 'show'])->name('sessions.show');
 Route::get('/certificate/verify', [CertificateController::class, 'showVerificationForm'])->name('certificates.verify.form');
 Route::post('/certificate/verify', [CertificateController::class, 'verify'])->name('certificates.verify');
@@ -29,7 +30,7 @@ Route::post('/certificate/verify', [CertificateController::class, 'verify'])->na
 
 // === Authenticated User Routes (ต้อง Login ก่อน) ===
 Route::middleware('auth')->group(function () {
-    
+
     // -- User Profile & Dashboard --
     Route::get('/dashboard', function () {
         // Redirect ไปหน้าโปรไฟล์ หรือหน้ารายการคอร์ส
