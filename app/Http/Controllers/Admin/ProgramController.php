@@ -72,4 +72,10 @@ class ProgramController extends Controller
         $program->delete();
         return redirect()->route('admin.programs.index')->with('success', 'Program deleted successfully.');
     }
+
+    public function show($id)
+{
+    $program = \App\Models\Program::findOrFail($id);
+    return view('programs.show', compact('program'));
+}
 }

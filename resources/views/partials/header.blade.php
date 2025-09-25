@@ -31,7 +31,7 @@
                         <ul class="dropdown-menu" aria-labelledby="programDropdown">
                             @forelse($programs ?? [] as $program)
                                 <li>
-                                    <a class="dropdown-item" href="{{ route('programs.show', $program->id) }}">
+                                    <a class="dropdown-item" href="#">
                                         {{ $program->title }}
                                     </a>
                                 </li>

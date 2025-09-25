@@ -11,7 +11,7 @@
                     <div class="card-body">
                         <h5>{{ $program->title }}</h5>
                         <p>{{ $program->description }}</p>
-                        <a href="{{ route('programs.show', $program->id) }}" class="btn btn-primary">ดูรายละเอียด</a>
+                        <a href="#" class="btn btn-primary">ดูรายละเอียด</a>
                     </div>
                 </div>
             </div>

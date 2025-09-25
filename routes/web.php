@@ -64,6 +64,7 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     // -- Main Dashboard --
     Route::get('/dashboard', [SessionDashboardController::class, 'index'])->name('dashboard');
 
+
     Route::resource('users', UserController::class);
 
     // -- CRUD Resources --
@@ -84,6 +85,8 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     // -- Special "Create Course + Session" Flow --
     Route::get('/programs/create-flow', [ProgramController::class, 'createCourseFlow'])->name('programs.create-flow');
     Route::post('/programs/quick-store', [ProgramController::class, 'quickStore'])->name('programs.quick-store');
+
+    Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
 });
 
 
