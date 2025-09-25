@@ -5,23 +5,26 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Program; // อย่าลืม import model
 use Illuminate\Http\Request;
+use App\Models\Trainer;
 
 class SessionController extends Controller
 {
     /**
-     * Display a listing of the sessions for a program.
+     * Display a listing of the sessions for a program. 
      */
     public function index(Program $program)
-{
-    return redirect()->route('admin.programs.index');
-}
+    {
+        return redirect()->route('admin.programs.index');
+    }
 
     /**
      * Show the form for creating a new session for a program.
      */
     public function create(Program $program)
     {
-        return view('admin.sessions.create', compact('program'));
+        $trainers = Trainer::orderBy('name')->get();
+        $levels = \App\Models\Level::all(); // <-- เพิ่มบรรทัดนี้
+        return view('admin.sessions.create', compact('program', 'trainers', 'levels'));
     }
 
     /**
@@ -32,6 +35,7 @@ class SessionController extends Controller
         $validated = $request->validate([
             'trainer_id' => 'required|exists:trainers,id',
             'session_number' => 'required|integer',
+            'level_id' => 'required|exists:levels,id',
             'location' => 'nullable|string',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',
