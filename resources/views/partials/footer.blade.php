@@ -1,15 +1,28 @@
-<footer class="footer">
-    <div class="container text-center py-3">
-        <p>&copy; {{ date('Y') }} TMS - Training Management System. All Rights Reserved.</p>
+<footer class="footer bg-dark text-light">
+    <div class="container py-2">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <!-- Left -->
+            <small class="fw-bold">TMS - Training Management System</small>
+
+            <!-- Center -->
+            <div class="my-2 my-md-0">
+                <a href="#" class="text-light text-decoration-none mx-2"><small>Privacy</small></a>
+                <a href="#" class="text-light text-decoration-none mx-2"><small>Terms</small></a>
+                <a href="#" class="text-light text-decoration-none mx-2"><small>Contact</small></a>
+            </div>
+
+            <!-- Right -->
+            <div>
+                <a href="#" class="text-light mx-2"><i class="fab fa-facebook fa-sm"></i></a>
+                <a href="#" class="text-light mx-2"><i class="fab fa-twitter fa-sm"></i></a>
+                <a href="#" class="text-light mx-2"><i class="fab fa-linkedin fa-sm"></i></a>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-2">
+
+        <div class="text-center small">
+            <p class="mb-0">&copy; {{ date('Y') }} TMS - Training Management System.</p>
+        </div>
     </div>
 </footer>
-
-<!-- JS Libraries -->
-<!-- <script src="{{ asset('assets/js/jquery.min.js') }}"></script>
-<script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/select2/js/select2.min.js') }}"></script>
-<script src="{{ asset('assets/plugins/datatables/datatables.min.js') }}"></script> -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="{{ asset('assets/js/main.js') }}"></script>
-<!-- Additional JS per page -->
-@stack('scripts')
