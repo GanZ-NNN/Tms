@@ -22,6 +22,7 @@ return new class extends Migration
             $table->dateTime('end_at');
             $table->dateTime('registration_start_at');
             $table->dateTime('registration_end_at');
+            $table->enum ('level', ['beginner', 'intermediate', 'advanced'])->default('beginner');
             $table->timestamps();
         });
     }
