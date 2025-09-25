@@ -42,7 +42,7 @@ class DatabaseSeeder extends Seeder
         Program::factory(2)->create(['category_id' => $marketing->id]);
         Program::factory(2)->create(['category_id' => $pm->id]);
 
-        $this->call(LevelSeeder::class);
+   
 
         // --- 5. สร้าง Sessions ---
         Session::factory(20)->create();
