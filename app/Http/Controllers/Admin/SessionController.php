@@ -10,7 +10,7 @@ use App\Models\Trainer;
 class SessionController extends Controller
 {
     /**
-     * Display a listing of the sessions for a program. 
+     * Display a listing of the sessions for a program.
      */
     public function index(Program $program)
     {
@@ -23,8 +23,7 @@ class SessionController extends Controller
     public function create(Program $program)
     {
         $trainers = Trainer::orderBy('name')->get();
-        $levels = \App\Models\Level::all(); // <-- เพิ่มบรรทัดนี้
-        return view('admin.sessions.create', compact('program', 'trainers', 'levels'));
+        return view('admin.sessions.create', compact('program', 'trainers'));
     }
 
     /**
@@ -35,7 +34,6 @@ class SessionController extends Controller
         $validated = $request->validate([
             'trainer_id' => 'required|exists:trainers,id',
             'session_number' => 'required|integer',
-            'level_id' => 'required|exists:levels,id',
             'location' => 'nullable|string',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',

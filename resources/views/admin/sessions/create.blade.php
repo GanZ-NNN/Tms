@@ -39,21 +39,6 @@
             </select>
         </div>
 
-        <!-- ============================================== -->
-        <!-- ===      เพิ่ม Dropdown นี้เข้ามา       === -->
-        <!-- ============================================== -->
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">ระดับ</label>
-            <select name="level_id" class="w-full px-4 py-2 border rounded-lg" required>
-                <option value="">-- เลือกระดับ --</option>
-                @foreach($levels as $level)
-                    <option value="{{ $level->id }}" {{ old('level_id') == $level->id ? 'selected' : '' }}>
-                        {{ $level->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
-        <!-- ============================================== -->
 
         {{-- Location --}}
         <div class="mb-4">
@@ -89,6 +74,17 @@
             <input type="datetime-local" name="registration_end_at" value="{{ old('registration_end_at') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
+
+        {{-- Level --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ระดับ</label>
+            <select name="level" class="w-full px-4 py-2 border rounded-lg" required>
+                <option value="beginner" {{ old('level') == 'beginner' ? 'selected' : '' }}>Beginner</option>
+                <option value="intermediate" {{ old('level') == 'intermediate' ? 'selected' : '' }}>Intermediate</option>
+                <option value="advanced" {{ old('level') == 'advanced' ? 'selected' : '' }}>Advanced</option>
+            </select>
+        </div>
+
 
         {{-- Buttons --}}
         <div class="flex space-x-2">
