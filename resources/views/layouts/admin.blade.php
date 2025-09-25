@@ -57,6 +57,12 @@
                             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                                href="{{ route('admin.users.index') }}">
                                 Users
+                            </a>    
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
+                            href="{{ route('admin.categories.index') }}">
+                                Category
                             </a>
                         </li>
                         <li class="nav-item">
