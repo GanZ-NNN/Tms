@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\TrainerController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SessionCompletionController;
+use App\Http\Controllers\Admin\UserController;
 
 // Frontend User Controllers
 use App\Http\Controllers\PublicSessionController;
@@ -62,6 +63,8 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
 
     // -- Main Dashboard --
     Route::get('/dashboard', [SessionDashboardController::class, 'index'])->name('dashboard');
+
+    Route::resource('users', UserController::class);
 
     // -- CRUD Resources --
     Route::resource('programs', ProgramController::class);

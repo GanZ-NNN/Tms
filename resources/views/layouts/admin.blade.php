@@ -5,13 +5,34 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - {{ config('app.name') }}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    @vite([
+        'resources/css/app.css',
+        'resources/js/app.js',
+        'resources/css/admin.css',
+        'resources/js/admin.js'
+    ])
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
+            <!-- Sidebar toggle button (mobile only) -->
+            <button class="btn btn-outline-light d-md-none me-2"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#sidebarMenu"
+                    aria-controls="sidebarMenu"
+                    aria-expanded="false"
+                    aria-label="Toggle navigation">
+                ☰
+            </button>
+
+            <!-- Brand -->
             <a class="navbar-brand" href="{{ route('admin.dashboard') }}">Admin</a>
-            <div class="d-flex">
+
+            <!-- Right side -->
+            <div class="d-flex ms-auto">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button class="btn btn-outline-light btn-sm" type="submit">Logout</button>
@@ -23,14 +44,39 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar ">
                 <div class="position-sticky p-3">
                     <ul class="nav flex-column">
-                        <li class="nav-item"><a class="nav-link active" href="{{ route('admin.dashboard') }}">Dashboard</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Users</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Programs</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Reports</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#">Settings</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}"
+                               href="{{ route('admin.dashboard') }}">
+                                Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+                               href="{{ route('admin.users.index') }}">
+                                Users
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.programs.*') ? 'active' : '' }}"
+                               href="{{ route('admin.programs.index') }}">
+                                Programs & Sessions
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
+                               href="#">
+                                Reports
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
+                               href="#">
+                                Settings
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </nav>
@@ -41,5 +87,7 @@
             </main>
         </div>
     </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
