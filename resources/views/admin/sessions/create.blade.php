@@ -31,13 +31,29 @@
             <label class="block mb-1 font-semibold">ผู้สอน</label>
             <select name="trainer_id" class="w-full px-4 py-2 border rounded-lg" required>
                 <option value="">-- เลือกผู้สอน --</option>
-                @foreach(\App\Models\Trainer::all() as $trainer)
+                @foreach($trainers as $trainer)
                     <option value="{{ $trainer->id }}" {{ old('trainer_id') == $trainer->id ? 'selected' : '' }}>
                         {{ $trainer->name }}
                     </option>
                 @endforeach
             </select>
         </div>
+
+        <!-- ============================================== -->
+        <!-- ===      เพิ่ม Dropdown นี้เข้ามา       === -->
+        <!-- ============================================== -->
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ระดับ</label>
+            <select name="level_id" class="w-full px-4 py-2 border rounded-lg" required>
+                <option value="">-- เลือกระดับ --</option>
+                @foreach($levels as $level)
+                    <option value="{{ $level->id }}" {{ old('level_id') == $level->id ? 'selected' : '' }}>
+                        {{ $level->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+        <!-- ============================================== -->
 
         {{-- Location --}}
         <div class="mb-4">
@@ -76,8 +92,7 @@
 
         {{-- Buttons --}}
         <div class="flex space-x-2">
-            <button type="submit"php artisan make:model TrainingSession
- class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                 บันทึก
             </button>
             <a href="{{ route('admin.programs.index') }}" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors duration-200">

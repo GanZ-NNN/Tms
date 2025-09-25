@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainers', function (Blueprint $table) {
+        Schema::create('levels', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('expertise')->nullable();
-            $table->string('phone_number')->nullable();
-            $table->text('bio')->nullable(); 
+            $table->string('name')->unique(); // e.g., "Beginner", "Intermediate"
             $table->timestamps();
         });
     }
@@ -27,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainers');
+        Schema::dropIfExists('levels');
     }
 };
