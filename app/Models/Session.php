@@ -32,8 +32,5 @@ class Session extends Model
     public function attendances() {
         return $this->hasMany(Attendance::class);
     }
-    public function level()
-    {
-        return $this->belongsTo(\App\Models\Level::class);
-    }
+
 }

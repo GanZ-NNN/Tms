@@ -28,21 +28,27 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create(['role' => 'trainee']);
 
         // --- 2. สร้าง Categories ---
-        $webDev = Category::create(['name' => 'Web Development']);
-        $dataSci = Category::create(['name' => 'Data Science']);
-        $marketing = Category::create(['name' => 'Digital Marketing']);
-        $pm = Category::create(['name' => 'Project Management']);
+        
+        $a = Category::create(['name' => 'Artificial Intelligence (AI) & Automation']);
+        $b = Category::create(['name' => 'Block chain & BIM (Building Information Modeling)']);
+        $c = Category::create(['name' => 'Coding, CAD&CAM, Cloud']);
+        $d = Category::create(['name' => 'Digital Media, Data, Drone']);
+        $e = Category::create(['name' => 'Entrepreneurship, Emerging technologies']);
+        $f = Category::create(['name' => 'Full Stack Developer']);
         
         // --- 3. สร้าง Trainers ---
         Trainer::factory(5)->create();
 
         // --- 4. สร้าง Programs และกำหนด Category ID ---
-        Program::factory(3)->create(['category_id' => $webDev->id]);
-        Program::factory(2)->create(['category_id' => $dataSci->id]);
-        Program::factory(2)->create(['category_id' => $marketing->id]);
-        Program::factory(2)->create(['category_id' => $pm->id]);
+    
+        Program::factory(2)->create(['category_id' => $a->id]);
+        Program::factory(2)->create(['category_id' => $b->id]);
+        Program::factory(2)->create(['category_id' => $c->id]);
+        Program::factory(2)->create(['category_id' => $d->id]);
+        Program::factory(2)->create(['category_id' => $e->id]);
+        Program::factory(count: 2)->create(['category_id' => $f->id]);
 
-        $this->call(LevelSeeder::class);
+   
 
         // --- 5. สร้าง Sessions ---
         Session::factory(20)->create();
