@@ -40,10 +40,12 @@
                 <tr>
                     <td class="px-6 py-4 text-center">{{ $program->id }}</td>
                     <td class="px-6 py-4 text-center">
-                        @if($program->image)
-                            <img src="{{ asset('storage/'.$program->image) }}" alt="{{ $program->title }}" class="w-16 h-16 object-cover rounded">
+                       @if($program->image)
+                        <img src="{{ asset('storage/'.$program->image) }}"
+                            alt="{{ $program->title }}"
+                            class="w-16 h-16 object-cover rounded mx-auto">
                         @else
-                            -
+                        -
                         @endif
                     </td>
                     <td class="px-6 py-4 text-center">{{ $program->title }}</td>
