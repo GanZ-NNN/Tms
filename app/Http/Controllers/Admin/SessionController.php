@@ -3,32 +3,46 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Program; // อย่าลืม import model
 use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of the sessions for a program.
      */
-    public function index()
+    public function index(Program $program)
+{
+    return redirect()->route('admin.programs.index');
+}
+
+    /**
+     * Show the form for creating a new session for a program.
+     */
+    public function create(Program $program)
     {
-        //
+        return view('admin.sessions.create', compact('program'));
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Store a newly created session.
      */
-    public function create()
+    public function store(Request $request, Program $program)
     {
-        //
-    }
+        $validated = $request->validate([
+            'trainer_id' => 'required|exists:trainers,id',
+            'session_number' => 'required|integer',
+            'location' => 'nullable|string',
+            'start_at' => 'required|date',
+            'end_at' => 'required|date|after:start_at',
+            'registration_start_at' => 'required|date',
+            'registration_end_at' => 'required|date|after:registration_start_at',
+        ]);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $program->sessions()->create($validated);
+
+        return redirect()->route('admin.programs.sessions.index', $program)
+                         ->with('success', 'Session created successfully.');
     }
 
     /**
