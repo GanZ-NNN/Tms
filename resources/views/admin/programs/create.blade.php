@@ -1,10 +1,10 @@
 @extends('layouts.admin')
 
-@section('title', 'แก้ไขหลักสูตร')
+@section('title', 'เพิ่มหลักสูตร')
 
 @section('content')
 <div class="container mx-auto p-6">
-    <h1 class="text-2xl font-bold mb-6">แก้ไขหลักสูตร</h1>
+    <h1 class="text-2xl font-bold mb-6">เพิ่มหลักสูตร</h1>
 
     @if($errors->any())
         <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
@@ -16,14 +16,13 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.programs.update', $program->id) }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.programs.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method('PUT')
 
         {{-- Title --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Title</label>
-            <input type="text" name="title" value="{{ old('title', $program->title) }}"
+            <input type="text" name="title" value="{{ old('title') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
@@ -33,7 +32,7 @@
             <select name="category_id" class="w-full px-4 py-2 border rounded-lg">
                 <option value="">-- Select Category --</option>
                 @foreach($categories as $category)
-                    <option value="{{ $category->id }}" {{ old('category_id', $program->category_id) == $category->id ? 'selected' : '' }}>
+                    <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
                         {{ $category->name }}
                     </option>
                 @endforeach
@@ -43,13 +42,13 @@
         {{-- Detail --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Detail</label>
-            <textarea name="detail" class="w-full px-4 py-2 border rounded-lg">{{ old('detail', $program->detail) }}</textarea>
+            <textarea name="detail" class="w-full px-4 py-2 border rounded-lg">{{ old('detail') }}</textarea>
         </div>
 
         {{-- Capacity --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Capacity</label>
-            <input type="number" name="capacity" value="{{ old('capacity', $program->capacity) }}"
+            <input type="number" name="capacity" value="{{ old('capacity') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
@@ -57,9 +56,6 @@
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Image</label>
             <input type="file" name="image" class="w-full">
-            @if($program->image)
-                <p class="mt-2 text-gray-600">Current image: {{ $program->image }}</p>
-            @endif
         </div>
 
         {{-- Buttons --}}

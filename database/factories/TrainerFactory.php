@@ -20,6 +20,7 @@ class TrainerFactory extends Factory
             'name' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'bio' => $this->faker->paragraph(),
+            'expertise' => $this->faker->jobTitle(),
         ];
     }
 }

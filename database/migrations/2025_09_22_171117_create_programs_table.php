@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string('image')->nullable();
             $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('detail')->nullable();
-            $table->unsignedInteger('capacity');
+            $table->unsignedInteger('capacity')->nullable();
             $table->timestamps();
         });
     }

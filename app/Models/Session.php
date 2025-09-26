@@ -11,7 +11,7 @@ class Session extends Model
     protected $table = 'training_sessions';
 
     protected $fillable = [
-        'program_id', 'trainer_id', 'title', 'start_at', 
+        'program_id', 'trainer_id', 'level_id', 'title', 'start_at', 
         'end_at', 'capacity', 'location', 'status',
     ];
 
@@ -32,4 +32,5 @@ class Session extends Model
     public function attendances() {
         return $this->hasMany(Attendance::class);
     }
+
 }

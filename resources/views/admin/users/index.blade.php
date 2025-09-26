@@ -107,6 +107,7 @@
                         <th class="px-6 py-3 font-semibold">ชื่อผู้สอน</th>
                         <th class="px-6 py-3 font-semibold">อีเมล</th>
                         <th class="px-6 py-3 font-semibold">เบอร์โทร</th>
+                        <th class="px-6 py-3 font-semibold">expertise</th>
                         <th class="px-6 py-3 font-semibold text-right">จัดการ</th>
                     </tr>
                 </thead>
@@ -117,6 +118,7 @@
                         <td class="px-6 py-4">{{ $trainer->name }}</td>
                         <td class="px-6 py-4">{{ $trainer->email }}</td>
                         <td class="px-6 py-4">{{ $trainer->phone_number }}</td>
+                        <td class="px-6 py-4">{{ $trainer->expertise }}</td>
                         <td class="px-6 py-4 text-right space-x-2">
                             <a href="{{ route('admin.trainers.edit', $trainer->id) }}" class="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors duration-200">✏️ แก้ไข</a>
                             <form action="{{ route('admin.trainers.destroy',$trainer->id) }}" method="POST" class="inline-block" onsubmit="return confirm('คุณแน่ใจว่าต้องการลบผู้ใช้นี้?');">

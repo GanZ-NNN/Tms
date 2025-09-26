@@ -57,8 +57,9 @@ public function index(Request $request)
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit($id)
     {
+            $category = Category::findOrFail($id); 
         return view('admin.categories.edit', compact('category'));
     }
 

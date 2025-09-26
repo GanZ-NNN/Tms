@@ -19,10 +19,11 @@ class ProgramFactory extends Factory
     {
         return [
             'title' => rtrim($this->faker->sentence(rand(3, 6)), '.'),
-            'description' => $this->faker->paragraph(3),
+            'detail' => $this->faker->paragraph(3),
             
             // สุ่ม Category ID จากข้อมูลที่มีอยู่จริง
             'category_id' => Category::inRandomOrder()->first()->id,
+            'capacity' => $this->faker->numberBetween(20, 40)
         ];
     }
 }
