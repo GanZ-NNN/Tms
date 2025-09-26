@@ -106,7 +106,7 @@ html, body {
 /* ============================
    Card Hover Effect
 ============================ */
-.hover-card {
+/* .hover-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 0.75rem;
     background-color: #fff;
@@ -119,7 +119,7 @@ html, body {
 }
 
 /* Card Image */
-.hover-card img.card-img-top {
+/* .hover-card img.card-img-top {
     height: 200px;
     object-fit: cover;
     border-top-left-radius: 0.75rem;
@@ -127,18 +127,18 @@ html, body {
 }
 
 /* Card Body */
-.hover-card .card-body {
+/* .hover-card .card-body {
     display: flex;
     flex-direction: column;
     min-height: 150px;
-}
+} */
 
 /* Card Footer */
-.hover-card .card-footer {
+/* .hover-card .card-footer {
     background: none;
     border-top: 1px solid rgba(0,0,0,0.1);
     font-size: 0.875rem;
-}
+}  */
 
 /* ============================
    Responsive Adjustments
@@ -254,3 +254,16 @@ html, body {
         width: 100% !important;   /* เต็มความกว้างบนมือถือ */
     }
 }
+
+/* ลดช่องว่างระหว่าง card ใน carousel */
+.carousel-item .card {
+    margin: 0 5px;
+}
+
+/* ปรับความสูงรูปภาพให้เท่ากัน */
+.carousel-item .card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+

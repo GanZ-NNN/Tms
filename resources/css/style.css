@@ -684,3 +684,15 @@ p {
 
     }
 }
+
+@media (max-width: 768px) {
+    .section-search form {
+        flex-direction: column;   /* ปุ่มอยู่ใต้ input */
+        gap: 0.5rem;
+    }
+
+    .section-search .form-control,
+    .section-search .btn-primary {
+        width: 100% !important;   /* เต็มความกว้างบนมือถือ */
+    }
+}

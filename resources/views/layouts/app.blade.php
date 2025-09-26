@@ -1,13 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="th">
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TMS')</title>
 
-    @vite(['resources/css/style.css',
-    'resources/css/home.css',
-    'resources/js/main.js'])
+    <!-- Vite CSS & JS -->
+    @vite([
+        'resources/css/style.css',
+        'resources/css/home.css',
+        'resources/css/programs.css',
+        'resources/js/main.js',
+        'resources/js/programs.js'
+    ])
+
+    <!-- Swiper CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css"/>
 </head>
 <body>
     <div class="main-wrapper">
@@ -21,5 +29,8 @@
 
         @include('partials.footer')
     </div>
+
+    <!-- Swiper JS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
 </body>
 </html>
