@@ -78,6 +78,7 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     // -- Attendance Routes --
     Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
     Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+    Route::get('/attendance', [AttendanceController::class, 'overview'])->name('attendance.overview');  
 
     // -- Other Session Actions --
     Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');

@@ -20,6 +20,18 @@ class TrainingSession extends Model
         'registration_end_at',
     ];
 
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array
+     */
+        protected $casts = [
+        'start_at'              => 'datetime', // <-- บอกให้แปลงเป็น Object วันที่
+        'end_at'                => 'datetime', // <-- บอกให้แปลงเป็น Object วันที่
+        'registration_start_at' => 'datetime',
+        'registration_end_at'   => 'datetime',
+    ];
+
     // ความสัมพันธ์กับ Program
     public function program()
     {
@@ -31,4 +43,15 @@ class TrainingSession extends Model
     {
         return $this->belongsTo(Trainer::class);
     }
+        public function registrations()
+    {
+        // Session หนึ่งอัน มีได้หลาย Registration
+        return $this->hasMany(Registration::class, 'session_id'); 
+    }
+        public function attendances()
+    {
+        // Session หนึ่งอัน มีได้หลาย Attendance record
+        return $this->hasMany(Attendance::class, 'session_id'); 
+    }
+
 }

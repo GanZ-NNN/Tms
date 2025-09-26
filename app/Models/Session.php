@@ -11,8 +11,11 @@ class Session extends Model
     protected $table = 'training_sessions';
 
     protected $fillable = [
-        'program_id', 'trainer_id', 'level_id', 'title', 'start_at', 
-        'end_at', 'capacity', 'location', 'status',
+        'program_id', 'trainer_id', 'level_id', //'title', 
+        'start_at', 
+        'end_at', 
+        //'capacity', 
+        'location', 'status',
     ];
 
     protected $casts = [
