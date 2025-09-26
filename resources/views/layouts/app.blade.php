@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'TMS')</title>
 
-    @vite(['resources/css/style.css', 'resources/js/main.js'])
+    @vite(['resources/css/style.css',
+    'resources/css/home.css',
+    'resources/js/main.js'])
 </head>
 <body>
     <div class="main-wrapper">

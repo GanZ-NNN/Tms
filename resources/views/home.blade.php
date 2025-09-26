@@ -3,18 +3,35 @@
 @section('title', 'หน้าหลัก - TMS')
 
 @section('content')
-    <!-- Hero Section -->
-    <section class="hero-section text-center py-5" style="background: linear-gradient(135deg, #4f8ef7, #6fc3f7); color: white;">
+    <!-- Hero / Banner Section -->
+    <section class="banner-section" style="background-image: url('{{ asset('assets/img/410_devtai.jpg') }}'); >
         <div class="container">
-            <h1 class="display-5 fw-bold mb-3">ยินดีต้อนรับสู่ระบบการอบรม</h1>
-            <p class="lead mb-4">ค้นหาและสมัครเข้าร่วมหลักสูตรที่เหมาะกับคุณ</p>
+            <div class="row align-items-center">
+                <!-- Left Content: Search + Text -->
+                <div class="col-lg-7">
+                    <div class="section-search">
+                        <h1>ค้นหาหลักสูตรที่คุณต้องการ<br><span>ได้ที่นี่ !!</span></h1>
+                        <p>หลักสูตร การอบรม ประเภทการอบรม ค้นหาได้อย่างรวดเร็ว</p>
 
-            <!-- Search -->
-            <form action="{{ route('programs.index') }}" method="GET" class="d-flex justify-content-center flex-wrap gap-2">
-                <input type="text" name="keyword" class="form-control form-control-lg shadow-sm w-50" placeholder="🔍 ค้นหาหลักสูตร...">
-                <button type="submit" class="btn btn-light btn-lg fw-bold px-4">ค้นหา</button>
-            </form>
-        </div>
+                        <!-- Search Form -->
+                        <form action="{{ route('programs.index') }}" method="GET" class="d-flex flex-wrap gap-2 mt-4">
+                            <div class="flex-grow-1">
+                                <input type="text" name="keyword" class="form-control form-control-lg shadow-sm" placeholder="🔍 ค้นหาหลักสูตร...">
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold px-4">ค้นหา</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Right Content: Image / Illustration -->
+                <!-- <div class="col-lg-5">
+                    <div class="banner-imgs">
+                        <img src="{{ asset('assets/img/Monogram-Logo-02.png') }}" alt="Illustration" class="img-fluid">
+                    </div>
+                </div> -->
+            </div>
     </section>
 
     <!-- Program List -->
@@ -25,21 +42,16 @@
             @forelse($programs as $program)
                 <div class="col-sm-6 col-md-4">
                     <div class="card h-100 shadow-sm border-0 hover-card">
-                        <!-- Program Image -->
                         @if($program->image)
                             <img src="{{ asset('storage/' . $program->image) }}" class="card-img-top" alt="{{ $program->title }}" style="height:200px; object-fit:cover;">
                         @else
                             <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="default" style="height:200px; object-fit:cover;">
                         @endif
-
-                        <!-- Card Body -->
                         <div class="card-body d-flex flex-column">
                             <h5 class="card-title fw-bold">{{ $program->title }}</h5>
                             <p class="card-text text-muted flex-grow-1">{{ Str::limit($program->description, 120) }}</p>
                             <a href="{{ route('programs.show', $program->id) }}" class="btn btn-primary w-100 mt-2">ดูรายละเอียด</a>
                         </div>
-
-                        <!-- Card Footer -->
                         <div class="card-footer text-muted small text-center">
                             เริ่ม: {{ \Carbon\Carbon::parse($program->start_at)->format('d/m/Y') }}
                         </div>
@@ -58,22 +70,5 @@
 @endsection
 
 @push('styles')
-<style>
-    /* Card hover effect */
-    .hover-card {
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-        border-radius: 0.75rem;
-    }
-    .hover-card:hover {
-        transform: translateY(-8px);
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    /* Hero responsive adjustments */
-    @media (max-width: 768px) {
-        .hero-section input.form-control {
-            width: 100% !important;
-        }
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/home.css') }}">
 @endpush

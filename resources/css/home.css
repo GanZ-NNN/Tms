@@ -1,0 +1,256 @@
+/* ============================
+   Reset และ Base Styles
+============================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/* ============================
+   Banner / Hero Section Fullscreen
+============================ */
+.banner-section {
+    position: relative;
+    width: 100vw; /* ใช้ viewport width แทน */
+    height: 50vh; /* เต็มหน้าจอแนวตั้ง */
+    margin-left: calc(-50vw + 50%); /* ขยายออกไปนอก container */
+    margin-top: -5vh; /* ขยายออกไปนอก container */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: null; /* เพิ่มเพื่อให้ภาพติดกับหน้าจอ */
+    color: #fff;
+    overflow: hidden;
+}
+
+/* Overlay เพื่อให้ข้อความอ่านง่าย */
+.banner-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+/* ให้ container อยู่เหนือ overlay */
+.banner-section .container {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.banner-section .row {
+    width: 100%;
+    margin: 0;
+}
+
+/* Section Search */
+.section-search {
+    text-align: l;
+    padding: 2rem 1rem;
+}
+
+/* Heading และ Paragraph */
+.banner-section h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.banner-section h1 span {
+    color: #ffd700;
+}
+
+.banner-section p {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Search Form */
+.banner-section .form-control {
+    height: 55px;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    width: 400px;
+    max-width: 100%;
+    padding: 0 1rem;
+}
+
+.banner-section .btn-primary {
+    height: 55px;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    padding: 0 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+}
+
+/* ============================
+   Card Hover Effect
+============================ */
+.hover-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 0.75rem;
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Card Image */
+.hover-card img.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    border-top-left-radius: 0.75rem;
+    border-top-right-radius: 0.75rem;
+}
+
+/* Card Body */
+.hover-card .card-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px;
+}
+
+/* Card Footer */
+.hover-card .card-footer {
+    background: none;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    font-size: 0.875rem;
+}
+
+/* ============================
+   Responsive Adjustments
+============================ */
+@media (max-width: 1200px) {
+    .banner-section h1 {
+        font-size: 2.5rem;
+    }
+    .banner-section p {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 992px) {
+    .banner-section {
+        margin-left: calc(-50vw + 50%);
+    }
+    .banner-section h1 {
+        font-size: 2.2rem;
+    }
+    .banner-section p {
+        font-size: 1.2rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .banner-section {
+        height: 80vh;
+        margin-left: calc(-50vw + 50%);
+        background-attachment: scroll; /* เปลี่ยนเป็น scroll บนมือถือ */
+    }
+
+    .banner-section h1 {
+        font-size: 1.8rem;
+    }
+
+    .banner-section p {
+        font-size: 1rem;
+    }
+
+    .banner-section .d-flex {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .banner-section .form-control,
+    .banner-section .btn {
+        width: 100% !important;
+    }
+
+    .section-search {
+        padding: 1rem 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .banner-section {
+        height: 70vh;
+    }
+
+    .banner-section h1 {
+        font-size: 1.5rem;
+    }
+
+    .banner-section p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Search Form: Input + Button ข้างๆ กัน */
+.section-search form {
+    display: flex;
+    flex-wrap: wrap;       /* ยอมให้ wrap บนมือถือ */
+    gap: 0.5rem;           /* ระยะห่างระหว่าง input กับ button */
+    align-items: right;
+    justify-content: left;
+    margin-top: 1.5rem;
+}
+
+/* Input */
+.section-search .form-control {
+    flex: 1;               /* ขยายเต็มพื้นที่ที่เหลือ */
+    min-width: 250px;      /* ขนาดขั้นต่ำ */
+    max-width: 400px;      /* ขนาดสูงสุด */
+    height: 55px;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    padding: 0 1rem;
+}
+
+/* Button */
+.section-search .btn-primary {
+    height: 55px;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    padding: 0 1.5rem;
+    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
+    white-space: nowrap;   /* ป้องกันข้อความในปุ่มตัดบรรทัด */
+}
+
+/* ============================
+   Responsive: Mobile
+============================ */
+@media (max-width: 768px) {
+    .section-search form {
+        flex-direction: column;   /* ปุ่มอยู่ใต้ input */
+        gap: 0.5rem;
+    }
+
+    .section-search .form-control,
+    .section-search .btn-primary {
+        width: 100% !important;   /* เต็มความกว้างบนมือถือ */
+    }
+}
