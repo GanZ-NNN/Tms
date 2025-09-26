@@ -37,36 +37,70 @@
             </thead>
             <tbody class="divide-y divide-gray-200">
                 @forelse ($programs as $program)
-                <tr>
-                    <td class="px-6 py-4 text-center">{{ $program->id }}</td>
-                    <td class="px-6 py-4 text-center">
-                       @if($program->image)
-                        <img src="{{ asset('storage/'.$program->image) }}"
-                            alt="{{ $program->title }}"
-                            class="w-16 h-16 object-cover rounded mx-auto">
-                        @else
-                        -
-                        @endif
-                    </td>
-                    <td class="px-6 py-4 text-center">{{ $program->title }}</td>
-                    <td class="px-6 py-4 text-center">{{ $program->category?->name ?? '-' }}</td>
-                    <td class="px-6 py-4 text-center">{{ $program->capacity }}</td>
-                    <td class="px-6 py-4 text-center space-x-2">
-                        <a href="{{ route('admin.programs.edit', $program->id) }}" class="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors duration-200">✏️ แก้ไข</a>
+                    {{-- แถวหลักสำหรับแสดงข้อมูล Program --}}
+                    <tr class="bg-gray-50 hover:bg-gray-100">
+                        <td class="px-6 py-4 text-center">{{ $program->id }}</td>
+                        <td class="px-6 py-4 text-center">
+                           @if($program->image)
+                            <img src="{{ asset('storage/'.$program->image) }}"
+                                alt="{{ $program->title }}"
+                                class="w-16 h-16 object-cover rounded mx-auto">
+                            @else
+                            -
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 text-center font-bold">{{ $program->title }}</td>
+                        <td class="px-6 py-4 text-center">{{ $program->category?->name ?? '-' }}</td>
+                        <td class="px-6 py-4 text-center">{{ $program->capacity }}</td>
+                        <td class="px-6 py-4 text-center space-x-2">
+                            <a href="{{ route('admin.programs.edit', $program->id) }}" class="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-yellow-500">✏️ แก้ไข</a>
+                            <a href="{{ route('admin.programs.sessions.create', $program) }}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600">➕ เพิ่มรอบอบรม</a>
+                            <form action="{{ route('admin.programs.destroy', $program->id) }}" method="POST" class="inline-block" onsubmit="return confirm('แน่ใจหรือไม่? การลบโปรแกรมจะลบรอบอบรมทั้งหมดด้วย!');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600">🗑️ ลบ</button>
+                            </form>
+                        </td>
+                    </tr>
 
-                        <!-- ปุ่มเพิ่มรอบอบรม -->
-                         <a href="{{ route('admin.programs.sessions.create', $program) }}" class="bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition-colors duration-200">
-                            ➕ เพิ่มรอบอบรม
-                        </a>
+                    {{-- ตรวจสอบว่ามี Session หรือไม่ ถ้ามี ให้แสดงตารางย่อย --}}
+                    @if($program->sessions->isNotEmpty())
+                        <tr class="bg-white">
+                            {{-- คอลัมน์ว่างสำหรับเยื้อง --}}
+                            <td class="py-2"></td> 
+                            <td colspan="5" class="p-0">
+                                <div class="px-6 py-3">
+                                    <table class="min-w-full">
+                                        <thead>
+                                            <tr class="text-xs text-gray-500 border-b">
+                                                <th class="py-2 text-left font-semibold">รอบที่</th>
+                                                <th class="py-2 text-left font-semibold">ผู้สอน</th>
+                                                <th class="py-2 text-left font-semibold">วันที่</th>
+                                                <th class="py-2 text-left font-semibold">สถานที่</th>
+                                                <th class="py-2 text-left font-semibold">จัดการ</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{-- Loop ซ้อนสำหรับแสดง Session --}}
+                                            @foreach($program->sessions as $session)
+                                                <tr class="border-b last:border-b-0 hover:bg-gray-50">
+                                                    <td class="py-3">{{ $session->session_number ?? '-' }}</td>
+                                                    <td class="py-3">{{ $session->trainer->name ?? 'N/A' }}</td>
+                                                    <td class="py-3">{{ $session->start_at->format('d M Y') }}</td>
+                                                    <td class="py-3">{{ $session->location ?? '-'}}</td>
+                                                    <td class="py-3">
+                                                        <a href="{{-- route('admin.attendance.show', $session) --}}" class="text-blue-600 hover:underline text-sm">เช็คชื่อ</a>
+                                                        <a href="{{ route('admin.programs.sessions.edit', [$program, $session]) }}" class="text-yellow-600 hover:underline ml-2 text-sm">แก้ไข</a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </td>
+                        </tr>
+                    @endif
 
-
-                        <form action="{{ route('admin.programs.destroy', $program->id) }}" method="POST" class="inline-block" onsubmit="return confirm('คุณแน่ใจว่าต้องการลบโปรแกรมนี้?');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors duration-200">🗑️ ลบ</button>
-                        </form>
-                    </td>
-                </tr>
                 @empty
                 <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">ไม่พบโปรแกรม</td></tr>
                 @endforelse
@@ -74,9 +108,9 @@
         </table>
     </div>
 
-    <!-- Pagination -->
-    <div class="mt-6">
+    <!-- Pagination: ลบออก เพราะเราใช้ get() แทน -->
+    {{-- <div class="mt-6">
         {{ $programs->appends(request()->query())->links() }}
-    </div>
+    </div> --}}
 </div>
 @endsection
