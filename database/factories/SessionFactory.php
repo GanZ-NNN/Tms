@@ -24,7 +24,7 @@ class SessionFactory extends Factory
             'program_id' => Program::inRandomOrder()->first()->id,
             'trainer_id' => Trainer::inRandomOrder()->first()->id,
 
-            'title' => $this->faker->bs(),
+            //'title' => $this->faker->bs(),
             'start_at' => $this->faker->dateTimeBetween('+1 week', '+3 months'),
             
             // ทำให้ end_at เป็นวันที่หลังจาก start_at เสมอ
@@ -32,7 +32,7 @@ class SessionFactory extends Factory
                 return Carbon::parse($attributes['start_at'])->addDays(rand(1, 4))->addHours(rand(2, 8));
             },
             
-            'capacity' => $this->faker->numberBetween(15, 50),
+            //'capacity' => $this->faker->numberBetween(15, 50),
             'location' => $this->faker->address(),
             'status' => 'scheduled',
         ];

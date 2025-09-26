@@ -23,6 +23,7 @@ return new class extends Migration
             $table->dateTime('registration_start_at');
             $table->dateTime('registration_end_at');
             $table->enum ('level', ['beginner', 'intermediate', 'advanced'])->default('beginner');
+            $table->string('status')->default('scheduled');
             $table->timestamps();
         });
     }

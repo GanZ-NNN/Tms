@@ -13,6 +13,10 @@
         'resources/js/admin.js'
     ])
 </head>
+    <script src="..."></script>
+    @stack('scripts')
+</body>
+</html>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -72,6 +76,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}"
+                            href="{{ route('admin.attendance.overview') }}">
+                                Attendance
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
                                href="#">
                                 Reports
@@ -83,6 +93,7 @@
                                 Settings
                             </a>
                         </li>
+
                     </ul>
                 </div>
             </nav>
