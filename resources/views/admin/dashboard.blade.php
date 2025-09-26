@@ -140,7 +140,7 @@
                                             <small class="text-muted">Ended on {{ $session->end_at->format('d M Y') }}</small>
                                         </td>
                                         <td class="text-right">
-                                            <a href="{{-- route('admin.attendance.show', $session) --}}" class="btn btn-sm btn-info">Attendance</a>
+                                            <a href="{{ route('admin.attendance.overview') }}" class="btn btn-sm btn-info">Attendance</a>
                                             <form action="{{-- route('admin.sessions.complete', $session) --}}" method="POST" class="d-inline ml-1" onsubmit="return confirm('Are you sure?')">
                                                 @csrf
                                                 <button type="submit" class="btn btn-sm btn-success">Mark as Complete</button>
