@@ -8,7 +8,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $programs = Program::all();
+        $programs = Program::paginate(10);
         return view('home', compact('programs'));
     }
 }

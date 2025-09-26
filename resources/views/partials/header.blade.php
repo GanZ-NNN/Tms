@@ -14,7 +14,7 @@
             <!-- Navbar Menu -->
             <div class="collapse navbar-collapse" id="mainNav">
                 <!-- Center Menu -->
-                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center">
+                <ul class="navbar-nav mx-auto mb-2 mb-lg-0 text-center ">
                     <li class="nav-item">
                         <a href="{{ url('/') }}"
                            class="nav-link {{ request()->is('/') ? 'active fw-bold' : '' }}">

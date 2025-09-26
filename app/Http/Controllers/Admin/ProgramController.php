@@ -73,9 +73,22 @@ class ProgramController extends Controller
         return redirect()->route('admin.programs.index')->with('success', 'Program deleted successfully.');
     }
 
-    public function show($id)
-{
-    $program = \App\Models\Program::findOrFail($id);
-    return view('programs.show', compact('program'));
-}
+    public function show(Program $program)
+    {
+        return view('programs.show', compact('program'));
+    }
+
+    public function search(Request $request)
+    {
+        $query = $request->input('q');
+
+        $programs = Program::query()
+            ->where('title', 'LIKE', "%{$query}%")
+            ->orWhere('description', 'LIKE', "%{$query}%")
+            ->paginate(9);
+
+        return view('programs.index', compact('programs', 'query'));
+    }
+
+
 }

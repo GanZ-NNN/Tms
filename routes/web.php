@@ -89,6 +89,10 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
 });
 
+Route::resource('programs', ProgramController::class);
+Route::get('/programs/search', [ProgramController::class, 'search'])->name('programs.search');
+Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
+
 
 // --- Include Breeze's Auth Routes ---
 require __DIR__.'/auth.php';
