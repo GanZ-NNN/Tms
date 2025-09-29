@@ -1,131 +1,64 @@
+.rc-ProductCardCollection {
+    padding: 20px 0;
+}
+
+.course-collection {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.course-card {
+    display: flex;
+    flex-direction: column;
+}
+
 .hover-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     border-radius: 0.75rem;
     background-color: #fff;
     overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
-    border: 1px solid rgba(0,0,0,0.1);
 }
 
 .hover-card:hover {
-    transform: translateY(-8px);
+    transform: translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     cursor: pointer;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .hover-card img.card-img-top {
-    height: 200px;
+    height: 180px;
+    width: 100%;
     object-fit: cover;
     border-top-left-radius: 0.75rem;
     border-top-right-radius: 0.75rem;
-    width: 100%;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.1);
-    padding: 10px;
-    border-radius: 0.75rem;
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
-    border: 1px solid rgba(0,0,0,0.1);
-    object-fit: contain;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.1);
-    padding: 10px;
-    border-radius: 0.75rem;
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
-    border: 1px solid rgba(0,0,0,0.1);
-    object-fit: contain;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.1);
-    padding: 10px;
-    border-radius: 0.75rem;
-    background-color: #fff;
-    overflow: hidden;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    padding: 15px;
-    border: 1px solid rgba(0,0,0,0.1);
-    object-fit: contain;
-    padding: 10px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-    border: 1px solid rgba(0,0,0,0.1);
-    padding: 10px;
 }
 
 .hover-card .card-body {
     display: flex;
     flex-direction: column;
-    min-height: 150px;
     justify-content: center;
     align-items: center;
-    text-align: center;
+    padding: 15px;
 }
 
-.hover-card .card-footer {
-    background: none;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    font-size: 0.875rem;
-    margin-top: auto;
-    padding: 10px;
-    border-radius: 0.75rem;
-    background-color: #fff;
+.d-none {
+    display: none !important;
 }
 
-.program-swiper .swiper-slide {
-    width: auto;
-    padding: 0 10px;
+/* Feature Section */
+.feature-card svg {
+    width: 50px;
+    height: 50px;
+    color: #ffffff;
 }
 
-@media (max-width: 768px) {
-    .section-search form {
-        flex-direction: column;   /* ปุ่มอยู่ใต้ input */
-        gap: 0.5rem;
-    }
+.feature-card h3 {
+    font-weight: 600;
+    margin-top: 1rem;
+}
 
-    .section-search .form-control,
-    .section-search .btn-primary {
-        width: 100% !important;   /* เต็มความกว้างบนมือถือ */
-    }
+.feature-card p {
+    color: #fff8f8;
 }

@@ -11,6 +11,7 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    background-color: #fff;
 }
 
 /* ============================
@@ -89,7 +90,7 @@ html, body {
     height: 55px;
     border-radius: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    border: 2px solid rgba(255, 255, 255, 0.2);
+    border: 2px solid rgb(255, 255, 255);
     width: 400px;
     max-width: 100%;
     padding: 0 1rem;
@@ -226,7 +227,7 @@ html, body {
     height: 55px;
     border-radius: 0.5rem;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border: 2px solid rgba(255,255,255,0.2);
+    border: 2px solid rgb(255, 255, 255);
     padding: 0 1rem;
 }
 

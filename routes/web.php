@@ -78,7 +78,7 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     // -- Attendance Routes --
     Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
     Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
-    Route::get('/attendance', [AttendanceController::class, 'overview'])->name('attendance.overview');  
+    Route::get('/attendance', [AttendanceController::class, 'overview'])->name('attendance.overview');
 
     // -- Other Session Actions --
     Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');
@@ -93,6 +93,8 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
 Route::resource('programs', ProgramController::class);
 Route::get('/programs/search', [ProgramController::class, 'search'])->name('programs.search');
 Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
 // --- Include Breeze's Auth Routes ---
