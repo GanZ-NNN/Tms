@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Program extends Model
 {
         use HasFactory; 
-    protected $fillable = ['image', 'category_id', 'title', 'detail', 'capacity'];
+    protected $fillable = ['image', 'category_id', 'title', 'detail'];
 
     public function category()
     {
@@ -16,8 +16,8 @@ class Program extends Model
     }
 
     public function sessions()
-{
-    return $this->hasMany(TrainingSession::class);
-}
+    {
+        return $this->hasMany(TrainingSession::class);
+    }
 }
 

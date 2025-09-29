@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Level;
+use Database\Factories\SessionFactory;
 
 class TrainingSession extends Model
 {
@@ -14,6 +16,7 @@ class TrainingSession extends Model
         'trainer_id',
         'session_number',
         'location',
+        'capacity',
         'start_at',
         'end_at',
         'registration_start_at',
@@ -52,6 +55,21 @@ class TrainingSession extends Model
     {
         // Session หนึ่งอัน มีได้หลาย Attendance record
         return $this->hasMany(Attendance::class, 'session_id'); 
+    }
+        public function level()
+    {
+        // Session หนึ่งอัน เป็นของ Level หนึ่งอัน
+        return $this->belongsTo(Level::class);
+    }
+        /**
+     * Create a new factory instance for the model.
+     *
+     * @return \Illuminate\Database\Eloquent\Factories\Factory
+     */
+    protected static function newFactory()
+    {
+        // บอกให้ Model นี้ใช้ Factory ที่ชื่อ SessionFactory
+        return SessionFactory::new(); 
     }
 
 }

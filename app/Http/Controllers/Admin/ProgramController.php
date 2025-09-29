@@ -19,7 +19,7 @@ class ProgramController extends Controller
 
         // **ส่วนที่เพิ่มเข้ามา:** โหลดความสัมพันธ์ 'sessions' และ 'sessions.trainer' มาด้วย
         // เพื่อให้หน้าเว็บแสดงข้อมูล Session ซ้อนกันได้โดยไม่มีปัญหา N+1 Query
-        $query->with(['category', 'sessions.trainer']);
+        $query->with(['category', 'sessions.trainer',  'sessions.level']);
 
         // (Optional) ทำให้ Search Bar ทำงานได้
         if ($request->filled('search')) {
@@ -46,7 +46,6 @@ class ProgramController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'detail' => 'nullable|string',
-            'capacity' => 'required|integer|min:1',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|max:2048',
         ]);
@@ -72,7 +71,6 @@ class ProgramController extends Controller
         $data = $request->validate([
             'title' => 'required|string|max:255',
             'detail' => 'nullable|string',
-            'capacity' => 'required|integer|min:1',
             'category_id' => 'nullable|exists:categories,id',
             'image' => 'nullable|image|max:2048',
         ]);
@@ -94,7 +92,7 @@ class ProgramController extends Controller
 
     public function show($id)
     {
-        $program = \App\Models\Program::findOrFail($id);
+        $program = Program::findOrFail($id);
         return view('programs.show', compact('program'));
     }
 }
