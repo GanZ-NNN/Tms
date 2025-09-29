@@ -23,7 +23,7 @@ class ProgramFactory extends Factory
             
             // สุ่ม Category ID จากข้อมูลที่มีอยู่จริง
             'category_id' => Category::inRandomOrder()->first()->id,
-            'capacity' => $this->faker->numberBetween(20, 40)
+
         ];
     }
 }

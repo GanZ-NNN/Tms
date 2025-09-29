@@ -4,9 +4,11 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use App\Models\Program;
-use App\Models\Session;
+use App\Models\TrainingSession; // <-- เราจะใช้ตัวนี้เป็นหลัก
+// use App\Models\Session; // <-- ตัวนี้อาจจะทำให้สับสน ลบออกได้
 use App\Models\Trainer;
 use App\Models\Category;
+use App\Models\Level;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -21,13 +23,13 @@ class DatabaseSeeder extends Seeder
         User::create([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
-            'password' => Hash::make('password'), // Password: password
+            'password' => Hash::make('password'),
             'role' => 'admin',
         ]);
 
         User::factory(10)->create(['role' => 'trainee']);
 
-        // --- 2. สร้าง Categories ---
+        // --- 2. สร้าง Master Data (Categories, Levels, Trainers) ---
         
         $a = Category::create(['name' => 'Artificial Intelligence (AI) & Automation']);
         $b = Category::create(['name' => 'Block chain & BIM (Building Information Modeling)']);
@@ -35,22 +37,23 @@ class DatabaseSeeder extends Seeder
         $d = Category::create(['name' => 'Digital Media, Data, Drone']);
         $e = Category::create(['name' => 'Entrepreneurship, Emerging technologies']);
         $f = Category::create(['name' => 'Full Stack Developer']);
+
+        Level::create(['name' => 'ระดับเริ่มต้น']);
+        Level::create(['name' => 'ระดับกลาง']);
+        Level::create(['name' => 'ระดับสูง']);
         
-        // --- 3. สร้าง Trainers ---
         Trainer::factory(5)->create();
 
-        // --- 4. สร้าง Programs และกำหนด Category ID ---
+        // --- 3. สร้าง Programs (ที่ต้องพึ่งพา Categories) ---
     
         Program::factory(2)->create(['category_id' => $a->id]);
         Program::factory(2)->create(['category_id' => $b->id]);
         Program::factory(2)->create(['category_id' => $c->id]);
         Program::factory(2)->create(['category_id' => $d->id]);
         Program::factory(2)->create(['category_id' => $e->id]);
-        Program::factory(count: 2)->create(['category_id' => $f->id]);
+        Program::factory(2)->create(['category_id' => $f->id]);
 
-   
-
-        // --- 5. สร้าง Sessions ---
-        Session::factory(20)->create();
+        // --- 4. สร้าง TrainingSessions (ที่ต้องพึ่งพา Programs, Trainers, Levels) ---
+        TrainingSession::factory(20)->create();
     }
 }

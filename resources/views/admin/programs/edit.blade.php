@@ -46,12 +46,7 @@
             <textarea name="detail" class="w-full px-4 py-2 border rounded-lg">{{ old('detail', $program->detail) }}</textarea>
         </div>
 
-        {{-- Capacity --}}
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">Capacity</label>
-            <input type="number" name="capacity" value="{{ old('capacity', $program->capacity) }}"
-                   class="w-full px-4 py-2 border rounded-lg" required>
-        </div>
+
 
         {{-- Image --}}
         <div class="mb-4">
