@@ -49,16 +49,21 @@
 
 /* Feature Section */
 .feature-card svg {
-    width: 50px;
-    height: 50px;
-    color: #ffffff;
+    width: 1px;
+    height: 1px;
+    /* color: #ffffff; */
+    background-color: #ffffff;
+    size:2px;
+
 }
 
 .feature-card h3 {
     font-weight: 600;
-    margin-top: 1rem;
+    margin-top: 0.1rem;
+
 }
 
 .feature-card p {
-    color: #fff8f8;
+    color: #000000;
+
 }

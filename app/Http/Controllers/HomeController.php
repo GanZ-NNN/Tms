@@ -43,6 +43,7 @@ class HomeController extends Controller
 
     public function show(Program $program)
     {
+        $programs = Program::latest()->take(10)->get();
         return view('programs.show', compact('program'));
     }
 }

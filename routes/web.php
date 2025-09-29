@@ -96,6 +96,7 @@ Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('pro
 
 Route::resource('programs', HomeController::class);
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
 
 
 // --- Include Breeze's Auth Routes ---
