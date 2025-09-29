@@ -6,6 +6,7 @@ use App\Models\Program;
 use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Carbon;
+use App\Models\Level;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Session>
@@ -20,21 +21,35 @@ class SessionFactory extends Factory
     public function definition(): array
     {
         return [
-            // สุ่ม Program ID และ Trainer ID จากข้อมูลที่มีอยู่จริง
+            // --- Foreign Keys (สุ่มจากข้อมูลที่มีอยู่จริง) ---
             'program_id' => Program::inRandomOrder()->first()->id,
             'trainer_id' => Trainer::inRandomOrder()->first()->id,
+            'level_id'   => Level::inRandomOrder()->first()->id, 
 
-            //'title' => $this->faker->bs(),
-            'start_at' => $this->faker->dateTimeBetween('+1 week', '+3 months'),
             
-            // ทำให้ end_at เป็นวันที่หลังจาก start_at เสมอ
+            // --- Session Details (ตามโครงสร้างฐานข้อมูลของคุณ) ---
+            'session_number'        => $this->faker->numberBetween(1, 5), // รอบที่ 1-5
+            'location'              => $this->faker->address,
+            'capacity'              => $this->faker->randomElement([15, 20, 25, 30]),
+            'status'                => 'scheduled',
+            
+            // --- Date and Time Logic ---
+            'start_at'              => $this->faker->dateTimeBetween('+2 weeks', '+4 months'),
+            
             'end_at' => function (array $attributes) {
-                return Carbon::parse($attributes['start_at'])->addDays(rand(1, 4))->addHours(rand(2, 8));
+                // จบหลังวันเริ่ม 1-3 วัน
+                return Carbon::parse($attributes['start_at'])->addDays(rand(1, 3));
             },
             
-            //'capacity' => $this->faker->numberBetween(15, 50),
-            'location' => $this->faker->address(),
-            'status' => 'scheduled',
+            'registration_start_at' => function (array $attributes) {
+                // เริ่มรับสมัคร 2 สัปดาห์ก่อนวันเริ่ม
+                return Carbon::parse($attributes['start_at'])->subWeeks(2);
+            },
+            
+            'registration_end_at' => function (array $attributes) {
+                // ปิดรับสมัคร 1 วันก่อนวันเริ่ม
+                return Carbon::parse($attributes['start_at'])->subDay();
+            },
         ];
     }
 }

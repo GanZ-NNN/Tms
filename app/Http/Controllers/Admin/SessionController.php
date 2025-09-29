@@ -35,6 +35,7 @@ class SessionController extends Controller
             'trainer_id' => 'required|exists:trainers,id',
             'session_number' => 'required|integer',
             'location' => 'nullable|string',
+            'capacity' => 'required|integer|min:1|max:40',
             'start_at' => 'required|date',
             'end_at' => 'required|date|after:start_at',
             'registration_start_at' => 'required|date',
