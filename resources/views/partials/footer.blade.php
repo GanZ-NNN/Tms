@@ -9,6 +9,9 @@
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Privacy</small></a>
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Terms</small></a>
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Contact</small></a>
+                <a href="tel:+66901234567" class="text-light text-decoration-none mx-2">
+                    <small>Call: 090-123-4567</small>
+                </a>
             </div>
 
             <!-- Right -->
