@@ -40,4 +40,9 @@ class HomeController extends Controller
 
         return view('home', compact('programs', 'features'));
     }
+
+    public function show(Program $program)
+    {
+        return view('programs.show', compact('program'));
+    }
 }

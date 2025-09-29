@@ -94,6 +94,7 @@ Route::resource('programs', ProgramController::class);
 Route::get('/programs/search', [ProgramController::class, 'search'])->name('programs.search');
 Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
 
+Route::resource('programs', HomeController::class);
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 
