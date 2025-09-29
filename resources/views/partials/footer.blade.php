@@ -1,5 +1,5 @@
-<footer class="footer bg-dark text-light">
-    <div class="container py-2">
+<footer class="footer text-light pt-6 pb-4">
+    <div class="container">
         <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
             <!-- Left -->
             <small class="fw-bold">TMS - Training Management System</small>
@@ -9,7 +9,10 @@
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Privacy</small></a>
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Terms</small></a>
                 <a href="#" class="text-light text-decoration-none mx-2"><small>Contact</small></a>
-                <a href="tel:+66901234567" class="text-light text-decoration-none mx-2">
+                
+                <!-- เพิ่มไอคอนโทรศัพท์ (fa-phone-alt) เข้าไปหน้าเบอร์โทรศัพท์ -->
+                <a href="tel:+66901234567" class="text-light text-decoration-none mx-2 d-inline-flex align-items-center">
+                    <i class="fas fa-phone-alt fa-sm me-1"></i> 
                     <small>Call: 090-123-4567</small>
                 </a>
             </div>
