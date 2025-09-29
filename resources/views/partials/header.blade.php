@@ -14,7 +14,11 @@
         <nav class="navbar navbar-expand-lg header-nav d-flex align-items-center justify-content-between">
 
             <!-- ส่วนที่ 1: โลโก้เว็บไซต์ -->
-            <a href="{{ url('/') }}" class="navbar-brand fw-bold">TMS</a>
+            <a href="{{ url('/') }}" class="navbar-brand">
+                <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" 
+                     alt="KKU SLA Logo" 
+                     style="height: 40px; margin-right: 10px;"> <!--<span class="fw-bold fs-1">TMS</span>-->
+            </a>
 
             <!-- ส่วนที่ 2: ปุ่มสลับเมนูสำหรับ Mobile (Hamburger Menu) -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
