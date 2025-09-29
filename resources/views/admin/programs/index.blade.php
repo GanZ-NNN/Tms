@@ -89,7 +89,7 @@
                                                     <td class="py-3">{{ $session->start_at->format('d M Y') }}</td>
                                                     <td class="py-3">{{ $session->location ?? '-'}}</td>
                                                     <td class="py-3">
-                                                        <a href="{{-- route('admin.attendance.show', $session) --}}" class="text-blue-600 hover:underline text-sm">เช็คชื่อ</a>
+                                                        
                                                         <a href="{{ route('admin.programs.sessions.edit', [$program, $session]) }}" class="text-yellow-600 hover:underline ml-2 text-sm">แก้ไข</a>
                                                     </td>
                                                 </tr>
