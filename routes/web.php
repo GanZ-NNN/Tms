@@ -23,6 +23,9 @@ use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramsController;
 
+// Auth (OTP Reset Password)
+use App\Http\Controllers\Auth\PasswordResetController;
+
 // === Public Routes (ทุกคนเข้าได้ ไม่ต้อง Login) ===
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/sessions/{session}', [PublicSessionController::class, 'show'])->name('sessions.show');
@@ -33,7 +36,7 @@ Route::post('/certificate/verify', [CertificateController::class, 'verify'])->na
 Route::get('/programs', [ProgramsController::class, 'index'])->name('programs.index');
 
 // แสดงรายละเอียดโปรแกรม
-Route::get('/programs', [ProgramsController::class, 'show'])->name('programs.show');
+Route::get('/programs/{program}', [ProgramsController::class, 'show'])->name('programs.show');
 
 // ✅ ลงทะเบียนต้อง login ก่อน
 Route::middleware('auth')->group(function () {
@@ -76,10 +79,10 @@ Route::middleware(['auth', 'is.admin'])
         // Users
         Route::resource('users', UserController::class);
 
-    // -- CRUD Resources --
-    Route::resource('programs', ProgramController::class);
-    Route::resource('trainers', TrainerController::class);
-    Route::resource('categories', CategoryController::class);
+        // -- CRUD Resources --
+        Route::resource('programs', ProgramController::class);
+        Route::resource('trainers', TrainerController::class);
+        Route::resource('categories', CategoryController::class);
 
         // Nested Sessions inside Programs
         Route::resource('programs.sessions', SessionController::class);
@@ -103,10 +106,22 @@ Route::middleware(['auth', 'is.admin'])
         Route::resource('levels', LevelController::class);
     });
 
-// --- Frontend Program Routes ---
+// --- Frontend Program Routes (อีกเวอร์ชันที่โชว์ผ่าน HomeController) ---
 Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
 Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
 
+// --- Password Reset with OTP ---
+Route::get('/password/verify-code', [PasswordResetController::class, 'showVerifyForm'])
+    ->name('password.verify.form');
+
+Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCode'])
+    ->name('password.verify.code');
+
+Route::get('/password/reset-form', [PasswordResetController::class, 'showResetForm'])
+    ->name('password.reset.form');
+
+Route::post('/password/update-with-code', [PasswordResetController::class, 'updatePassword'])
+    ->name('password.update.with.code');
 
 // --- Include Breeze's Auth Routes ---
 require __DIR__.'/auth.php';
