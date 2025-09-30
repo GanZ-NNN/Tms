@@ -3,64 +3,30 @@
 namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
-use Illuminate\Mail\Mailables\Content;
-use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
 class WelcomeMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     *
-     */
     public $user; // ส่งข้อมูล user ไป view
 
-    public function __construct()
+    /**
+     * Create a new message instance.
+     */
+    public function __construct(User $user)
     {
-        $this->user = $user;
+        $this->user = $user; // เก็บ user ไว้ใช้ใน view
     }
 
     /**
-     * Get the message subject.
+     * Build the message.
      */
     public function build()
     {
         return $this->subject('ยินดีต้อนรับสู่ระบบของเรา')
-                    ->markdown('emails.welcome');
-    }
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
-    {
-        return new Envelope(
-            subject: 'Welcome Mail',
-        );
-    }
-
-    /**
-     * Get the message content definition.
-     */
-    public function content(): Content
-    {
-        return new Content(
-            markdown: 'emails.welcome',
-        );
-    }
-
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
-    public function attachments(): array
-    {
-        return [];
+                    ->markdown('emails.welcome'); // ใช้ markdown view
     }
 }
