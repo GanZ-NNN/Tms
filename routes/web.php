@@ -86,6 +86,9 @@ Route::middleware(['auth', 'verified', 'is.admin'])
 
         // Show Program
         Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
+
+        // Levels
+        Route::resource('levels', LevelController::class);
     });
 
 // --- Frontend Program Routes ---
