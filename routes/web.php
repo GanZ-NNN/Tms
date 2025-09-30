@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SessionCompletionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\LevelController;
 
 // Frontend User Controllers
 use App\Http\Controllers\PublicSessionController;
@@ -88,6 +89,8 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     Route::post('/programs/quick-store', [ProgramController::class, 'quickStore'])->name('programs.quick-store');
 
     Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
+
+    Route::resource('levels', LevelController::class);
 });
 
 Route::resource('programs', ProgramController::class);

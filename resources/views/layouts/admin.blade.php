@@ -61,12 +61,12 @@
                             <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
                                href="{{ route('admin.users.index') }}">
                                 Users
-                            </a>    
+                            </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                             href="{{ route('admin.categories.index') }}">
-                                Category
+                                Category & lvl
                             </a>
                         </li>
                         <li class="nav-item">
