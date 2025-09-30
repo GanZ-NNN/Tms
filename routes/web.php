@@ -64,11 +64,10 @@ Route::middleware(['auth', 'verified', 'is.admin'])
         // Users
         Route::resource('users', UserController::class);
 
-        // Programs, Levels, Trainers, Categories
-        Route::resource('programs', ProgramController::class);
-        Route::resource('levels', LevelController::class);
-        Route::resource('trainers', TrainerController::class);
-        Route::resource('categories', CategoryController::class);
+    // -- CRUD Resources --
+    Route::resource('programs', ProgramController::class);
+    Route::resource('trainers', TrainerController::class);
+    Route::resource('categories', CategoryController::class);
 
         // Nested Sessions inside Programs
         Route::resource('programs.sessions', SessionController::class);
