@@ -1,21 +1,42 @@
 <x-guest-layout>
-    <form method="POST" action="{{ route('password.update.with.code') }}">
-        @csrf
-        <input type="hidden" name="email" value="{{ $email }}">
-        <input type="hidden" name="code" value="{{ $code }}">
+    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10">
 
-        <div>
-            <x-input-label for="password" :value="__('รหัสผ่านใหม่')" />
-            <x-text-input id="password" class="block mt-1 w-full" type="password" name="password" required />
-        </div>
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" class="mx-auto w-20 h-20 object-contain">
+                <h2 class="mt-4 text-2xl font-bold text-gray-800 dark:text-gray-100">ตั้งรหัสผ่านใหม่</h2>
+                <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">กรอกรหัสผ่านใหม่ของคุณ</p>
+            </div>
 
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('ยืนยันรหัสผ่านใหม่')" />
-            <x-text-input id="password_confirmation" class="block mt-1 w-full" type="password" name="password_confirmation" required />
-        </div>
+            <form method="POST" action="{{ route('password.update.with.code') }}" class="space-y-6">
+                @csrf
+                <input type="hidden" name="email" value="{{ $email }}">
+                <input type="hidden" name="code" value="{{ $code }}">
 
-        <div class="flex items-center justify-end mt-4">
-            <x-primary-button>เปลี่ยนรหัสผ่าน</x-primary-button>
+                <!-- Password -->
+                <div>
+                    <x-input-label for="password" :value="__('รหัสผ่านใหม่')" class="font-semibold text-gray-700 dark:text-gray-300"/>
+                    <x-text-input id="password"
+                        class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-orange-400 focus:border-orange-400"
+                        type="password" name="password" required />
+                </div>
+
+                <!-- Confirm Password -->
+                <div>
+                    <x-input-label for="password_confirmation" :value="__('ยืนยันรหัสผ่านใหม่')" class="font-semibold text-gray-700 dark:text-gray-300"/>
+                    <x-text-input id="password_confirmation"
+                        class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-orange-400 focus:border-orange-400"
+                        type="password" name="password_confirmation" required />
+                </div>
+
+                <!-- Submit -->
+                <div>
+                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                        เปลี่ยนรหัสผ่าน
+                    </x-primary-button>
+                </div>
+            </form>
         </div>
-    </form>
+    </div>
 </x-guest-layout>

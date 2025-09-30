@@ -1,43 +1,48 @@
 <x-guest-layout>
-    <div class="max-w-md mx-auto bg-white dark:bg-gray-800 shadow-lg rounded-2xl p-8">
-        <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-gray-100 mb-6">
-            {{ __('ลืมรหัสผ่าน?') }}
-        </h2>
+    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10">
 
-        <p class="text-sm text-gray-600 dark:text-gray-400 text-center mb-6">
-            {{ __('กรอกอีเมลของคุณ ระบบจะส่งรหัสยืนยัน (OTP 6 หลัก) ไปยังอีเมลเพื่อใช้ในการเปลี่ยนรหัสผ่าน') }}
-        </p>
-
-        <!-- Session Status -->
-        <x-auth-session-status class="mb-4" :status="session('status')" />
-
-        <form method="POST" action="{{ route('password.email') }}" class="space-y-5">
-            @csrf
-
-            <!-- Email Address -->
-            <div>
-                <x-input-label for="email" :value="__('อีเมลของคุณ')" class="mb-1 font-semibold" />
-                <x-text-input id="email"
-                    class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-lg shadow-sm"
-                    type="email"
-                    name="email"
-                    :value="old('email')"
-                    required autofocus
-                />
-                <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500" />
+            <!-- Logo / Header -->
+            <div class="text-center mb-8">
+                <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" class="mx-auto w-20 h-20 object-contain">
+                <h2 class="mt-4 text-2xl font-bold text-gray-800 dark:text-gray-100">ลืมรหัสผ่าน?</h2>
+                <p class="mt-2 text-gray-500 dark:text-gray-400 text-sm">
+                    กรอกอีเมล ระบบจะส่งรหัสยืนยัน (OTP 6 หลัก) ไปยังอีเมลของคุณ
+                </p>
             </div>
 
-            <div class="flex items-center justify-center">
-                <x-primary-button class="px-6 py-2 w-full justify-center rounded-lg text-base font-medium shadow-md transition duration-150 ease-in-out">
-                    {{ __('ส่งรหัสยืนยัน') }}
-                </x-primary-button>
-            </div>
-        </form>
+            <x-auth-session-status class="mb-4" :status="session('status')" />
 
-        <div class="mt-6 text-center">
-            <a href="{{ route('login') }}" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">
-                {{ __('กลับไปหน้าเข้าสู่ระบบ') }}
-            </a>
+            <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
+                @csrf
+
+                <!-- Email -->
+                <div>
+                    <x-input-label for="email" :value="__('อีเมลของคุณ')" class="font-semibold text-gray-700 dark:text-gray-300"/>
+                    <x-text-input
+                        id="email"
+                        class="mt-1 block w-full rounded-lg border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 focus:ring-orange-400 focus:border-orange-400"
+                        type="email"
+                        name="email"
+                        :value="old('email')"
+                        required autofocus />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-500"/>
+                </div>
+
+                <!-- Submit -->
+                <div>
+                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                        ส่งรหัสยืนยัน
+                    </x-primary-button>
+                </div>
+            </form>
+
+            <!-- Back to Login -->
+            <p class="text-center text-gray-600 dark:text-gray-400 text-sm mt-6">
+                <a href="{{ route('login') }}" class="text-orange-500 hover:underline font-semibold">
+                    กลับไปหน้าเข้าสู่ระบบ
+                </a>
+            </p>
         </div>
     </div>
 </x-guest-layout>
