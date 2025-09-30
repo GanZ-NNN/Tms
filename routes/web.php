@@ -21,7 +21,7 @@ use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\HomeController;
-
+use App\Http\Controllers\ProgramsController;
 
 // === Public Routes (ทุกคนเข้าได้ ไม่ต้อง Login) ===
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -29,6 +29,16 @@ Route::get('/sessions/{session}', [PublicSessionController::class, 'show'])->nam
 Route::get('/certificate/verify', [CertificateController::class, 'showVerificationForm'])->name('certificates.verify.form');
 Route::post('/certificate/verify', [CertificateController::class, 'verify'])->name('certificates.verify');
 
+// แสดงรายการโปรแกรม
+Route::get('/programs', [ProgramsController::class, 'index'])->name('programs.index');
+
+// แสดงรายละเอียดโปรแกรม
+Route::get('/programs', [ProgramsController::class, 'show'])->name('programs.show');
+
+// ✅ ลงทะเบียนต้อง login ก่อน
+Route::middleware('auth')->group(function () {
+    Route::get('/programs/{id}/register', [ProgramsController::class, 'register'])->name('programs.register');
+});
 
 // === Authenticated User Routes (ต้อง Login ก่อน) ===
 Route::middleware('auth')->group(function () {
