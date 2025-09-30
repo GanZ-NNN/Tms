@@ -71,6 +71,7 @@ Route::middleware(['auth', 'verified', 'is.admin' ]) // <-- คุณต้อ�
     Route::resource('programs', ProgramController::class);
     Route::resource('trainers', TrainerController::class);
     Route::resource('categories', CategoryController::class);
+    Route::resource('programs.sessions', SessionController::class);
 
     // -- Nested Resource for Sessions within a Program (สำหรับปุ่ม Manage เดิม) --
     Route::resource('programs.sessions', SessionController::class);

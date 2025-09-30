@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Program; // อย่าลืม import model
 use Illuminate\Http\Request;
 use App\Models\Trainer;
+use App\Models\Level;
+use App\Models\TrainingSession;
 
 class SessionController extends Controller
 {
@@ -59,9 +61,14 @@ class SessionController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Program $program, TrainingSession $session)
     {
-        //
+        // ดึงข้อมูลที่จำเป็นสำหรับ Dropdown ในฟอร์มแก้ไข
+        $trainers = Trainer::orderBy('name')->get();
+        $levels = Level::orderBy('name')->get();
+
+        // ส่งข้อมูลทั้งหมดที่ View ต้องการไป
+        return view('admin.sessions.edit', compact('program', 'session', 'trainers', 'levels'));
     }
 
     /**
