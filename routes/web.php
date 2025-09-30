@@ -65,7 +65,7 @@ Route::middleware('auth')->group(function () {
 });
 
 // --- Admin Routes (ต้อง Login + Verified + Admin) ---
-Route::middleware(['auth', 'verified', 'is.admin'])
+Route::middleware(['auth', 'is.admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
