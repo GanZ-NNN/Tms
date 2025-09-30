@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Level;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -20,8 +21,10 @@ public function index(Request $request)
     }
 
     $categories = $query->latest()->paginate(10);
-    
-    return view('admin.categories.index', compact('categories'));
+    $levels = Level::orderBy('created_at','desc')
+                        ->paginate(10);
+
+    return view('admin.categories.index', compact('categories', 'levels'));
 }
 
     /**
@@ -59,7 +62,7 @@ public function index(Request $request)
      */
     public function edit($id)
     {
-            $category = Category::findOrFail($id); 
+            $category = Category::findOrFail($id);
         return view('admin.categories.edit', compact('category'));
     }
 
