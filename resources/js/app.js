@@ -11,4 +11,4 @@ Alpine.start();
 
 // const app = createApp({});
 // app.component('program-list', ProgramList);
-// app.mount('#app');
+// app.mount('#app')

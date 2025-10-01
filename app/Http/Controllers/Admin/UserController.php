@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\Trainer;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
@@ -11,10 +12,21 @@ class UserController extends Controller
     /**
      * แสดงรายการผู้ใช้ทั้งหมด
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::latest()->paginate(10); // ดึง user พร้อมแบ่งหน้า
-        $trainers = User::where('role', 'trainer')->paginate(10);
+        $search = $request->search;
+
+        // Users
+        $users = User::when($search, function($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        })->paginate(10);
+
+        // Trainers
+        $trainers = Trainer::when($search, function($query, $search) {
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+        })->paginate(10);
 
         return view('admin.users.index', compact('users', 'trainers'));
     }

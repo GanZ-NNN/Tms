@@ -3,13 +3,7 @@
 @section('title', 'จัดการผู้ใช้งาน / ผู้สอน')
 
 @section('content')
-<main class="bg-white p-6 rounded-lg shadow-lg" x-data="{ tab: 'users' }">
-
-    <!-- Search Form -->
-    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4 flex">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="ค้นหาชื่อหรืออีเมล" class="flex-1 px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-orange-400">
-        <button type="submit" class="bg-orange-400 text-white px-4 py-2 rounded-r hover:bg-orange-500 transition-colors duration-200">ค้นหา</button>
-    </form>
+<main class="bg-white p-6 rounded-lg shadow-lg" x-data='{ tab: @json(request("tab", "users")) }' x-cloak>
 
     <!-- Tab Navigation -->
     <div class="border-b border-gray-200 mb-6 flex space-x-4">
@@ -34,22 +28,20 @@
     </div>
 
     <!-- Users Table -->
-    <div x-show="tab === 'users'"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 transform -translate-y-2"
-     x-transition:enter-end="opacity-100 transform translate-y-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 transform translate-y-0"
-     x-transition:leave-end="opacity-0 transform -translate-y-2"
-     x-cloak
->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">ผู้ใช้งาน</h2>
-        <a href="{{ route('admin.users.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">➕ เพิ่มผู้ใช้งาน</a>
-    </div>
+    <div x-show="tab === 'users'" x-transition x-cloak>
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4 flex">
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="ค้นหาชื่อหรืออีเมล" class="flex-1 px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-orange-400">
+            <button type="submit" class="bg-orange-400 text-white px-4 py-2 rounded-r hover:bg-orange-500 transition-colors duration-200">ค้นหา</button>
+        </form>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded-lg">
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">ผู้ใช้งาน</h2>
+            <a href="{{ route('admin.users.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">➕ เพิ่มผู้ใช้งาน</a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg">
                 <thead>
                     <tr class="text-left text-sm text-gray-500 uppercase tracking-wider">
                         <th class="px-6 py-3 font-semibold">ID</th>
@@ -85,22 +77,22 @@
     </div>
 
     <!-- Trainers Table -->
-    <div x-show="tab === 'trainers'"
-     x-transition:enter="transition ease-out duration-300"
-     x-transition:enter-start="opacity-0 transform -translate-y-2"
-     x-transition:enter-end="opacity-100 transform translate-y-0"
-     x-transition:leave="transition ease-in duration-200"
-     x-transition:leave-start="opacity-100 transform translate-y-0"
-     x-transition:leave-end="opacity-0 transform -translate-y-2"
-     x-cloak
->
-    <div class="flex justify-between items-center mb-4">
-        <h2 class="text-xl font-bold text-gray-800">ผู้สอน</h2>
-        <a href="{{ route('admin.trainers.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">➕ เพิ่มผู้สอน</a>
-    </div>
+    <div x-show="tab === 'trainers'" x-transition x-cloak>
+        <!-- Search Form -->
+        <form method="GET" action="{{ route('admin.users.index') }}" class="mb-4 flex">
+        <input type="hidden" name="tab" value="trainers">
+        <input type="text" name="search" value="{{ request('search') }}" placeholder="ค้นหาชื่อหรืออีเมลผู้สอน" class="flex-1 px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-orange-400">
+        <button type="submit" class="bg-orange-400 text-white px-4 py-2 rounded-r hover:bg-orange-500 transition-colors duration-200">ค้นหา</button>
+    </form>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white rounded-lg">
+
+        <div class="flex justify-between items-center mb-4">
+            <h2 class="text-xl font-bold text-gray-800">ผู้สอน</h2>
+            <a href="{{ route('admin.trainers.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-200">➕ เพิ่มผู้สอน</a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white rounded-lg">
                 <thead>
                     <tr class="text-left text-sm text-gray-500 uppercase tracking-wider">
                         <th class="px-6 py-3 font-semibold">ID</th>
@@ -121,7 +113,7 @@
                         <td class="px-6 py-4">{{ $trainer->expertise }}</td>
                         <td class="px-6 py-4 text-right space-x-2">
                             <a href="{{ route('admin.trainers.edit', $trainer->id) }}" class="bg-yellow-400 text-white px-4 py-2 rounded-full hover:bg-yellow-500 transition-colors duration-200">✏️ แก้ไข</a>
-                            <form action="{{ route('admin.trainers.destroy',$trainer->id) }}" method="POST" class="inline-block" onsubmit="return confirm('คุณแน่ใจว่าต้องการลบผู้ใช้นี้?');">
+                            <form action="{{ route('admin.trainers.destroy', $trainer->id) }}" method="POST" class="inline-block" onsubmit="return confirm('คุณแน่ใจว่าต้องการลบผู้สอนนี้?');">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-full hover:bg-red-600 transition-colors duration-200">🗑️ ลบ</button>
@@ -129,7 +121,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">ไม่พบผู้สอน</td></tr>
+                    <tr><td colspan="6" class="px-6 py-4 text-center text-gray-500">ไม่พบผู้สอน</td></tr>
                     @endforelse
                 </tbody>
             </table>
