@@ -1,4 +1,4 @@
-<section class="banner-section" style="background-image: url('{{ asset('assets/img/410_devtai.jpg') }}');">
+<section class="banner-section" style="background-image: url('{{ asset('assets/img/้hoho.avif') }}');">
         <div class="container">
             <div class="row align-items-center">
                 <!-- Left Content: Search + Text -->
