@@ -46,8 +46,6 @@
             <textarea name="detail" class="w-full px-4 py-2 border rounded-lg">{{ old('detail', $program->detail) }}</textarea>
         </div>
 
-
-
         {{-- Image --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Image</label>

@@ -5,8 +5,8 @@
 @section('content')
 <div class="bg-white p-6 rounded-lg shadow-lg"
      x-data='{
-         programs: {{ json_encode($programs) }},
-         categories: {{ json_encode($categories) }},
+        programs: @json($programs),
+        categories: @json($categories),
          searchTerm: "{{ request('search', '') }}",
          selectedCategory: ""
      }'>
@@ -45,13 +45,13 @@
                     <th class="px-6 py-3 font-semibold text-center">ID</th>
                     <th class="px-6 py-3 font-semibold text-center">รูป</th>
                     <th class="px-6 py-3 font-semibold text-left">ชื่อโปรแกรม</th>
-                    <th class="px-6 py-3 font-semibold text-center">Category</th>
+                    <th class="px-6 py-3 font-semibold text-center">รอบอบรม</th>
                     <th class="px-6 py-3 font-semibold text-center">จัดการ</th>
                 </tr>
             </thead>
-            
+
             {{-- วนลูป Program ที่ถูกกรองแล้วด้วย Alpine.js --}}
-            <template x-for="program in programs.filter(p => 
+            <template x-for="program in programs.filter(p =>
                 (p.title.toLowerCase().includes(searchTerm.toLowerCase())) &&
                 (selectedCategory === '' || p.category_id == selectedCategory)
             )" :key="program.id">
@@ -89,7 +89,7 @@
 
                     {{-- แถวตารางย่อยสำหรับ Sessions จะถูกควบคุมโดย x-show --}}
                     <tr class="bg-white" x-show="open" x-transition x-cloak>
-                        <td class="py-2"></td> 
+                        <td class="py-2"></td>
                         <td colspan="4" class="p-0">
                             <div class="px-6 py-3">
                                 <template x-if="program.sessions && program.sessions.length > 0">
@@ -101,7 +101,7 @@
                                                 <th class="py-2 text-left font-semibold">ผู้สอน</th>
                                                 <th class="py-2 text-left font-semibold">วันที่</th>
                                                 <th class="py-2 text-left font-semibold">สถานที่</th>
-                                                <th class="py-2 text-left font-semibold">Capacity</th>
+                                                <th class="py-2 text-left font-semibold">จำนวนคน</th>
                                                 <th class="py-2 text-left font-semibold">จัดการ</th>
                                             </tr>
                                         </thead>

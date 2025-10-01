@@ -93,6 +93,19 @@
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
+        {{-- Level --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ระดับ</label>
+            <select name="level_id" class="w-full px-4 py-2 border rounded-lg">
+                <option value="">-- เลือกระดับ --</option>
+                @foreach($levels as $level)
+                    <option value="{{ $level->id }}" @selected(old('level_id', $session->level_id) == $level->id)>
+                        {{ $level->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
         {{-- Buttons --}}
         <div class="flex space-x-2">
             <button type="submit" class="bg-yellow-400 text-white px-4 py-2 rounded-lg hover:bg-yellow-500 transition-colors duration-200">

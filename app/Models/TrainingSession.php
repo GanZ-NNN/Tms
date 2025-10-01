@@ -21,6 +21,7 @@ class TrainingSession extends Model
         'end_at',
         'registration_start_at',
         'registration_end_at',
+        'level_id',
     ];
 
     /**
@@ -49,12 +50,12 @@ class TrainingSession extends Model
         public function registrations()
     {
         // Session หนึ่งอัน มีได้หลาย Registration
-        return $this->hasMany(Registration::class, 'session_id'); 
+        return $this->hasMany(Registration::class, 'session_id');
     }
         public function attendances()
     {
         // Session หนึ่งอัน มีได้หลาย Attendance record
-        return $this->hasMany(Attendance::class, 'session_id'); 
+        return $this->hasMany(Attendance::class, 'session_id');
     }
         public function level()
     {
@@ -69,12 +70,12 @@ class TrainingSession extends Model
     protected static function newFactory()
     {
         // บอกให้ Model นี้ใช้ Factory ที่ชื่อ SessionFactory
-        return SessionFactory::new(); 
+        return SessionFactory::new();
     }
         public function feedback()
     {
         // Session หนึ่งอัน มีได้หลาย Feedback
-        return $this->hasMany(Feedback::class, 'session_id'); 
+        return $this->hasMany(Feedback::class, 'session_id');
     }
 
 }

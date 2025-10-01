@@ -1,4 +1,4 @@
-<section class="banner-section" style="background-image: url('{{ asset('assets/img/WhatsApp Image 2025-10-01 at 12.13.33.avif') }}');">
+<section class="banner-section" style="background-image: url('{{ asset('assets/img/HJs.jpeg') }}');">
         <div class="container">
             <div class="row align-items-center">
                 <!-- Left Content: Search + Text -->

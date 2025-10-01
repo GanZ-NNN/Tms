@@ -24,9 +24,9 @@ class ProgramController extends Controller
         if ($request->filled('search')) {
             $query->where('title', 'like', '%' . $request->search . '%');
         }
-        
+
         // ดึงข้อมูล Program ทั้งหมดมาแสดงในหน้าเดียว
-        $programs = $query->latest()->get(); 
+        $programs = $query->latest()->get();
 
         // ดึง categories ทั้งหมดมาสำหรับ Filter Dropdown โดยเรียงตามชื่อ
         $categories = Category::orderBy('name')->get();

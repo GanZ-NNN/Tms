@@ -100,6 +100,7 @@ Route::middleware(['auth', 'is.admin'])
 
         Route::resource('categories', CategoryController::class);
         Route::resource('levels', LevelController::class);
+        Route::resource('sessions', SessionController::class);
 
         Route::resource('programs.sessions', SessionController::class);
         Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');

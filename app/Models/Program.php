@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Program extends Model
 {
-        use HasFactory; 
+        use HasFactory;
     protected $fillable = ['image', 'category_id', 'title', 'detail'];
 
     public function category()
