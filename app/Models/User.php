@@ -30,4 +30,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function registrations()
+{
+    return $this->hasMany(\App\Models\Registration::class);
+}
+
+public function certificates()
+{
+    return $this->hasMany(\App\Models\Certificate::class);
+}
 }

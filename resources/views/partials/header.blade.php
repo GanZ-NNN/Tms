@@ -68,9 +68,9 @@
                             <a href="{{ route('admin.dashboard') }}" class="nav-link">Admin Dashboard</a>
                         </li>
                     @else
-                        <li class="nav-item">
-                            <a href="{{ route('dashboard') }}" class="nav-link">Dashboard</a>
-                        </li>
+                    <li class="nav-item">
+                        <a href="{{ route('profile.edit') }}" class="nav-link">Profile</a>
+                    </li>
                     @endif
                     <li class="nav-item">
                         <!-- ฟอร์มสำหรับ Logout (ใช้ POST method) -->
