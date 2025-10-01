@@ -71,5 +71,10 @@ class TrainingSession extends Model
         // บอกให้ Model นี้ใช้ Factory ที่ชื่อ SessionFactory
         return SessionFactory::new(); 
     }
+        public function feedback()
+    {
+        // Session หนึ่งอัน มีได้หลาย Feedback
+        return $this->hasMany(Feedback::class, 'session_id'); 
+    }
 
 }

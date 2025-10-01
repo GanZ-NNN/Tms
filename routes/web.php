@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SessionCompletionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LevelController;
+use App\Http\Controllers\Admin\ReportController;
 
 // Frontend
 use App\Http\Controllers\PublicSessionController;
@@ -78,6 +79,12 @@ Route::middleware(['auth', 'is.admin'])
         Route::post('/programs/quick-store', [ProgramController::class, 'quickStore'])->name('programs.quick-store');
         Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
         Route::resource('levels', LevelController::class);
+        Route::prefix('reports')->name('reports.')->group(function () {
+            Route::get('/feedback', [ReportController::class, 'feedbackIndex'])->name('feedback.index');
+            Route::get('/feedback/{session}', [ReportController::class, 'feedbackDetails'])->name('feedback.details');
+            Route::get('/feedback/{session}/export', [ReportController::class, 'exportFeedback'])->name('feedback.export');
+        });
+        
     });
 
 // --- Frontend Program Routes (อีกเวอร์ชันที่โชว์ผ่าน HomeController) ---

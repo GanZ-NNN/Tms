@@ -83,14 +83,8 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}"
-                               href="#">
+                               href="{{ route('admin.reports.feedback.index') }}">
                                 Reports
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.settings.*') ? 'active' : '' }}"
-                               href="#">
-                                Settings
                             </a>
                         </li>
 
