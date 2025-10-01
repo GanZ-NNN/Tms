@@ -85,9 +85,11 @@ Route::middleware(['auth', 'is.admin'])
 // Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
 // Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
 
-// --- Password Reset with OTP ---
+// OTP verify
 Route::get('/password/verify-code', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify.form');
 Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCode'])->name('password.verify.code');
+
+// Reset Password
 Route::get('/password/reset-form', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
 Route::post('/password/update-with-code', [PasswordResetController::class, 'updatePassword'])->name('password.update.with.code');
 

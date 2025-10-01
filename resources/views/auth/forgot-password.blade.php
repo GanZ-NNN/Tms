@@ -1,6 +1,5 @@
 <x-guest-layout>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10">
+
 
             <!-- Logo / Header -->
             <div class="text-center mb-8">
@@ -43,6 +42,4 @@
                     กลับไปหน้าเข้าสู่ระบบ
                 </a>
             </p>
-        </div>
-    </div>
 </x-guest-layout>
