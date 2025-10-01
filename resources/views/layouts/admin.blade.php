@@ -66,7 +66,7 @@
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
                             href="{{ route('admin.categories.index') }}">
-                                Category & lvl
+                                Category & Level
                             </a>
                         </li>
                         <li class="nav-item">

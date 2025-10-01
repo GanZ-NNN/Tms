@@ -32,8 +32,10 @@ Route::get('/sessions/{session}', [PublicSessionController::class, 'show'])->nam
 Route::get('/certificate/verify', [CertificateController::class, 'showVerificationForm'])->name('certificates.verify.form');
 Route::post('/certificate/verify', [CertificateController::class, 'verify'])->name('certificates.verify');
 
-// แสดงรายการโปรแกรม
-Route::get('/programs', [ProgramsController::class, 'index'])->name('programs.index');
+// *** ส่วนที่แก้ไข ***
+// เปลี่ยนชื่อ Route 'programs.index' เป็น 'courses.index' เพื่อให้ตรงกับ Navigation
+Route::get('/programs', [ProgramsController::class, 'index'])->name('courses.index');
+// *** สิ้นสุดส่วนที่แก้ไข ***
 
 // แสดงรายละเอียดโปรแกรม
 Route::get('/programs/{program}', [ProgramsController::class, 'show'])->name('programs.show');
@@ -45,25 +47,15 @@ Route::middleware('auth')->group(function () {
 
 // === Authenticated User Routes (ต้อง Login ก่อน) ===
 Route::middleware('auth')->group(function () {
-
-    // Dashboard redirect
     Route::get('/dashboard', fn() => redirect()->route('profile.edit'))->name('dashboard');
-
-    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::get('/my-courses', [ProfileController::class, 'myCourses'])->name('profile.courses');
-
-    // Session Registration
     Route::post('/sessions/{session}/register', [RegistrationController::class, 'store'])->name('sessions.register');
     Route::delete('/registrations/{registration}/cancel', [RegistrationController::class, 'destroy'])->name('registrations.cancel');
-
-    // Feedback
     Route::get('/sessions/{session}/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
     Route::post('/sessions/{session}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
-
-    // Certificates
     Route::get('/certificates/{certificate}/download', [CertificateController::class, 'download'])->name('certificates.download');
 });
 
@@ -72,56 +64,32 @@ Route::middleware(['auth', 'is.admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
-
-        // Dashboard
         Route::get('/dashboard', [SessionDashboardController::class, 'index'])->name('dashboard');
-
-        // Users
         Route::resource('users', UserController::class);
-
-        // -- CRUD Resources --
         Route::resource('programs', ProgramController::class);
         Route::resource('trainers', TrainerController::class);
         Route::resource('categories', CategoryController::class);
-
-        // Nested Sessions inside Programs
         Route::resource('programs.sessions', SessionController::class);
-
-        // Attendance
         Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
         Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
         Route::get('/attendance', [AttendanceController::class, 'overview'])->name('attendance.overview');
-
-        // Complete Session
         Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');
-
-        // Special Program Flow
         Route::get('/programs/create-flow', [ProgramController::class, 'createCourseFlow'])->name('programs.create-flow');
         Route::post('/programs/quick-store', [ProgramController::class, 'quickStore'])->name('programs.quick-store');
-
-        // Show Program
         Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
-
-        // Levels
         Route::resource('levels', LevelController::class);
     });
 
 // --- Frontend Program Routes (อีกเวอร์ชันที่โชว์ผ่าน HomeController) ---
-Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
-Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
+// ผมได้คอมเมนต์ส่วนนี้ออก เพราะมันซ้ำซ้อนกับ Route ด้านบน และอาจทำให้เกิดความสับสน
+// Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
+// Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
 
 // --- Password Reset with OTP ---
-Route::get('/password/verify-code', [PasswordResetController::class, 'showVerifyForm'])
-    ->name('password.verify.form');
-
-Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCode'])
-    ->name('password.verify.code');
-
-Route::get('/password/reset-form', [PasswordResetController::class, 'showResetForm'])
-    ->name('password.reset.form');
-
-Route::post('/password/update-with-code', [PasswordResetController::class, 'updatePassword'])
-    ->name('password.update.with.code');
+Route::get('/password/verify-code', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify.form');
+Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCode'])->name('password.verify.code');
+Route::get('/password/reset-form', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
+Route::post('/password/update-with-code', [PasswordResetController::class, 'updatePassword'])->name('password.update.with.code');
 
 // --- Include Breeze's Auth Routes ---
 require __DIR__.'/auth.php';

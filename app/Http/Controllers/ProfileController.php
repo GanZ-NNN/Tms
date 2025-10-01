@@ -8,19 +8,43 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use App\Models\Registration;
+use App\Models\Certificate;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
-    {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
-    }
+public function edit(Request $request): View
+{
+    $user = $request->user();
 
+    // ดึงข้อมูลรอบอบรมที่กำลังจะมาถึง (ที่ผู้ใช้ลงทะเบียนไว้)
+    $upcomingSessions = Registration::where('user_id', $user->id)
+        ->with('session.program')
+        ->whereHas('session', fn($query) => $query->where('start_at', '>=', now()))
+        ->latest('id')
+        ->get();
+
+    // ดึงข้อมูลประวัติการอบรม (ที่จบไปแล้ว)
+    $trainingHistory = Registration::where('user_id', $user->id)
+        ->with('session.program')
+        ->whereHas('session', fn($query) => $query->where('start_at', '<', now()))
+        ->latest('id')
+        ->get();
+    
+    // ดึงใบรับรองทั้งหมดของผู้ใช้
+    $certificates = $user->certificates()->with('session.program')->latest()->get();
+
+    // ส่งตัวแปรทั้งหมดที่ View ต้องการไป
+    return view('profile.edit', [
+        'user' => $user,
+        'upcomingSessions' => $upcomingSessions,
+        'trainingHistory' => $trainingHistory,
+        'certificates' => $certificates,
+    ]);
+}
     /**
      * Update the user's profile information.
      */
