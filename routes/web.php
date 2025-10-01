@@ -89,8 +89,8 @@ Route::middleware(['auth', 'is.admin'])
 
 // --- Frontend Program Routes (อีกเวอร์ชันที่โชว์ผ่าน HomeController) ---
 // ผมได้คอมเมนต์ส่วนนี้ออก เพราะมันซ้ำซ้อนกับ Route ด้านบน และอาจทำให้เกิดความสับสน
-Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
-Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
+// Route::get('/programs', [HomeController::class, 'programsIndex'])->name('programs.index');
+// Route::get('/programs/{program}', [HomeController::class, 'show'])->name('programs.show');
 
 // OTP verify
 Route::get('/password/verify-code', [PasswordResetController::class, 'showVerifyForm'])->name('password.verify.form');
