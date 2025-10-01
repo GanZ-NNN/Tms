@@ -6,7 +6,7 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('home') }}">
-                        <img src="{{ asset('images/kku_logo.png') }}" alt="KKU Logo" class="block h-9 w-auto">
+                        <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" alt="KKU Logo" class="block h-9 w-auto">
                     </a>
                 </div>
 
@@ -23,12 +23,12 @@
 
             <!-- Settings Dropdown / Login & Register Links -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                
+
                 <!-- Dark Mode Toggle -->
                 <div class="me-4">
                     <x-dark-mode-toggle />
                 </div>
-                
+
                 @auth
                     <x-dropdown align="right" width="48">
                         <x-slot name="trigger">
