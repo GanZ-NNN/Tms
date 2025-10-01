@@ -2,10 +2,9 @@
     {{-- สามารถกำหนด Title ของหน้าได้ด้วย @section --}}
     @section('title', $program->title)
 
-    <div class="container my-5">
-        <div class="row justify-content-center">
-            <div class="col-md-10">
-
+   <div class="container my-5" style="min-height: 900px;">
+    <div class="row justify-content-center">
+        <div class="col-lg-11 col-xl-10">
                 {{-- แสดง success message --}}
                 @if(session('success'))
                     <div class="alert alert-success">
@@ -18,9 +17,9 @@
                     {{-- รูปหลักสูตร --}}
                     @if($program->image)
                         {{-- ตรวจสอบ Path ของรูปภาพให้ถูกต้อง --}}
-                        <img src="{{ asset('storage/' . $program->image) }}" 
-                             alt="{{ $program->title }}" 
-                             class="img-fluid" 
+                        <img src="{{ asset('storage/' . $program->image) }}"
+                             alt="{{ $program->title }}"
+                             class="img-fluid d-block mx-auto"
                              style="max-height: 400px; object-fit: cover;">
                     @endif
 
@@ -37,7 +36,7 @@
                         </p>
 
                         <hr class="my-4">
-                        
+
                         {{-- แสดงรอบอบรมที่เปิดรับสมัคร --}}
                         <h3 class="fw-bold mb-3">รอบอบรมที่เปิดรับสมัคร</h3>
 
@@ -46,7 +45,7 @@
                                 <div>
                                     <div class="fw-semibold">รอบที่ {{ $session->session_number }} - {{ $session->level?->name }}</div>
                                     <div class="small text-muted">
-                                        <i class="far fa-calendar-alt"></i> {{ $session->start_at->format('d M Y') }} | 
+                                        <i class="far fa-calendar-alt"></i> {{ $session->start_at->format('d M Y') }} |
                                         <i class="far fa-user"></i> {{ $session->trainer?->name }} |
                                         <i class="fas fa-map-marker-alt"></i> {{ $session->location }}
                                     </div>

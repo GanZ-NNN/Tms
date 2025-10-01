@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CertificateAdminController;
 
+
 // Frontend
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramsController; // <-- เราจะใช้ตัวนี้เป็นหลักสำหรับ Frontend Program
@@ -24,6 +25,7 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
+
 
 // Auth (OTP Reset Password)
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -90,6 +92,11 @@ Route::middleware(['auth', 'is.admin'])
         Route::resource('users', UserController::class);
         Route::resource('programs', AdminProgramController::class); // <-- ใช้ Controller ที่เปลี่ยนชื่อ
         Route::resource('trainers', TrainerController::class);
+
+        Route::get('/attendance/overview', [AttendanceController::class, 'overview'])
+        ->name('attendance.overview');
+
+        Route::resource('certificates', CertificateAdminController::class);
 
         Route::resource('categories', CategoryController::class);
         Route::resource('levels', LevelController::class);
