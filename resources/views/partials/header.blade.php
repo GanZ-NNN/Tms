@@ -15,8 +15,8 @@
 
             <!-- ส่วนที่ 1: โลโก้เว็บไซต์ -->
             <a href="{{ url('/') }}" class="navbar-brand">
-                <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" 
-                     alt="KKU SLA Logo" 
+                <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}"
+                     alt="KKU SLA Logo"
                      style="height: 40px; margin-right: 10px;"> <!--<span class="fw-bold fs-1">TMS</span>-->
             </a>
 
