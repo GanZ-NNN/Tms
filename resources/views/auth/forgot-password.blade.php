@@ -30,8 +30,8 @@
                 </div>
 
                 <!-- Submit -->
-                <div>
-                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                <div class="flex justify-center">
+                    <x-primary-button class="bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
                         ส่งรหัสยืนยัน
                     </x-primary-button>
                 </div>

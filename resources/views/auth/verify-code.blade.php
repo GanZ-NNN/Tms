@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10">
+    <!-- <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4"> -->
+        <!-- <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10"> -->
 
             <!-- Header -->
             <div class="text-center mb-8">
@@ -25,12 +25,12 @@
                 </div>
 
                 <!-- Submit -->
-                <div>
-                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                <div class="flex justify-center">
+                    <x-primary-button class="bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
                         ยืนยันรหัส
                     </x-primary-button>
                 </div>
             </form>
-        </div>
-    </div>
+        <!-- </div> -->
+    <!-- </div> -->
 </x-guest-layout>

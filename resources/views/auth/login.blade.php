@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10">
+    <!-- <div class=" flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 sm:p-10"> -->
 
             <!-- Logo / Header -->
             <div class="text-center mb-8">
@@ -58,15 +58,16 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div>
-                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                <div class="flex justify-center">
+                    <x-primary-button class="bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
                         เข้าสู่ระบบ
                     </x-primary-button>
                 </div>
+
             </form>
 
             <!-- Divider -->
-            <div class="flex items-center my-6">
+            <div class="flex items-center my-6 ">
                 <hr class="flex-grow border-gray-300 dark:border-gray-600">
                 <span class="px-4 text-gray-500 dark:text-gray-400 text-sm">หรือ</span>
                 <hr class="flex-grow border-gray-300 dark:border-gray-600">
@@ -77,6 +78,6 @@
                 ยังไม่มีบัญชี?
                 <a href="{{ route('register') }}" class="text-orange-500 hover:underline font-semibold">สมัครสมาชิก</a>
             </p>
-        </div>
-    </div>
+        <!-- </div>
+    </div> -->
 </x-guest-layout>

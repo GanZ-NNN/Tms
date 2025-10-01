@@ -1,6 +1,6 @@
 <x-guest-layout>
-    <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
-        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
+    <!-- <div class="min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900 px-4">
+        <div class="max-w-md w-full bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8"> -->
             <!-- Header / Logo -->
             <div class="text-center mb-6">
                 <img src="{{ asset('assets/img/KKU_SLA_Logo.svg.png') }}" alt="KKU SLA Logo" class="mx-auto w-20 h-20 object-contain">
@@ -47,15 +47,17 @@
                 </div>
 
                 <!-- Submit Button -->
-                <div>
-                    <x-primary-button class="w-full bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
+                <div class="flex justify-center">
+                    <x-primary-button class="bg-orange-500 hover:bg-orange-600 focus:ring-orange-400">
                         สมัครสมาชิก
                     </x-primary-button>
                 </div>
+
+
             </form>
 
             <!-- Divider -->
-            <div class="flex items-center my-6">
+            <div class="flex items-center my-6 text-center">
                 <hr class="flex-grow border-gray-300 dark:border-gray-600">
                 <span class="px-4 text-gray-500 dark:text-gray-400 text-sm">หรือ</span>
                 <hr class="flex-grow border-gray-300 dark:border-gray-600">
@@ -66,6 +68,6 @@
                 มีบัญชีแล้ว?
                 <a href="{{ route('login') }}" class="text-orange-500 hover:underline font-semibold">เข้าสู่ระบบ</a>
             </p>
-        </div>
-    </div>
+        <!-- </div>
+    </div> -->
 </x-guest-layout>
