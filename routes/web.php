@@ -24,8 +24,6 @@ use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ProgramsController;
 
 // Auth (OTP Reset Password)
 use App\Http\Controllers\Auth\PasswordResetController;
