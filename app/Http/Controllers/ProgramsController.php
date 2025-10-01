@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Program;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Category;
 
 class ProgramsController extends Controller
 {

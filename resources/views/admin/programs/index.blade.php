@@ -3,7 +3,13 @@
 @section('title', 'จัดการโปรแกรม / รอบอบรม')
 
 @section('content')
-<div class="bg-white p-6 rounded-lg shadow-lg">
+<div class="bg-white p-6 rounded-lg shadow-lg"
+     x-data='{
+         programs: {{ json_encode($programs) }},
+         categories: {{ json_encode($categories) }},
+         searchTerm: "{{ request('search', '') }}",
+         selectedCategory: ""
+     }'>
 
     <div class="flex justify-between items-center mb-6">
         <h2 class="text-2xl font-bold text-gray-800">โปรแกรม & รอบอบรม</h2>
@@ -14,13 +20,22 @@
         </div>
     </div>
 
-    <!-- Search -->
-    <form method="GET" action="{{ route('admin.programs.index') }}" class="mb-4 flex">
-        <input type="text" name="search" value="{{ request('search') }}" placeholder="ค้นหาชื่อโปรแกรม" class="flex-1 px-4 py-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-orange-400">
-        <button type="submit" class="bg-orange-400 text-white px-4 py-2 rounded-r hover:bg-orange-500 transition-colors duration-200">
-            ค้นหา
-        </button>
-    </form>
+    <!-- Alpine.js Filter Form -->
+    <div class="mb-6 flex items-end space-x-4">
+        <div class="flex-1">
+            <label for="search" class="block text-sm font-medium text-gray-700">ค้นหาชื่อโปรแกรม</label>
+            <input type="text" id="search" x-model.debounce.300ms="searchTerm" placeholder="ค้นหา..." class="mt-1 block w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+        </div>
+        <div>
+            <label for="category" class="block text-sm font-medium text-gray-700">Category</label>
+            <select id="category" x-model="selectedCategory" class="mt-1 block w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400">
+                <option value="">All Categories</option>
+                <template x-for="category in categories" :key="category.id">
+                    <option :value="category.id" x-text="category.name"></option>
+                </template>
+            </select>
+        </div>
+    </div>
 
     <!-- Table -->
     <div class="overflow-x-auto">
@@ -35,49 +50,50 @@
                 </tr>
             </thead>
             
-            @forelse ($programs as $program)
+            {{-- วนลูป Program ที่ถูกกรองแล้วด้วย Alpine.js --}}
+            <template x-for="program in programs.filter(p => 
+                (p.title.toLowerCase().includes(searchTerm.toLowerCase())) &&
+                (selectedCategory === '' || p.category_id == selectedCategory)
+            )" :key="program.id">
                 <tbody class="divide-y divide-gray-200 border-t" x-data="{ open: false }">
+                    {{-- แถวหลักสำหรับ Program --}}
                     <tr class="bg-gray-50 hover:bg-gray-100">
-                        <td class="px-6 py-4 text-center">{{ $program->id }}</td>
+                        <td class="px-6 py-4 text-center" x-text="program.id"></td>
                         <td class="px-6 py-4 text-center">
-                           @if($program->image)
-                            <img src="{{ asset('storage/'.$program->image) }}"
-                                alt="{{ $program->title }}"
-                                class="w-16 h-16 object-cover rounded mx-auto">
-                            @else
-                            -
-                            @endif
+                           <template x-if="program.image">
+                            <img :src="`/storage/${program.image}`" :alt="program.title" class="w-16 h-16 object-cover rounded mx-auto">
+                           </template>
+                           <template x-if="!program.image">
+                            <span>-</span>
+                           </template>
                         </td>
                         <td class="px-6 py-4">
                             <button @click="open = !open" class="flex items-center justify-start space-x-2 w-full text-blue-600 hover:text-blue-800 font-bold text-left">
-                                <span>{{ $program->title }}</span>
+                                <span x-text="program.title"></span>
                                 <svg class="w-4 h-4 transition-transform flex-shrink-0" :class="open ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
                             </button>
                         </td>
-                        <td class="px-6 py-4 text-center">{{ $program->category?->name ?? '-' }}</td>
-                        
-                        {{-- *** ส่วนที่แก้ไข *** --}}
+                        <td class="px-6 py-4 text-center" x-text="program.category ? program.category.name : '-'"></td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('admin.programs.edit', $program->id) }}" class="inline-flex items-center justify-center w-24 px-3 py-2 text-xs font-bold text-gray-800 uppercase bg-yellow-400 rounded-full hover:bg-yellow-500 transition-transform transform hover:scale-105">✏️ แก้ไข</a>
-                                <a href="{{ route('admin.programs.sessions.create', $program) }}" class="inline-flex items-center justify-center w-32 px-3 py-2 text-xs font-bold text-white uppercase bg-blue-500 rounded-full hover:bg-blue-600 transition-transform transform hover:scale-105">➕ เพิ่มรอบอบรม</a>
-                                <form action="{{ route('admin.programs.destroy', $program->id) }}" method="POST" class="inline-block" onsubmit="return confirm('แน่ใจหรือไม่? การลบโปรแกรมจะลบรอบอบรมทั้งหมดด้วย!');">
+                                <a :href="`/admin/programs/${program.id}/edit`" class="inline-flex items-center justify-center w-24 px-3 py-2 text-xs font-bold text-gray-800 uppercase bg-yellow-400 rounded-full hover:bg-yellow-500">✏️ แก้ไข</a>
+                                <a :href="`/admin/programs/${program.id}/sessions/create`" class="inline-flex items-center justify-center w-32 px-3 py-2 text-xs font-bold text-white uppercase bg-blue-500 rounded-full hover:bg-blue-600">➕ เพิ่มรอบอบรม</a>
+                                <form :action="`/admin/programs/${program.id}`" method="POST" class="inline-block" onsubmit="return confirm('แน่ใจหรือไม่?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center w-20 px-3 py-2 text-xs font-bold text-white uppercase bg-red-500 rounded-full hover:bg-red-600 transition-transform transform hover:scale-105">🗑️ ลบ</button>
+                                    <button type="submit" class="inline-flex items-center justify-center w-20 px-3 py-2 text-xs font-bold text-white uppercase bg-red-500 rounded-full hover:bg-red-600">🗑️ ลบ</button>
                                 </form>
                             </div>
                         </td>
-                        {{-- *** สิ้นสุดส่วนที่แก้ไข *** --}}
                     </tr>
 
+                    {{-- แถวตารางย่อยสำหรับ Sessions จะถูกควบคุมโดย x-show --}}
                     <tr class="bg-white" x-show="open" x-transition x-cloak>
                         <td class="py-2"></td> 
                         <td colspan="4" class="p-0">
                             <div class="px-6 py-3">
-                                @if($program->sessions->isNotEmpty())
+                                <template x-if="program.sessions && program.sessions.length > 0">
                                     <table class="min-w-full">
-                                        {{-- ... โค้ด thead และ tbody ของตารางย่อย (เหมือนเดิม) ... --}}
                                         <thead>
                                             <tr class="text-xs text-gray-500 border-b">
                                                 <th class="py-2 text-left font-semibold">รอบที่</th>
@@ -90,39 +106,34 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @foreach($program->sessions as $session)
+                                            <template x-for="session in program.sessions" :key="session.id">
                                                 <tr class="border-b last:border-b-0 hover:bg-gray-50">
-                                                    <td class="py-3">{{ $session->session_number ?? '-' }}</td>
+                                                    <td class="py-3" x-text="session.session_number || '-'"></td>
                                                     <td class="py-3">
-                                                        @if($session->level)
-                                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
-                                                                {{ $session->level->name }}
-                                                            </span>
-                                                        @endif
+                                                        <template x-if="session.level">
+                                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800" x-text="session.level.name"></span>
+                                                        </template>
                                                     </td>
-                                                    <td class="py-3">{{ $session->trainer->name ?? 'N/A' }}</td>
-                                                    <td class="py-3">{{ $session->start_at->format('d M Y') }}</td>
-                                                    <td class="py-3">{{ $session->location ?? '-'}}</td>
-                                                    <td class="py-3">{{ $session->capacity ?? 'N/A' }}</td>
+                                                    <td class="py-3" x-text="session.trainer ? session.trainer.name : 'N/A'"></td>
+                                                    <td class="py-3" x-text="new Date(session.start_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></td>
+                                                    <td class="py-3" x-text="session.location || '-'"></td>
+                                                    <td class="py-3" x-text="session.capacity || 'N/A'"></td>
                                                     <td class="py-3">
-                                                        <a href="{{ route('admin.programs.sessions.edit', [$program, $session]) }}" class="text-yellow-600 hover:underline ml-2 text-sm">แก้ไข</a>
+                                                        <a :href="`/admin/programs/${program.id}/sessions/${session.id}/edit`" class="text-yellow-600 hover:underline text-sm">แก้ไข</a>
                                                     </td>
                                                 </tr>
-                                            @endforeach
+                                            </template>
                                         </tbody>
                                     </table>
-                                @else
+                                </template>
+                                <template x-if="!program.sessions || program.sessions.length === 0">
                                     <p class="text-center text-gray-500 py-4">No sessions found for this program.</p>
-                                @endif
+                                </template>
                             </div>
                         </td>
                     </tr>
                 </tbody>
-            @empty
-                <tbody>
-                    <tr><td colspan="5" class="px-6 py-4 text-center text-gray-500">ไม่พบโปรแกรม</td></tr>
-                </tbody>
-            @endforelse
+            </template>
         </table>
     </div>
 </div>
