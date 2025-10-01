@@ -13,10 +13,6 @@
         'resources/js/admin.js'
     ])
 </head>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
-    @stack('scripts')
-</body>
-</html>
 <body>
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -48,7 +44,7 @@
     <div class="container-fluid">
         <div class="row">
             <!-- Sidebar -->
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar ">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar">
                 <div class="position-sticky p-3">
                     <ul class="nav flex-column">
                         <li class="nav-item">
@@ -65,7 +61,7 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}"
-                            href="{{ route('admin.categories.index') }}">
+                               href="{{ route('admin.categories.index') }}">
                                 Category & Level
                             </a>
                         </li>
@@ -77,8 +73,13 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link {{ request()->routeIs('admin.attendance.*') ? 'active' : '' }}"
-                            href="{{ route('admin.attendance.overview') }}">
+                               href="{{ route('admin.attendance.overview') }}">
                                 Attendance
+                            </a>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}"
+                            href="{{ route('admin.certificates.index') }}">
+                            Certificates
                             </a>
                         </li>
                         <li class="nav-item">
@@ -87,7 +88,6 @@
                                 Reports
                             </a>
                         </li>
-
                     </ul>
                 </div>
             </nav>
@@ -95,25 +95,28 @@
             <!-- Main content -->
             <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
                 @yield('content')
-                            <div class="container-fluid"> {{-- (Optional) เพิ่ม container เพื่อให้มี padding สวยงาม --}}
-                @if (session('success'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        {{ session('success') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-            
-                @if (session('error'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        {{ session('error') }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                @endif
-            </div>
+
+                <div class="container-fluid">
+                    @if (session('success'))
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            {{ session('success') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ session('error') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    @endif
+                </div>
             </main>
         </div>
     </div>
 
-    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> --}}
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    @stack('scripts')
 </body>
 </html>

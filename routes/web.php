@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\SessionCompletionController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\CertificateAdminController;
 
 // Frontend
 use App\Http\Controllers\PublicSessionController;
@@ -23,6 +24,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramsController;
+
 
 // Auth (OTP Reset Password)
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -71,21 +73,29 @@ Route::middleware(['auth', 'is.admin'])
         Route::resource('trainers', TrainerController::class);
         Route::resource('categories', CategoryController::class);
         Route::resource('programs.sessions', SessionController::class);
+
         Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
         Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
         Route::get('/attendance', [AttendanceController::class, 'overview'])->name('attendance.overview');
         Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');
+
         Route::get('/programs/create-flow', [ProgramController::class, 'createCourseFlow'])->name('programs.create-flow');
         Route::post('/programs/quick-store', [ProgramController::class, 'quickStore'])->name('programs.quick-store');
         Route::get('/programs/{program}', [ProgramController::class, 'show'])->name('programs.show');
+
         Route::resource('levels', LevelController::class);
+
+        // ✅ แยกออกมา ไม่อยู่ใน reports
+        Route::resource('certificates', CertificateAdminController::class);
+
+        // reports
         Route::prefix('reports')->name('reports.')->group(function () {
             Route::get('/feedback', [ReportController::class, 'feedbackIndex'])->name('feedback.index');
             Route::get('/feedback/{session}', [ReportController::class, 'feedbackDetails'])->name('feedback.details');
             Route::get('/feedback/{session}/export', [ReportController::class, 'exportFeedback'])->name('feedback.export');
         });
-
     });
+
 
 // --- Frontend Program Routes (อีกเวอร์ชันที่โชว์ผ่าน HomeController) ---
 // ผมได้คอมเมนต์ส่วนนี้ออก เพราะมันซ้ำซ้อนกับ Route ด้านบน และอาจทำให้เกิดความสับสน
@@ -99,6 +109,9 @@ Route::post('/password/verify-code', [PasswordResetController::class, 'verifyCod
 // Reset Password
 Route::get('/password/reset-form', [PasswordResetController::class, 'showResetForm'])->name('password.reset.form');
 Route::post('/password/update-with-code', [PasswordResetController::class, 'updatePassword'])->name('password.update.with.code');
+
+Route::get('/certificate/generate/{user}/{session}', [CertificateController::class, 'generate']);
+Route::get('/certificate/verify/{hash}', [CertificateController::class, 'verify']);
 
 // --- Include Breeze's Auth Routes ---
 require __DIR__.'/auth.php';
