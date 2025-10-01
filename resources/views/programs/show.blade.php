@@ -53,10 +53,30 @@
                                 </div>
                                 <div>
                                     {{-- ปุ่มลงทะเบียนสำหรับแต่ละ Session --}}
-                                    <form action="{{ route('sessions.register', $session) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success fw-bold">ลงทะเบียน</button>
-                                    </form>
+                                    @auth {{-- ตรวจสอบว่า Login แล้วหรือยัง --}}
+                                        @php
+                                            // ค้นหาว่า user ปัจจุบันได้ลงทะเบียนใน session นี้หรือไม่
+                                            $userRegistration = $session->registrations->where('user_id', Auth::id())->first();
+                                        @endphp
+
+                                        @if ($userRegistration)
+                                            {{-- ถ้าลงทะเบียนแล้ว: แสดงปุ่ม "ยกเลิก" --}}
+                                            <form action="{{ route('registrations.cancel', $userRegistration) }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel this registration?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger fw-bold">ยกเลิกการลงทะเบียน</button>
+                                            </form>
+                                        @else
+                                            {{-- ถ้ายังไม่ได้ลงทะเบียน: แสดงปุ่ม "ลงทะเบียน" --}}
+                                            <form action="{{ route('sessions.register', $session) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-success fw-bold">ลงทะเบียน</button>
+                                            </form>
+                                        @endif
+                                    @else
+                                        {{-- ถ้ายังไม่ได้ Login: แสดงปุ่ม "ลงทะเบียน" ที่จะพาไปหน้า Login --}}
+                                        <a href="{{ route('login') }}" class="btn btn-primary fw-bold">Login เพื่อลงทะเบียน</a>
+                                    @endauth
                                 </div>
                             </div>
                         @empty
