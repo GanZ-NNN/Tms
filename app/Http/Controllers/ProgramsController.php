@@ -10,16 +10,16 @@ use App\Models\Category;
 class ProgramsController extends Controller
 {
     // แสดงรายการโปรแกรมทั้งหมด
-    public function index()
+public function index() 
     {
-        $programs = Program::all();
+        $programs = Program::with('category')->latest()->paginate(9);
         return view('programs.index', compact('programs'));
     }
 
     // แสดงรายละเอียดโปรแกรม
-    public function show($id)
+public function show(Program $program)
     {
-        $program = Program::findOrFail($id);
+        $program->load('sessions.trainer', 'sessions.level');
         return view('programs.show', compact('program'));
     }
 

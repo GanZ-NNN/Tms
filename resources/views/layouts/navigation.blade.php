@@ -15,7 +15,7 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('หน้าหลัก') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('courses.index')" :active="request()->routeIs('courses.index')">
+                    <x-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
                         {{ __('หลักสูตร') }}
                     </x-nav-link>
                 </div>
@@ -90,7 +90,7 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('หน้าหลัก') }}
             </x-responsive-nav-link>
-             <x-responsive-nav-link :href="route('courses.index')" :active="request()->routeIs('courses.index')">
+             <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
                 {{ __('หลักสูตร') }}
             </x-responsive-nav-link>
         </div>
