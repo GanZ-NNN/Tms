@@ -1,7 +1,7 @@
 <?php
+namespace App\Http\Controllers\Admin;
 
-namespace App\Http\Controllers;
-
+use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\User;
 use App\Models\TrainingSession;
@@ -10,23 +10,39 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-
-class CertificateController extends Controller
+class CertificateAdminController extends Controller
 {
-    // ออกใบรับรอง
-    public function generate($userId, $sessionId)
+    public function index()
     {
-        $user = User::findOrFail($userId);
-        $session = TrainingSession::findOrFail($sessionId);
+        $certificates = Certificate::with(['user', 'session'])->latest()->paginate(10);
+        return view('admin.certificates.index', compact('certificates'));
+    }
 
-        // สร้าง record
+    public function create()
+    {
+        $users = User::all();
+        $sessions = TrainingSession::all();
+        return view('admin.certificates.create', compact('users', 'sessions'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'session_id' => 'required|exists:training_sessions,id',
+        ]);
+
+        $user = User::findOrFail($request->user_id);
+        $session = TrainingSession::findOrFail($request->session_id);
+
+        // สร้าง certificate record
         $certificate = Certificate::create([
             'user_id' => $user->id,
             'session_id' => $session->id,
             'issued_at' => now(),
         ]);
 
-        // ใช้ view template สำหรับ PDF
+        // สร้าง PDF
         $pdf = Pdf::loadView('certificates.template', [
             'certificate' => $certificate,
             'user' => $user,
@@ -38,31 +54,25 @@ class CertificateController extends Controller
             )
         ]);
 
-        // เก็บไฟล์ลง storage
         $filePath = "certificates/{$certificate->cert_no}.pdf";
         Storage::put($filePath, $pdf->output());
-
-        // update path
         $certificate->update(['pdf_path' => $filePath]);
 
-        return response()->download(storage_path("app/{$filePath}"));
+        return redirect()->route('admin.certificates.index')->with('success', 'Certificate generated successfully!');
     }
 
-    // Verify
-    public function verify($hash)
+    public function show(Certificate $certificate)
     {
-        $certificate = Certificate::where('verification_hash', $hash)->first();
+        return view('admin.certificates.show', compact('certificate'));
+    }
 
-        if (!$certificate) {
-            return response()->json(['status' => 'invalid']);
+    public function destroy(Certificate $certificate)
+    {
+        if (Storage::exists($certificate->pdf_path)) {
+            Storage::delete($certificate->pdf_path);
         }
+        $certificate->delete();
 
-        return response()->json([
-            'status' => 'valid',
-            'cert_no' => $certificate->cert_no,
-            'user' => $certificate->user->name,
-            'course' => $certificate->session->title,
-            'issued_at' => $certificate->issued_at,
-        ]);
+        return redirect()->route('admin.certificates.index')->with('success', 'Certificate deleted successfully!');
     }
 }
