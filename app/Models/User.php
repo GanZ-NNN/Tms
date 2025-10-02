@@ -31,13 +31,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    public function registrations()
-{
-    return $this->hasMany(\App\Models\Registration::class);
-}
+        public function registrations()
+    {
+        return $this->hasMany(\App\Models\Registration::class);
+    }
 
-public function certificates()
-{
-    return $this->hasMany(\App\Models\Certificate::class);
-}
+    public function certificates()
+    {
+        return $this->hasMany(\App\Models\Certificate::class);
+    }
+
 }

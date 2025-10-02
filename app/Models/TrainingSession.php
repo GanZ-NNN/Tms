@@ -17,6 +17,7 @@ class TrainingSession extends Model
         'session_number',
         'location',
         'capacity',
+        'status',
         'start_at',
         'end_at',
         'registration_start_at',
@@ -77,5 +78,8 @@ class TrainingSession extends Model
         // Session หนึ่งอัน มีได้หลาย Feedback
         return $this->hasMany(Feedback::class, 'session_id');
     }
-
+    public function certificates()
+    {
+        return $this->hasMany(Certificate::class, 'session_id');
+    }
 }

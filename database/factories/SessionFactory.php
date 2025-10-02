@@ -32,6 +32,8 @@ class SessionFactory extends Factory
             'location'              => $this->faker->address,
             'capacity'              => $this->faker->randomElement([15, 20, 25, 30]),
             'status'                => 'scheduled',
+
+            'title' => 'Batch #' . $this->faker->unique()->numberBetween(100, 999) . ' - ' . $this->faker->monthName(),
             
             // --- Date and Time Logic ---
             'start_at'              => $this->faker->dateTimeBetween('+2 weeks', '+4 months'),

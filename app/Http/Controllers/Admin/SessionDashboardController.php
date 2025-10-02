@@ -20,7 +20,9 @@ class SessionDashboardController extends Controller
         // --- Stat Cards Data ---
         $stats = [
             'total_trainees' => User::where('role', 'trainee')->count(),
-            'upcoming_sessions' => TrainingSession::where('start_at', '>', now())->count(),
+            'upcoming_sessions' => TrainingSession::where('status', 'scheduled') // <-- เพิ่มเงื่อนไขนี้
+                                       ->where('start_at', '>', now())
+                                       ->count(),
             'pending_payments' => 0, // ตั้งเป็น 0 ไปก่อน ถ้ายังไม่มีระบบจ่ายเงิน
             'completed_this_month' => TrainingSession::where('status', 'completed')
                                             ->whereMonth('end_at', now()->month)

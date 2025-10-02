@@ -100,7 +100,7 @@
             <div class="card shadow mb-4">
                  <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
                     <h6 class="m-0 font-weight-bold text-primary">Upcoming Sessions (Next 14 Days)</h6>
-                    <a href="{{-- route('admin.sessions.index-all') --}}">View All &rarr;</a>
+                    <a href="{{ route('admin.attendance.overview') }}">View All &rarr;</a>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -110,11 +110,21 @@
                                     <tr>
                                         <td>
                                             <div class="font-weight-bold">{{ $session->program->title }}</div>
-                                            <small class="text-muted">{{ $session->title ?? 'Main Session' }}</small>
+                                            <small class="text-muted">{{ $session->title ?? ('รอบที่ ' . $session->session_number) }}</small>
                                         </td>
                                         <td><i class="far fa-calendar-alt mr-1 text-gray-400"></i> {{ $session->start_at->format('d M Y') }}</td>
+                                        <td>
+                                            @if($session->status === 'scheduled')
+                                                <span class="badge bg-primary">Scheduled</span>
+                                            @elseif($session->status === 'completed')
+                                                <span class="badge bg-success">Completed</span>
+                                            @else
+                                                <span class="badge bg-secondary">{{ ucfirst($session->status) }}</span>
+                                            @endif
+                                        </td>
+
                                         <td><i class="fas fa-users mr-1 text-gray-400"></i> {{ $session->registrations->count() }} / {{ $session->capacity ?? 'N/A' }}</td>
-                                        <td class="text-right"><a href="{{-- route('admin.registrations.index', $session) --}}" class="btn btn-sm btn-outline-secondary">View Registrations</a></td>
+                                        <td class="text-right"><a href="{{ route('admin.registrations.index', $session) }}" class="btn btn-sm btn-outline-secondary">View Registrations</a></td>
                                     </tr>
                                 @empty
                                     <tr><td class="p-4 text-center text-muted">No upcoming sessions.</td></tr>
