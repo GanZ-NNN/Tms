@@ -42,14 +42,21 @@
                    class="w-full px-4 py-2 border rounded-lg">
         </div>
 
-        {{-- Bio --}}
+            {{-- Expertise --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ความเชี่ยวชาญ</label>
+            <input type="text" name="expertise" value="{{ old('expertise', $trainer->expertise) }}"
+                   class="w-full px-4 py-2 border rounded-lg">
+        </div>
+
+        <!-- {{-- Bio --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Bio</label>
             <textarea name="bio" rows="4"
                       class="w-full px-4 py-2 border rounded-lg">{{ old('bio', $trainer->bio) }}</textarea>
-        </div>
+        </div> -->
 
-        {{-- Profile Image --}}
+        <!-- {{-- Profile Image --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Profile Image</label>
             @if($trainer->profile_image_path)
@@ -57,7 +64,7 @@
                      alt="Profile Image" class="mb-2 w-32 h-32 object-cover rounded">
             @endif
             <input type="file" name="profile_image_path" class="w-full">
-        </div>
+        </div> -->
 
         {{-- Buttons --}}
         <div class="flex space-x-2">

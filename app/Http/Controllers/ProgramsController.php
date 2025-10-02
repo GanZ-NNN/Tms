@@ -10,10 +10,12 @@ use App\Models\Category;
 class ProgramsController extends Controller
 {
     // แสดงรายการโปรแกรมทั้งหมด
-public function index() 
+public function index()
     {
-        $programs = Program::with('category')->latest()->paginate(9);
-        return view('programs.index', compact('programs'));
+
+    $programs = Program::with('category')->latest()->get(); // ดึงทั้งหมด
+    return view('programs.index', compact('programs'));
+
     }
 
     // แสดงรายละเอียดโปรแกรม

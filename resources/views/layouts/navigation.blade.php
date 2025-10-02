@@ -11,13 +11,13 @@
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
+                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex ">
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('หน้าหลัก') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
+                    <!-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
                         {{ __('หลักสูตร') }}
-                    </x-nav-link>
+                    </x-nav-link> -->
                 </div>
             </div>
 
@@ -90,9 +90,9 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('หน้าหลัก') }}
             </x-responsive-nav-link>
-             <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
+             <!-- <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
                 {{ __('หลักสูตร') }}
-            </x-responsive-nav-link>
+            </x-responsive-nav-link> -->
         </div>
 
         <!-- Responsive Settings Options -->
