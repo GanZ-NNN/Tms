@@ -10,13 +10,21 @@ use App\Models\Category;
 class ProgramsController extends Controller
 {
     // แสดงรายการโปรแกรมทั้งหมด
-public function index()
-    {
+public function index(Request $request)
+{
+    $query = Program::with('category');
 
-    $programs = Program::with('category')->latest()->get(); // ดึงทั้งหมด
-    return view('programs.index', compact('programs'));
 
+    if ($request->filled('keyword')) {
+        $query->where('title', 'like', '%' . $request->keyword . '%');
     }
+
+    // ดึงทั้งหมด แทน paginate
+    $programs = $query->latest()->get();
+
+    return view('programs.index', compact('programs'));
+}
+
 
     // แสดงรายละเอียดโปรแกรม
 public function show(Program $program)

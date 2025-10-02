@@ -6,11 +6,11 @@
 <title>แดชบอร์ดผู้ดูแล - {{ config('app.name') }}</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-@vite(['resources/css/app.css','resources/js/app.js'])
+@vite(['resources/css/app.css','resources/js/app.js',])
 <style>
 /* Custom Sidebar */
 .sidebar {
-    height: 100vh;
+    height: auto;
     background: #1f2937;
     color: #fff;
 }
@@ -64,8 +64,8 @@
                     </li>
 
                    <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.showcoures') ? 'active' : '' }}"
-                        href="{{ route('admin.showcoures') }}">
+                        <a class="nav-link {{ request()->routeIs('programs.index') ? 'active' : '' }}"
+                        href="{{ route('programs.index') }}">
                             <i class="bi bi-speedometer2"></i> ลายละเอียด
                         </a>
                     </li>
