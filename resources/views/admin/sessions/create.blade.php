@@ -29,13 +29,17 @@
         {{-- Trainer --}}
 <div class="mb-4">
     <label class="block mb-1 font-semibold">ผู้สอน</label>
-    <input type="text" name="trainer_name" 
+    <input list="trainer-list" name="trainer_name"
            value="{{ old('trainer_name') }}"
-           class="w-full px-4 py-2 border rounded-lg" required
-           placeholder="กรอกชื่อผู้สอน">
+           class="w-full px-4 py-2 border rounded-lg"
+           placeholder="กรอกชื่อผู้สอน" required>
+
+    <datalist id="trainer-list">
+        @foreach($trainers as $trainer)
+            <option value="{{ $trainer->name }}"></option>
+        @endforeach
+    </datalist>
 </div>
-
-
 
         {{-- Location --}}
         <div class="mb-4">
