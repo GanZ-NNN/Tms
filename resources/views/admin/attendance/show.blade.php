@@ -1,41 +1,54 @@
 @extends('layouts.admin')
-
-@section('title', 'Attendance')
-
+@section('title', 'Mark Attendance')
 @section('content')
 <main class="bg-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold">Attendance for: {{ $session->title ?? $session->program->title }}</h1>
-    <p class="text-gray-600 mb-6">Program: {{ $session->program->title }}</p>
+    <h1 class="text-2xl font-bold">Attendance for: {{ $session->program->title }}</h1>
+    <p class="text-gray-600 mb-2">Session: {{ $session->title ?? 'Main Session' }}</p>
+    <p class="text-gray-600 mb-6">Date: {{ $session->start_at->format('d M Y') }} - {{ $session->end_at->format('d M Y') }}</p>
 
-    @if ($session->registrations->isEmpty())
-        <p class="text-center text-gray-500 py-8">No registered users for this session.</p>
-    @else
-        <form action="{{ route('admin.attendance.store', $session) }}" method="POST">
-            @csrf
-            <div class="space-y-4">
-                <p class="text-sm text-gray-500">Please check the box for each trainee who attended the session.</p>
-                
-                @foreach($session->registrations as $registration)
-                    <label class="flex items-center p-4 border rounded-md hover:bg-gray-50 transition-colors duration-200">
-                        <input type="checkbox" name="attendees[]" value="{{ $registration->user->id }}"
-                               class="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                               @checked(in_array($registration->user->id, $attendedUserIds))>
-                        
-                        <span class="ml-4">
-                            <div class="font-medium text-gray-900">{{ $registration->user->name }}</div>
-                            <div class="text-sm text-gray-500">{{ $registration->user->email }}</div>
-                        </span>
-                    </label>
-                @endforeach
-            </div>
-            
-            <div class="flex justify-end items-center mt-6">
-                <a href="{{ route('admin.dashboard') }}" class="text-gray-600 hover:underline mr-4">Back to Dashboard</a>
-                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
-                    Save Attendance
-                </button>
-            </div>
-        </form>
-    @endif
+    <form action="{{ route('admin.attendance.store', $session) }}" method="POST">
+        @csrf
+        <div class="overflow-x-auto">
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="text-center">
+                        <th class="align-middle">Trainee</th>
+                        @foreach($period as $date)
+                            <th colspan="2">{{ $date->format('d M') }}</th>
+                        @endforeach
+                    </tr>
+                    <tr class="text-center">
+                        <th></th>
+                        @foreach($period as $date)
+                            <th>AM</th>
+                            <th>PM</th>
+                        @endforeach
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($session->registrations as $registration)
+                    <tr>
+                        <td>{{ $registration->user->name }}</td>
+                        @foreach($period as $date)
+                            @php
+                                $dateString = $date->format('Y-m-d');
+                                $att = $attendancesLookup[$registration->id][$dateString] ?? ['am' => false, 'pm' => false];
+                            @endphp
+                            <td class="text-center">
+                                <input type="checkbox" name="attendance[{{ $registration->id }}][{{ $dateString }}][am]" value="1" @checked($att['am'])>
+                            </td>
+                            <td class="text-center">
+                                <input type="checkbox" name="attendance[{{ $registration->id }}][{{ $dateString }}][pm]" value="1" @checked($att['pm'])>
+                            </td>
+                        @endforeach
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        <div class="flex justify-end mt-4">
+            <button type="submit" class="btn btn-primary">Save Attendance</button>
+        </div>
+    </form>
 </main>
 @endsection

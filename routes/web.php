@@ -15,13 +15,15 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\CertificateAdminController;
+use App\Http\Controllers\RegistrationController;
+
 
 
 // Frontend
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProgramsController; // <-- เราจะใช้ตัวนี้เป็นหลักสำหรับ Frontend Program
 use App\Http\Controllers\PublicSessionController; // สำหรับหน้ารายละเอียด Session
-use App\Http\Controllers\RegistrationController;
+
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
@@ -107,6 +109,7 @@ Route::middleware(['auth', 'is.admin'])
         Route::resource('programs.sessions', SessionController::class);
         Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
         Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+                Route::get('/sessions/{session}/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
 
         Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');
         Route::get('/programs/create-flow', [ProgramController::class, 'createCourseFlow'])->name('programs.create-flow');
@@ -117,6 +120,9 @@ Route::middleware(['auth', 'is.admin'])
             Route::get('/feedback', [ReportController::class, 'feedbackIndex'])->name('feedback.index');
             Route::get('/feedback/{session}', [ReportController::class, 'feedbackDetails'])->name('feedback.details');
             Route::get('/feedback/{session}/export', [ReportController::class, 'exportFeedback'])->name('feedback.export');
+        
+
+
         });
     });
 

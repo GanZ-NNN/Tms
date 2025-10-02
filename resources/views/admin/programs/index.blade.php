@@ -88,50 +88,63 @@
                     </tr>
 
                     {{-- แถวตารางย่อยสำหรับ Sessions จะถูกควบคุมโดย x-show --}}
-                    <tr class="bg-white" x-show="open" x-transition x-cloak>
-                        <td class="py-2"></td>
-                        <td colspan="4" class="p-0">
-                            <div class="px-6 py-3">
-                                <template x-if="program.sessions && program.sessions.length > 0">
-                                    <table class="min-w-full">
-                                        <thead>
-                                            <tr class="text-xs text-gray-500 border-b">
-                                                <th class="py-2 text-left font-semibold">รอบที่</th>
-                                                <th class="py-2 text-left font-semibold">ระดับ </th>
-                                                <th class="py-2 text-left font-semibold">ผู้สอน</th>
-                                                <th class="py-2 text-left font-semibold">วันที่</th>
-                                                <th class="py-2 text-left font-semibold">สถานที่</th>
-                                                <th class="py-2 text-left font-semibold">จำนวนคน</th>
-                                                <th class="py-2 text-left font-semibold">จัดการ</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <template x-for="session in program.sessions" :key="session.id">
-                                                <tr class="border-b last:border-b-0 hover:bg-gray-50">
-                                                    <td class="py-3" x-text="session.session_number || '-'"></td>
-                                                    <td class="py-3">
-                                                        <template x-if="session.level">
-                                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800" x-text="session.level.name"></span>
-                                                        </template>
-                                                    </td>
-                                                    <td class="py-3" x-text="session.trainer ? session.trainer.name : 'N/A'"></td>
-                                                    <td class="py-3" x-text="new Date(session.start_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></td>
-                                                    <td class="py-3" x-text="session.location || '-'"></td>
-                                                    <td class="py-3" x-text="session.capacity || 'N/A'"></td>
-                                                    <td class="py-3">
-                                                        <a :href="`/admin/programs/${program.id}/sessions/${session.id}/edit`" class="text-yellow-600 hover:underline text-sm">แก้ไข</a>
-                                                    </td>
-                                                </tr>
-                                            </template>
-                                        </tbody>
-                                    </table>
-                                </template>
-                                <template x-if="!program.sessions || program.sessions.length === 0">
-                                    <p class="text-center text-gray-500 py-4">No sessions found for this program.</p>
-                                </template>
-                            </div>
-                        </td>
-                    </tr>
+    <tr class="bg-white" x-show="open" x-transition x-cloak>
+        <td class="py-2"></td>
+        <td colspan="4" class="p-0">
+            <div class="px-6 py-3">
+                <template x-if="program.sessions && program.sessions.length > 0">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="text-xs text-gray-500 border-b">
+                                <th class="py-2 text-left font-semibold">รอบที่</th>
+                                <th class="py-2 text-left font-semibold">ระดับ</th>
+                                <th class="py-2 text-left font-semibold">ผู้สอน</th>
+                                <th class="py-2 text-left font-semibold">วันที่</th>
+                                <th class="py-2 text-left font-semibold">สถานที่</th>
+                                <th class="py-2 text-left font-semibold">Capacity</th>
+                                <th class="py-2 text-left font-semibold">สถานะ</th> {{-- <-- จัดลำดับ Header ให้ถูกต้อง --}}
+                                <th class="py-2 text-left font-semibold">จัดการ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template x-for="session in program.sessions" :key="session.id">
+                                <tr class="border-b last:border-b-0 hover:bg-gray-50">
+                                    {{-- *** จัดลำดับ <td> ให้ตรงกับ <th> *** --}}
+                                    <td class="py-3" x-text="session.session_number || '-'"></td>
+                                    <td class="py-3">
+                                        <template x-if="session.level">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800" x-text="session.level.name"></span>
+                                        </template>
+                                    </td>
+                                    <td class="py-3" x-text="session.trainer ? session.trainer.name : 'N/A'"></td>
+                                    <td class="py-3" x-text="new Date(session.start_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></td>
+                                    <td class="py-3" x-text="session.location || '-'"></td>
+                                    <td class="py-3" x-text="session.capacity || 'N/A'"></td>
+                                    <td class="py-3">
+                                        <template x-if="session.status === 'completed'">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                        </template>
+                                        <template x-if="session.status === 'scheduled'">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">Scheduled</span>
+                                        </template>
+                                        <template x-if="session.status === 'cancelled'">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800">Cancelled</span>
+                                        </template>
+                                    </td>
+                                    <td class="py-3">
+                                        <a :href="`/admin/programs/${program.id}/sessions/${session.id}/edit`" class="text-yellow-600 hover:underline text-sm">แก้ไข</a>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </template>
+                <template x-if="!program.sessions || program.sessions.length === 0">
+                    <p class="text-center text-gray-500 py-4">No sessions found for this program.</p>
+                </template>
+            </div>
+        </td>
+    </tr>
                 </tbody>
             </template>
         </table>

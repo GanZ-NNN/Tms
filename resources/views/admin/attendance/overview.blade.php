@@ -1,43 +1,83 @@
 @extends('layouts.admin')
 
-@section('title', 'Select Session for Attendance')
+@section('title', 'Attendance Management')
 
 @section('content')
 <main class="bg-white p-6 rounded-lg shadow-lg">
-    <h1 class="text-2xl font-bold mb-6">Select Session to Mark Attendance</h1>
+    <h1 class="text-2xl font-bold mb-6">Attendance Management</h1>
+    <p class="text-gray-600 mb-4">Select a session from the list below to mark attendance.</p>
 
     <div class="overflow-x-auto">
         <table class="min-w-full bg-white rounded-lg">
-            <thead>
+            {{-- Thead ของตารางหลัก (อาจจะไม่ต้องมีก็ได้ ถ้าต้องการให้คลีน) --}}
+            <thead class="bg-gray-100">
                 <tr class="text-left text-sm text-gray-500 uppercase tracking-wider">
-                    <th class="px-6 py-3 font-semibold">Session / Program</th>
-                    <th class="px-6 py-3 font-semibold">Date</th>
-                    <th class="px-6 py-3 font-semibold text-right">Action</th>
+                    <th class="px-6 py-3 font-semibold">Program</th>
+                    <th class="px-6 py-3 font-semibold">Category</th>
                 </tr>
             </thead>
-            <tbody class="divide-y divide-gray-200">
-                @forelse ($sessions as $session)
-                <tr>
-                    <td class="px-6 py-4">
-                        <div class="font-medium">{{ $session->title ?? $session->program->title }}</div>
-                        <small class="text-muted">{{ $session->program->title }}</small>
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $session->start_at->format('d M Y') }}
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        {{-- ลิงก์นี้จะพาไปหน้าเช็คชื่อของ Session นั้นๆ --}}
-                        <a href="{{ route('admin.attendance.show', $session) }}" class="btn btn-info btn-sm">
-                            Mark Attendance
-                        </a>
-                    </td>
-                </tr>
-                @empty
-                <tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">No recent or upcoming sessions found.</td></tr>
-                @endforelse
-            </tbody>
+
+            {{-- Loop แสดง Program และ Session --}}
+            @forelse ($programs as $program)
+                <tbody class="divide-y divide-gray-200 border-t" x-data="{ open: true }"> {{-- ตั้งให้เปิดไว้เลย --}}
+                    {{-- แถว Program --}}
+                    <tr class="bg-gray-50">
+                        <td class="px-6 py-4 font-bold" colspan="2">
+                            <button @click="open = !open" class="flex items-center space-x-2 w-full text-lg">
+                                <span>{{ $program->title }}</span>
+                                <svg class="w-4 h-4 transition-transform" :class="open ? 'rotate-180' : ''" ...>...</svg>
+                            </button>
+                        </td>
+                    </tr>
+
+                    {{-- แถวตารางย่อย --}}
+                    <tr class="bg-white" x-show="open" x-cloak>
+                        <td colspan="2" class="p-0">
+                            <div class="px-8 py-4">
+                                <table class="min-w-full">
+                                    <tbody>
+                                        @forelse($program->sessions as $session)
+                                            <tr class="border-b last:border-b-0">
+                                                <td class="py-3">
+                                                    <div class="font-medium">{{ $session->title ?? 'รอบที่ '.$session->session_number }}</div>
+                                                    <div class="text-sm text-muted">
+                                                        <span>{{ $session->start_at->format('d M Y') }}</span> |
+                                                        <span>{{ $session->trainer->name ?? 'N/A' }}</span>
+                                                    </div>
+                                                </td>
+                                                    <td class="py-3 text-right">
+                                                        @if ($session->status === 'completed')
+                                                            {{-- ถ้า Complete แล้ว: แสดง Badge และอาจจะมีลิงก์ดูผล --}}
+                                                            <span class="badge bg-secondary">Completed</span>
+                                                            {{-- <a href="#" class="btn btn-sm btn-outline-info ml-1">View Results</a> --}}
+                                                        @else
+                                                            {{-- ถ้ายังไม่ Complete: แสดงปุ่ม Attendance และ Complete --}}
+                                                            <a href="{{ route('admin.attendance.show', $session) }}" class="btn btn-info btn-sm">
+                                                                Attendance
+                                                            </a>
+
+                                                            <form action="{{ route('admin.sessions.complete', $session) }}" method="POST" class="d-inline ml-1" onsubmit="return confirm('Are you sure you want to mark this session as complete?');">
+                                                                @csrf
+                                                                <button type="submit" class="btn btn-success btn-sm">Complete</button>
+                                                            </form>
+                                                        @endif
+                                                    </td>
+                                            </tr>
+                                        @empty
+                                            <tr><td class="py-3 text-muted">No sessions for this program.</td></tr>
+                                        @endforelse
+                                    </tbody>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            @empty
+                <tbody>
+                    <tr><td colspan="2" class="text-center py-8">No programs with active sessions found.</td></tr>
+                </tbody>
+            @endforelse
         </table>
     </div>
-    <div class="mt-6">{{ $sessions->links() }}</div>
 </main>
 @endsection

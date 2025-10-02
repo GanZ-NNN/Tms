@@ -33,55 +33,65 @@
                 </div>
 
                 <!-- ========== Right Column: Training & Certificates ========== -->
-                <div class="md:col-span-2 space-y-6">
+    <div class="md:col-span-2 space-y-6">
+        
+        {{-- Upcoming Sessions (เหมือนเดิม) --}}
+        <div class="p-4 sm:p-8 bg-white ...">
+            <h3 class="text-lg ...">Upcoming Sessions</h3>
+            @forelse($upcomingSessions as $registration)
+                {{-- ... แสดงข้อมูล Upcoming Session ... --}}
+            @empty
+                <p>You have no upcoming sessions.</p>
+            @endforelse
+        </div>
 
-                    {{-- Upcoming Sessions --}}
-                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Sessions</h3>
-                        <div class="space-y-4">
-                            @forelse($upcomingSessions as $registration)
-                                <div class="border-l-4 border-indigo-500 pl-4">
-                                    <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $registration->session->program->title }}</p>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Date: {{ $registration->session->start_at->format('d M Y, H:i') }}</p>
-                                </div>
-                            @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">You have no upcoming registered sessions.</p>
-                            @endforelse
+        {{-- Training History (ปรับปรุงใหม่) --}}
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Training History</h3>
+            <div class="space-y-4">
+                @forelse($trainingHistory as $registration)
+                    <div class="flex justify-between items-center border-l-4 border-gray-300 pl-4 py-2">
+                        <div>
+                            <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $registration->session->program->title }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Completed on: {{ $registration->session->end_at->format('d M Y') }}</p>
+                        </div>
+                        <div>
+                            {{-- ตรวจสอบว่าเคยส่ง Feedback แล้วหรือยัง --}}
+                            @if($registration->feedback->isEmpty())
+                                <a href="{{ route('feedback.create', $registration->session) }}" class="text-sm text-indigo-600 hover:underline">
+                                    Give Feedback
+                                </a>
+                            @else
+                                <span class="text-sm text-green-600">Feedback Submitted ✔</span>
+                            @endif
                         </div>
                     </div>
+                @empty
+                    <p class="text-sm text-gray-500 dark:text-gray-400">You have no completed sessions yet.</p>
+                @endforelse
+            </div>
+        </div>
 
-                    {{-- Training History --}}
-                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Training History</h3>
-                        <div class="space-y-4">
-                            @forelse($trainingHistory as $registration)
-                                 <div class="border-l-4 border-gray-300 dark:border-gray-600 pl-4">
-                                    <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $registration->session->program->title }}</p>
-                                    <p class="text-sm text-gray-600 dark:text-gray-400">Completed on: {{ $registration->session->end_at->format('d M Y') }}</p>
-                                </div>
-                            @empty
-                                <p class="text-sm text-gray-500 dark:text-gray-400">You have no completed sessions yet.</p>
-                            @endforelse
+        {{-- My Certificates (ปรับปรุงใหม่) --}}
+        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">My Certificates</h3>
+            <div class="space-y-4">
+                @forelse($certificates as $certificate)
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $certificate->session->program->title }}</p>
+                            <p class="text-sm text-gray-600 dark:text-gray-400">Issued on: {{ $certificate->issued_at->format('d M Y') }}</p>
                         </div>
+                        {{-- ปุ่มสำหรับดาวน์โหลด Certificate --}}
+                        <a href="{{ route('certificates.download', $certificate) }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                            Download
+                        </a>
                     </div>
-
-                    {{-- My Certificates --}}
-                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-                         <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">My Certificates</h3>
-                         <div class="space-y-4">
-                            @forelse($certificates as $certificate)
-                                <div class="flex justify-between items-center">
-                                    <div>
-                                        <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $certificate->session->program->title }}</p>
-                                        <p class="text-sm text-gray-600 dark:text-gray-400">Issued on: {{ $certificate->issued_at->format('d M Y') }}</p>
-                                    </div>
-                                    <a href="{{-- route('certificates.download', $certificate) --}}" class="text-indigo-600 hover:underline">Download</a>
-                                </div>
-                            @empty
-                                 <p class="text-sm text-gray-500 dark:text-gray-400">You have no certificates yet.</p>
-                            @endforelse
-                        </div>
-                    </div>
+                @empty
+                    <p class="text-sm text-gray-500 dark:text-gray-400">You have no certificates yet.</p>
+                @endforelse
+            </div>
+        </div>
 
                     {{-- Update Password & Delete Account (ย้ายมาไว้ล่างสุด) --}}
                     {{-- <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">

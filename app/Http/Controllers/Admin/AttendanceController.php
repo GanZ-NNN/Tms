@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\TrainingSession; // หรือ Session
 use App\Models\Attendance;
 use Illuminate\Http\Request;
+use Carbon\CarbonPeriod;
 
 class AttendanceController extends Controller
 {
@@ -14,13 +15,23 @@ class AttendanceController extends Controller
      */
     public function show(TrainingSession $session)
     {
-        // โหลดข้อมูลที่จำเป็น: program, registrations พร้อม user, และ attendances ที่มีอยู่แล้ว
-        $session->load(['program', 'registrations.user', 'attendances']);
+        $session->load('program', 'registrations.user', 'registrations.dailyAttendances');
 
-        // สร้าง Array ของ user_id ที่เคยเช็คชื่อไว้แล้ว เพื่อให้ง่ายต่อการตรวจสอบใน Blade
-        $attendedUserIds = $session->attendances->pluck('user_id')->all();
+        // สร้างช่วงวันที่สำหรับการอบรม
+        $period = CarbonPeriod::create($session->start_at, $session->end_at);
 
-        return view('admin.attendance.show', compact('session', 'attendedUserIds'));
+        // จัดข้อมูล dailyAttendances ให้อยู่ในรูปแบบที่ใช้ง่ายใน View
+        $attendancesLookup = [];
+        foreach ($session->registrations as $reg) {
+            foreach ($reg->dailyAttendances as $att) {
+                $attendancesLookup[$reg->id][$att->attendance_date] = [
+                    'am' => $att->is_present_am,
+                    'pm' => $att->is_present_pm,
+                ];
+            }
+        }
+
+        return view('admin.attendance.show', compact('session', 'period', 'attendancesLookup'));
     }
 
     /**
@@ -28,45 +39,38 @@ class AttendanceController extends Controller
      */
     public function store(Request $request, TrainingSession $session)
     {
-        $request->validate([
-            'attendees' => 'nullable|array',
-            'attendees.*' => 'integer|exists:users,id', // ตรวจสอบว่า ID ที่ส่งมามีจริงในตาราง users
-        ]);
-
-        // 1. ลบข้อมูลการเช็คชื่อเก่าของ Session นี้ทิ้งทั้งหมด
-        $session->attendances()->delete();
-
-        // 2. ถ้ามีการส่งรายชื่อคนที่มาเรียนมา (คนที่ถูกติ๊ก checkbox)
-        if ($request->has('attendees')) {
-            // 3. เตรียมข้อมูล Array สำหรับ Insert ทีเดียว (เร็วกว่าการ Create ใน Loop)
-            $attendeesData = collect($request->attendees)->map(function ($userId) use ($session) {
-                return [
-                    'session_id' => $session->id,
-                    'user_id' => $userId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ];
-            });
-
-            // 4. Insert ข้อมูลใหม่ทั้งหมดลงตาราง attendances
-            Attendance::insert($attendeesData->toArray());
+        $validated = $request->validate(['attendance' => 'nullable|array']);
+        
+        foreach ($session->registrations as $registration) {
+            $period = CarbonPeriod::create($session->start_at, $session->end_at);
+            foreach ($period as $date) {
+                $dateString = $date->format('Y-m-d');
+                
+                \App\Models\DailyAttendance::updateOrCreate(
+                    [
+                        'registration_id' => $registration->id,
+                        'attendance_date' => $dateString,
+                    ],
+                    [
+                        'is_present_am' => isset($validated['attendance'][$registration->id][$dateString]['am']),
+                        'is_present_pm' => isset($validated['attendance'][$registration->id][$dateString]['pm']),
+                    ]
+                );
+            }
         }
-
-        return redirect()->route('admin.dashboard') // หรือจะกลับไปหน้า Session Management ก็ได้
-                         ->with('success', 'Attendance for "' . ($session->title ?? $session->program->title) . '" has been saved.');
+        return back()->with('success', 'Attendance has been saved successfully.');
     }
 
-        public function overview()
+    public function overview()
     {
-        // ดึงข้อมูล Session ทั้งหมดที่ยังไม่จบ หรือจบไปไม่นาน
-        // เพื่อให้ Admin สามารถเลือกได้ว่าจะเช็คชื่อรอบไหน
-        $sessions = TrainingSession::with('program')
-                        ->where('status', '!=', 'cancelled')
-                        ->where('end_at', '>', now()->subDays(7)) // เอาเฉพาะที่เพิ่งจบไปใน 7 วัน หรือยังไม่จบ
-                        ->latest('start_at')
-                        ->paginate(20);
+        $programs = \App\Models\Program::with(['sessions' => function ($query) {
+                $query->where('status', '!=', 'cancelled')->orderBy('start_at', 'desc');
+            }, 'sessions.trainer', 'sessions.level'])
+            ->whereHas('sessions') // เอาเฉพาะ Program ที่มี Session
+            ->latest()
+            ->get();
 
-        return view('admin.attendance.overview', compact('sessions'));
+        return view('admin.attendance.overview', compact('programs'));
     }
     
 }
