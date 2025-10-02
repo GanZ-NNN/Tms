@@ -33,7 +33,7 @@ class SessionController extends Controller
     public function store(Request $request, Program $program)
     {
         $validated = $request->validate([
-            'trainer_id' => 'required|exists:trainers,id',
+            'trainer_name' => 'required|string|max:255',
             'session_number' => 'required|integer',
             'location' => 'nullable|string',
             'capacity' => 'required|integer|min:1|max:40',
@@ -61,7 +61,7 @@ class SessionController extends Controller
     public function update(Request $request, Program $program, TrainingSession $session)
     {
         $validated = $request->validate([
-            'trainer_id' => 'required|exists:trainers,id',
+            'trainer_name' => 'required|string|max:255',
             'session_number' => 'required|integer',
             'location' => 'nullable|string',
             'capacity' => 'required|integer|min:1|max:40',

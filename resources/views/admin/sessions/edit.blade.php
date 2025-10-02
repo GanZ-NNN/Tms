@@ -28,16 +28,13 @@
         </div>
 
         {{-- Trainer --}}
-        <div class="mb-4">
-            <label class="block mb-1 font-semibold">ผู้สอน</label>
-            <select name="trainer_id" class="w-full px-4 py-2 border rounded-lg" required>
-                @foreach($trainers as $trainer)
-                    <option value="{{ $trainer->id }}" @selected(old('trainer_id', $session->trainer_id) == $trainer->id)>
-                        {{ $trainer->name }}
-                    </option>
-                @endforeach
-            </select>
-        </div>
+<div class="mb-4">
+    <label class="block mb-1 font-semibold">ผู้สอน</label>
+    <input type="text" name="trainer_name" 
+           value="{{ old('trainer_name', $session->trainer->name ?? '') }}"
+           class="w-full px-4 py-2 border rounded-lg" required
+           placeholder="กรอกชื่อผู้สอน">
+</div>
 
         <!-- {{-- Level --}}
         <div class="mb-4">
