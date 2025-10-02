@@ -32,6 +32,10 @@
     font-weight: bold;
 }
 </style>
+
+<!-- Tom Select -->
+    <link href="https://cdn.jsdelivr.net/npm/tom-select/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/tom-select/dist/js/tom-select.complete.min.js" defer></script>
 </head>
 <body>
 

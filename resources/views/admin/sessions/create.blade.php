@@ -6,6 +6,7 @@
 <div class="container mx-auto p-6">
     <h1 class="text-2xl font-bold mb-6">สร้างรอบอบรมใหม่: {{ $program->title }}</h1>
 
+    {{-- แสดง Error --}}
     @if($errors->any())
         <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
             <ul>
@@ -27,19 +28,18 @@
         </div>
 
         {{-- Trainer --}}
-<div class="mb-4">
-    <label class="block mb-1 font-semibold">ผู้สอน</label>
-    <input list="trainer-list" name="trainer_name"
-           value="{{ old('trainer_name') }}"
-           class="w-full px-4 py-2 border rounded-lg"
-           placeholder="กรอกชื่อผู้สอน" required>
-
-    <datalist id="trainer-list">
-        @foreach($trainers as $trainer)
-            <option value="{{ $trainer->name }}"></option>
-        @endforeach
-    </datalist>
-</div>
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ผู้สอน</label>
+            <select id="trainer-select" name="trainer_id" class="w-full px-4 py-2 border rounded-lg" required>
+                <option value="">-- เลือกผู้สอน --</option>
+                @foreach($trainers as $trainer)
+                    <option value="{{ $trainer->id }}"
+                        {{ old('trainer_id') == $trainer->id ? 'selected' : '' }}>
+                        {{ $trainer->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         {{-- Location --}}
         <div class="mb-4">
@@ -52,7 +52,7 @@
         <div class="mb-4">
             <label for="capacity" class="block mb-1 font-semibold">Capacity (จำนวนที่นั่ง):</label>
             <input type="number" name="capacity" id="capacity" value="{{ old('capacity', 20) }}"
-                    class="w-full px-4 py-2 border rounded-lg" required min="1">
+                   class="w-full px-4 py-2 border rounded-lg" required min="1">
         </div>
 
         {{-- Start At --}}
@@ -83,29 +83,42 @@
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
-       {{-- Level --}}
-       <div class="mb-4">
-        <label class="block mb-1 font-semibold">ระดับ</label>
-        <select name="level_id" class="w-full px-4 py-2 border rounded-lg" required>
-            <option value="">-- เลือกระดับ --</option>
-            @foreach($levels as $level)
-                <option value="{{ $level->id }}" {{ old('level_id') == $level->id ? 'selected' : '' }}>
-                    {{ $level->name }}
-                </option>
-            @endforeach
-        </select>
-    </div>
-
+        {{-- Level --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">ระดับ</label>
+            <select name="level_id" class="w-full px-4 py-2 border rounded-lg" required>
+                <option value="">-- เลือกระดับ --</option>
+                @foreach($levels as $level)
+                    <option value="{{ $level->id }}" {{ old('level_id') == $level->id ? 'selected' : '' }}>
+                        {{ $level->name }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
 
         {{-- Buttons --}}
         <div class="flex space-x-2">
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+            <button type="submit"
+                class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200">
                 บันทึก
             </button>
-            <a href="{{ route('admin.programs.index') }}" class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors duration-200">
+            <a href="{{ route('admin.programs.index') }}"
+               class="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-500 transition-colors duration-200">
                 ยกเลิก
             </a>
         </div>
     </form>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    new TomSelect('#trainer-select', {
+        searchField: 'text',
+        create: false,
+        sortField: { field: "text", direction: "asc" }
+    });
+});
+</script>
+@endpush
