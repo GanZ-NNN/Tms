@@ -21,7 +21,7 @@
                 ? 'text-orange-400 border-b-2 border-orange-400 font-semibold'
                 : 'text-gray-500 font-medium hover:text-orange-400'"
             class="py-2 px-4"
-        >Level</button>
+        >ละดับ</button>
     </div>
 
     <!-- Categories Table -->
@@ -72,7 +72,7 @@
     <!-- Levels Table -->
     <div x-show="tab === 'levels'" x-cloak>
         <div class="flex justify-between items-center mb-4">
-            <h2 class="text-xl font-bold">Levels ทั้งหมด</h2>
+            <h2 class="text-xl font-bold">ละดับ ทั้งหมด</h2>
             <a href="{{ route('admin.levels.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">➕ เพิ่ม Level</a>
         </div>
 
@@ -81,7 +81,7 @@
                 <thead>
                     <tr class="text-left text-sm text-gray-500 uppercase tracking-wider">
                         <th class="px-6 py-3">ID</th>
-                        <th class="px-6 py-3">ชื่อ Level</th>
+                        <th class="px-6 py-3">ละดับ</th>
                         <th class="px-6 py-3 text-right">จัดการ</th>
                     </tr>
                 </thead>

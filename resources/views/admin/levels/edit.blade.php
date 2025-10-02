@@ -5,7 +5,7 @@
 @section('content')
 <main class="bg-white p-6 rounded-lg shadow-lg">
 
-    <h1 class="text-2xl font-bold mb-6">แก้ไข Level: {{ $level->name }}</h1>
+    <h1 class="text-2xl font-bold mb-6">แก้ไข ละดับ: {{ $level->name }}</h1>
 
     {{-- แสดง Validation Errors --}}
     @if ($errors->any())
@@ -23,7 +23,7 @@
         @method('PUT')
 
         <div class="mb-4">
-            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">ชื่อ Level:</label>
+            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">ละดับ:</label>
             <input type="text" name="name" id="name" value="{{ old('name', $level->name) }}"
                    class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400" required autofocus>
         </div>

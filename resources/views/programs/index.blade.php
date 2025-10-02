@@ -1,61 +1,34 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'รายการโปรแกรม')
+@section('title', 'หลักสูตรทั้งหมด')
 
 @section('content')
-<div class="container my-5">
-    
-    {{-- แสดง success message --}}
-    @if(session('success'))
-        <div class="alert alert-success">
-            {{ session('success') }}
-        </div>
-    @endif
 
-    <div class="row">
-        @forelse($programs as $program)
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 shadow-sm border-0 rounded-3 overflow-hidden">
+<div class="container">
+            <div class="row align-items-center">
+                <!-- Left Content: Search + Text -->
+                <div class="col-lg-7">
+                    <div class="section-search">
+                        <h1>ค้นหาหลักสูตรที่คุณต้องการ<br><span>ได้ที่นี่ !!</span></h1>
+                        <p>หลักสูตร การอบรม ประเภทการอบรม ค้นหาได้อย่างรวดเร็ว</p>
 
-                    {{-- รูปโปรแกรม --}}
-                    @if($program->image)
-                        <img src="{{ asset('storage/' . $program->image) }}" 
-                             class="card-img-top" 
-                             alt="{{ $program->title }}" 
-                             style="height:200px; object-fit:cover;">
-                    @endif
+                        <!-- Search Form -->
+                        <form action="{{ route('programs.index') }}" method="GET" class="d-flex flex-wrap gap-2 mt-4">
+                            <div class="flex-grow-1">
+                                <input type="text" name="keyword"
+                                    class="form-control form-control-lg shadow-sm"
+                                    placeholder="🔍 ค้นหาหลักสูตร..."
+                                    value="{{ request('keyword') }}">
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg fw-bold px-4">ค้นหา</button>
+                            </div>
+                        </form>
 
-                    <div class="card-body d-flex flex-column">
-                        <h5 class="card-title fw-bold">{{ $program->title }}</h5>
-                        <p class="card-text text-muted">{{ Str::limit($program->description, 100) }}</p>
-
-                        {{-- ปุ่มดูรายละเอียด --}}
-                        <a href="{{ route('programs.show', $program->id) }}" 
-                           class="btn btn-primary mt-auto mb-2">
-                            ดูรายละเอียด
-                        </a>
-
-                        {{-- ปุ่มลงทะเบียน (ถ้า login) --}}
-                        @auth
-                            <a href="{{ route('programs.register', $program->id) }}" 
-                               class="btn btn-success mt-1">
-                                ลงทะเบียนเรียน
-                            </a>
-                        @else
-                            {{-- ถ้ายังไม่ login --}}
-                            <a href="{{ route('login') }}?redirect={{ route('programs.show', $program->id) }}" 
-                               class="btn btn-outline-success mt-1">
-                                ลงทะเบียน (ต้อง login)
-                            </a>
-                        @endauth
                     </div>
                 </div>
+
             </div>
-        @empty
-            <div class="col-12 text-center">
-                <p class="text-muted fs-5">ยังไม่มีโปรแกรมใด ๆ ในขณะนี้</p>
-            </div>
-        @endforelse
-    </div>
-</div>
+
+    @include('partials.program-carousel')
 @endsection

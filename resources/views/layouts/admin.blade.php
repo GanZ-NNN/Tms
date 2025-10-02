@@ -6,11 +6,11 @@
 <title>แดชบอร์ดผู้ดูแล - {{ config('app.name') }}</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
-@vite(['resources/css/app.css','resources/js/app.js'])
+@vite(['resources/css/app.css','resources/js/app.js',])
 <style>
 /* Custom Sidebar */
 .sidebar {
-    height: 100vh;
+    height: auto;
     background: #1f2937;
     color: #fff;
 }
@@ -62,6 +62,16 @@
                             <i class="bi bi-speedometer2"></i> แดชบอร์ด
                         </a>
                     </li>
+
+                   <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('programs.index') ? 'active' : '' }}"
+                        href="{{ route('programs.index') }}">
+                            <i class="bi bi-speedometer2"></i> ลายละเอียด
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                             <i class="bi bi-people"></i> ผู้ใช้งาน
@@ -98,7 +108,7 @@
 
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            @yield('content')
+            @yield('content') {{-- เอาไว้รับเนื้อหาจาก @section('content') --}}
 
             <div class="container-fluid">
                 @if(session('success'))
@@ -116,6 +126,7 @@
                 @endif
             </div>
         </main>
+
     </div>
 </div>
 
