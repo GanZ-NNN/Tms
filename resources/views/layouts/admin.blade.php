@@ -62,6 +62,16 @@
                             <i class="bi bi-speedometer2"></i> แดชบอร์ด
                         </a>
                     </li>
+
+                   <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.showcoures') ? 'active' : '' }}"
+                        href="{{ route('admin.showcoures') }}">
+                            <i class="bi bi-speedometer2"></i> ลายละเอียด
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                             <i class="bi bi-people"></i> ผู้ใช้งาน
@@ -98,7 +108,7 @@
 
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            @yield('content')
+            @yield('content') {{-- เอาไว้รับเนื้อหาจาก @section('content') --}}
 
             <div class="container-fluid">
                 @if(session('success'))
@@ -116,6 +126,7 @@
                 @endif
             </div>
         </main>
+
     </div>
 </div>
 

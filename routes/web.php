@@ -98,6 +98,8 @@ Route::middleware(['auth', 'is.admin'])
 
         Route::resource('certificates', CertificateAdminController::class);
 
+        Route::get('/showcourses', [HomeController::class, 'showcoures'])->name('showcoures');
+
         Route::resource('categories', CategoryController::class);
         Route::resource('levels', LevelController::class);
         Route::resource('sessions', SessionController::class);

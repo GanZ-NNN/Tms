@@ -11,6 +11,7 @@ public function index(Request $request)
 {
     $query = Program::with('category');
 
+
     if ($request->filled('keyword')) {
         $query->where('title', 'like', '%' . $request->keyword . '%');
     }
@@ -42,7 +43,14 @@ public function index(Request $request)
 
     public function show(Program $program)
     {
+
         $programs = Program::latest()->take(100)->get();
         return view('programs.show', compact('program'));
+    }
+
+    public function showcoures()
+    {
+        $programs = Program::with('category')->latest()->get();
+        return view('admin.showcoures', compact('programs'));
     }
 }
