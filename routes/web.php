@@ -120,7 +120,7 @@ Route::middleware(['auth', 'is.admin'])
             Route::get('/feedback', [ReportController::class, 'feedbackIndex'])->name('feedback.index');
             Route::get('/feedback/{session}', [ReportController::class, 'feedbackDetails'])->name('feedback.details');
             Route::get('/feedback/{session}/export', [ReportController::class, 'exportFeedback'])->name('feedback.export');
-        
+
 
 
         });
@@ -139,6 +139,9 @@ Route::post('/password/update-with-code', [PasswordResetController::class, 'upda
 
 Route::get('/certificate/generate/{user}/{session}', [CertificateController::class, 'generate']);
 Route::get('/certificate/verify/{hash}', [CertificateController::class, 'verify']);
+
+Route::post('/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::get('/feedback/report/{session}', [FeedbackController::class, 'report'])->name('feedback.report');
 
 // --- Include Breeze's Auth Routes ---
 require __DIR__.'/auth.php';

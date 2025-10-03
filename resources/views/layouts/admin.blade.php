@@ -10,7 +10,7 @@
 <style>
 /* Custom Sidebar */
 .sidebar {
-    height: auto;
+    height: 1800px;
     background: #1f2937;
     color: #fff;
 }
@@ -96,16 +96,24 @@
                             <i class="bi bi-calendar-check"></i> การเข้าเรียน
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->routeIs('admin.feedback.report') ? 'active' : '' }}"
+                        href="{{ route('admin.feedback.report', ['sessionId' => 1]) }}">
+                            <i class="bi bi-file-earmark-text"></i> Feedback
+                        </a>
+                    </li>
+
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.certificates.*') ? 'active' : '' }}" href="{{ route('admin.certificates.index') }}">
                             <i class="bi bi-award"></i> ใบประกาศนียบัตร
                         </a>
-                    </li>
+                    <!-- </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.feedback.index') }}">
                             <i class="bi bi-file-earmark-text"></i> รายงาน
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </nav>

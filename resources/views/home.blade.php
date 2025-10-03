@@ -8,7 +8,7 @@
     @include('partials.hero-banner')
 
     <!-- Invest Section -->
-    @include('partials.invest')
+    <!-- @include('partials.invest') -->
 
     <!-- Program Carousel -->
     @include('partials.program-carousel')

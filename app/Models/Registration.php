@@ -15,7 +15,7 @@ class Registration extends Model
     // =======================================================
     // ===       เพิ่ม 2 ฟังก์ชันนี้เข้าไป       ===
     // =======================================================
-    
+
     /**
      * Get the user that owns the registration.
      */
@@ -37,10 +37,10 @@ class Registration extends Model
         public function dailyAttendances()
     {
         // Registration หนึ่งอัน มีได้หลาย DailyAttendance record (สำหรับแต่ละวัน)
-        return $this->hasMany(DailyAttendance::class); 
+        return $this->hasMany(DailyAttendance::class);
     }
-    public function feedback()
-    {
-        return $this->hasOne(Feedback::class);
-    }
+    // public function feedback()
+    // {
+    //     return $this->hasOne(Feedback::class);
+    // }
 }

@@ -6,5 +6,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class Feedback extends Model
 {
-    //
+    protected $fillable = ['session_id', 'user_id', 'rating', 'comment'];
 }

@@ -34,7 +34,7 @@
 
                 <!-- ========== Right Column: Training & Certificates ========== -->
     <div class="md:col-span-2 space-y-6">
-        
+
         {{-- Upcoming Sessions (เหมือนเดิม) --}}
         <div class="p-4 sm:p-8 bg-white ...">
             <h3 class="text-lg ...">Upcoming Sessions</h3>
