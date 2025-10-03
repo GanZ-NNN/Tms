@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class FeedbackController extends Controller
 {
+    public function index()
+    {
+        // ดึง feedback ทั้งหมด พร้อม session ที่เกี่ยวข้อง
+        $feedbacks = Feedback::with('session')->orderBy('created_at', 'desc')->paginate(20);
+
+        return view('admin.feedback.index', compact('feedbacks'));
+    }
+    
     public function store(Request $request)
     {
         $request->validate([
