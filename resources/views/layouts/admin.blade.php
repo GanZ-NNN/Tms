@@ -98,8 +98,8 @@
                     </li>
 
                     <li class="nav-item">
-                        <a class="nav-link {{ request()->routeIs('admin.reports.feedback.report') ? 'active' : '' }}"
-                        href="{{ route('admin.reports.feedback.report', ['sessionId' => 1]) }}">
+                        <a class="nav-link {{ request()->routeIs('admin.reports.feedback.index') ? 'active' : '' }}"
+                        href="{{ route('admin.reports.feedback.index', ['sessionId' => 1]) }}">
                             <i class="bi bi-file-earmark-text"></i> Feedback
                         </a>
                     </li>
