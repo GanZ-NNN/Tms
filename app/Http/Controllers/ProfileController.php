@@ -16,35 +16,40 @@ class ProfileController extends Controller
     /**
      * Display the user's profile form.
      */
-    public function edit(Request $request): View
-    {
-        $user = $request->user();
+public function edit(Request $request): View
+{
+    $user = $request->user();
 
-        // 1. ดึงข้อมูลรอบอบรมที่กำลังจะมาถึง
-        $upcomingSessions = $user->registrations()
-            ->with('session.program')
-            ->whereHas('session', fn($query) => $query->where('start_at', '>=', now()))
-            ->latest('id')
-            ->get();
+    // 1. ดึงข้อมูลรอบอบรมที่กำลังจะมาถึง
+    $upcomingSessions = $user->registrations()
+        ->with('session.program')
+        ->whereHas('session', fn($query) => $query->where('start_at', '>=', now()))
+        ->latest('id')
+        ->get();
 
-        // 2. ดึงข้อมูลประวัติการอบรม (รอบที่จบไปแล้ว)
-        // พร้อมโหลดข้อมูล feedback ที่ user คนนี้เคยส่งสำหรับ session นั้นๆ
-        $trainingHistory = $user->registrations()
-            ->with(['session.program', 'feedback' => fn($query) => $query->where('user_id', $user->id)])
-            ->whereHas('session', fn($query) => $query->where('status', 'completed')) // เอาเฉพาะรอบที่ Admin กด Complete แล้ว
-            ->latest('id')
-            ->get();
-        
-        // 3. ดึงใบรับรองทั้งหมดของผู้ใช้
-        $certificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
+    // 2. ดึงข้อมูลประวัติการอบรม (รอบที่จบไปแล้ว)
+    $trainingHistory = $user->registrations()
+        ->with('session.program') 
+        ->whereHas('session', fn($query) => $query->where('status', 'completed')) 
+        ->latest('id')
+        ->get();
 
-        return view('profile.edit', [
-            'user' => $user,
-            'upcomingSessions' => $upcomingSessions,
-            'trainingHistory' => $trainingHistory,
-            'certificates' => $certificates,
-        ]);
-    }
+    // 3. ดึงใบรับรองทั้งหมดของผู้ใช้
+    $certificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
+
+    // 4. (ใหม่) ดึง ID ของ Session ที่ User คนนี้เคยส่ง Feedback ไปแล้ว
+    $submittedFeedbackSessionIds = \App\Models\Feedback::where('user_id', $user->id)
+                                      ->pluck('session_id')
+                                      ->toArray();
+
+    return view('profile.edit', [
+        'user' => $user,
+        'upcomingSessions' => $upcomingSessions,
+        'trainingHistory' => $trainingHistory,
+        'certificates' => $certificates,
+        'submittedFeedbackSessionIds' => $submittedFeedbackSessionIds, // <-- ส่งตัวแปรใหม่ไปที่ View
+    ]);
+}
     /**
      * Update the user's profile information.
      */

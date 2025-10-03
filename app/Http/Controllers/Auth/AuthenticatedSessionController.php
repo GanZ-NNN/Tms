@@ -25,26 +25,21 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request): RedirectResponse
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required',
-        ]);
-
-        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            return back()->withErrors([
-                'email' => 'Invalid credentials.',
-            ]);
-        }
+        $request->authenticate();
 
         $request->session()->regenerate();
 
-        // Redirect based on role
-        $user = Auth::user();
-        if ($user->role === User::ROLE_ADMIN) {
-            return redirect()->route('admin.dashboard');
-        } else {
-            return redirect()->route('dashboard'); // Trainee
+        // --- ส่วนที่แก้ไข ---
+        $user = $request->user();
+
+        if ($user->role === 'admin') {
+            // ถ้าเป็น Admin ให้ไปหน้า Admin Dashboard
+            return redirect()->intended(route('admin.dashboard')); 
         }
+
+        // ถ้าเป็น User ทั่วไป (Trainee) ให้ไปหน้าแรก (Home) ที่มีรายการคอร์ส
+        return redirect()->intended(route('home'));
+        // --- สิ้นสุดส่วนที่แก้ไข ---
     }
 
     /**

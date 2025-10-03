@@ -39,8 +39,8 @@ class Registration extends Model
         // Registration หนึ่งอัน มีได้หลาย DailyAttendance record (สำหรับแต่ละวัน)
         return $this->hasMany(DailyAttendance::class); 
     }
-    public function feedback()
-    {
-        return $this->hasOne(Feedback::class);
-    }
+    // public function feedback()
+    // {
+    //     return $this->hasOne(Feedback::class);
+    // }
 }
