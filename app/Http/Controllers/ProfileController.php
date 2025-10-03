@@ -17,39 +17,41 @@ class ProfileController extends Controller
      * Display the user's profile form.
      */
 public function edit(Request $request): View
-{
-    $user = $request->user();
+    {
+        $user = $request->user();
 
-    // 1. ดึงข้อมูลรอบอบรมที่กำลังจะมาถึง
-    $upcomingSessions = $user->registrations()
-        ->with('session.program')
-        ->whereHas('session', fn($query) => $query->where('start_at', '>=', now()))
-        ->latest('id')
-        ->get();
+        // 1. ดึงข้อมูลที่จำเป็นทั้งหมดด้วย Eager Loading
+        $allRegistrations = $user->registrations()
+                                 ->with(['session.program', 'session.level', 'session.trainer'])
+                                 ->get();
 
-    // 2. ดึงข้อมูลประวัติการอบรม (รอบที่จบไปแล้ว)
-    $trainingHistory = $user->registrations()
-        ->with('session.program') 
-        ->whereHas('session', fn($query) => $query->where('status', 'completed')) 
-        ->latest('id')
-        ->get();
+        $certificates = $user->certificates()
+                             ->with('session.program')
+                             ->latest('issued_at')
+                             ->get();
+        
+        $submittedFeedbackSessionIds = \App\Models\Feedback::where('user_id', $user->id)
+                                          ->pluck('session_id')
+                                          ->toArray();
 
-    // 3. ดึงใบรับรองทั้งหมดของผู้ใช้
-    $certificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
+        // 2. กรองข้อมูลด้วย Collection Methods
+        $upcomingSessions = $allRegistrations->filter(function ($registration) {
+            return $registration->session && $registration->session->start_at->isFuture() && $registration->session->status !== 'completed';
+        });
 
-    // 4. (ใหม่) ดึง ID ของ Session ที่ User คนนี้เคยส่ง Feedback ไปแล้ว
-    $submittedFeedbackSessionIds = \App\Models\Feedback::where('user_id', $user->id)
-                                      ->pluck('session_id')
-                                      ->toArray();
+        $trainingHistory = $allRegistrations->filter(function ($registration) {
+            return $registration->session && $registration->session->status === 'completed';
+        });
 
-    return view('profile.edit', [
-        'user' => $user,
-        'upcomingSessions' => $upcomingSessions,
-        'trainingHistory' => $trainingHistory,
-        'certificates' => $certificates,
-        'submittedFeedbackSessionIds' => $submittedFeedbackSessionIds, // <-- ส่งตัวแปรใหม่ไปที่ View
-    ]);
-}
+        // 3. ส่งข้อมูลทั้งหมดไปที่ View
+        return view('profile.edit', [
+            'user' => $user,
+            'upcomingSessions' => $upcomingSessions,
+            'trainingHistory' => $trainingHistory,
+            'certificates' => $certificates,
+            'submittedFeedbackSessionIds' => $submittedFeedbackSessionIds,
+        ]);
+    }
     /**
      * Update the user's profile information.
      */

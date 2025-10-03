@@ -36,6 +36,7 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(\App\Models\Registration::class);
     }
 
+    // app/Models/User.php
     public function certificates()
     {
         return $this->hasMany(\App\Models\Certificate::class);
