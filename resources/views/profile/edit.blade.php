@@ -57,12 +57,12 @@
                         </div>
                         <div>
                             {{-- ตรวจสอบว่าเคยส่ง Feedback แล้วหรือยัง --}}
-                            @if($registration->feedback->isEmpty())
+                            @if(in_array($registration->session_id, $submittedFeedbackSessionIds))
+                                <span class="text-sm text-green-600">Feedback Submitted ✔</span>
+                            @else
                                 <a href="{{ route('feedback.create', $registration->session) }}" class="text-sm text-indigo-600 hover:underline">
                                     Give Feedback
                                 </a>
-                            @else
-                                <span class="text-sm text-green-600">Feedback Submitted ✔</span>
                             @endif
                         </div>
                     </div>

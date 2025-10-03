@@ -20,29 +20,31 @@ public function edit(Request $request): View
 {
     $user = $request->user();
 
-    // 1. ดึง ID ของ Session ทั้งหมดที่ user ลงทะเบียนไว้
-    $registeredSessionIds = $user->registrations->pluck('session_id');
+        // 1. ดึงข้อมูลรอบอบรมที่กำลังจะมาถึง
+        $upcomingSessions = $user->registrations()
+            ->with('session.program')
+            ->whereHas('session', fn($query) => $query->where('start_at', '>=', now()))
+            ->latest('id')
+            ->get();
 
-    // 2. ค้นหา Session จาก ID เหล่านั้น โดยแยกตามเงื่อนไข
-    $allUserSessions = \App\Models\TrainingSession::with('program')
-                        ->whereIn('id', $registeredSessionIds)
-                        ->orderBy('start_at', 'desc')
-                        ->get();
+        // 2. ดึงข้อมูลประวัติการอบรม (รอบที่จบไปแล้ว)
+        // พร้อมโหลดข้อมูล feedback ที่ user คนนี้เคยส่งสำหรับ session นั้นๆ
+        $trainingHistory = $user->registrations()
+            ->with(['session.program', 'feedback' => fn($query) => $query->where('user_id', $user->id)])
+            ->whereHas('session', fn($query) => $query->where('status', 'completed')) // เอาเฉพาะรอบที่ Admin กด Complete แล้ว
+            ->latest('id')
+            ->get();
 
-    // 3. ใช้ Collection method เพื่อกรอง
-    $upcomingSessions = $allUserSessions->where('start_at', '>=', now());
-    $trainingHistory = $allUserSessions->where('start_at', '<', now())
-                                       ->where('status', 'completed');
+        // 3. ดึงใบรับรองทั้งหมดของผู้ใช้
+        $certificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
 
-    // ... โค้ดส่วนที่เหลือ (certificates, submittedFeedback) ...
-
-    return view('profile.edit', [
-        'user' => $user,
-        'upcomingSessions' => $upcomingSessions,
-        'trainingHistory' => $trainingHistory,
-        // ...
-    ]);
-}
+        return view('profile.edit', [
+            'user' => $user,
+            'upcomingSessions' => $upcomingSessions,
+            'trainingHistory' => $trainingHistory,
+            'certificates' => $certificates,
+        ]);
+    }
     /**
      * Update the user's profile information.
      */
