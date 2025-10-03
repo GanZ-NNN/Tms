@@ -13,7 +13,8 @@
                             <input type="text" name="keyword"
                                 class="form-control form-control-lg shadow-sm"
                                 placeholder="🔍 ค้นหาหลักสูตร..."
-                                value="{{ request('keyword') }}">
+                                value="{{ request('keyword') }}"
+                                style="color: #000 !important;">
                         </div>
                         <div>
                             <button type="submit" class="btn btn-primary btn-lg fw-bold px-4">ค้นหา</button>
