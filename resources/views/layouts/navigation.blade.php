@@ -18,6 +18,11 @@
                     <!-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
                         {{ __('หลักสูตร') }}
                     </x-nav-link> -->
+
+                    <x-nav-link :href="route('feedback.form')" :active="request()->routeIs('feedback.form')">
+                        {{ __('ส่งความคิดเห็น') }}
+                    </x-nav-link>
+
                 </div>
             </div>
 

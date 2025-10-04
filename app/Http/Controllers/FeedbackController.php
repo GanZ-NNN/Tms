@@ -15,7 +15,7 @@ class FeedbackController extends Controller
 
         return view('admin.feedback.index', compact('feedbacks'));
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -52,5 +52,12 @@ class FeedbackController extends Controller
             'keywords' => $topWords,
         ]);
     }
+
+    // หน้าแบบฟอร์ม feedback
+    public function show()
+    {
+        return view('feedback.form'); // ต้องมีไฟล์ resources/views/feedback/form.blade.php
+    }
+
 }
 

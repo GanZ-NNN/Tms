@@ -145,7 +145,9 @@ Route::post('/password/update-with-code', [PasswordResetController::class, 'upda
 | FEEDBACK REPORT (FRONTEND)
 |--------------------------------------------------------------------------
 */
-Route::get('/feedback/report/{session}', [FeedbackController::class, 'report'])->name('feedback.report');
+Route::get('/sessions/{session}/feedback', [FeedbackController::class, 'show'])->name('feedback.form');
+Route::post('/sessions/{session}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+
 
 /*
 |--------------------------------------------------------------------------
