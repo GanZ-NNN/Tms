@@ -36,12 +36,23 @@
     <div class="md:col-span-2 space-y-6">
 
         {{-- Upcoming Sessions (เหมือนเดิม) --}}
-        <div class="p-4 sm:p-8 bg-white ...">
-            <h3 class="text-lg ...">Upcoming Sessions</h3>
+    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Sessions</h3>
+        <div class="space-y-4">
             @forelse($upcomingSessions as $registration)
-                {{-- ... แสดงข้อมูล Upcoming Session ... --}}
+                <div class="border-l-4 border-indigo-500 pl-4">
+                    <p class="font-semibold text-gray-800 dark:text-gray-200">
+                        {{ $registration->session->program->title }}
+                    </p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Date: {{ $registration->session->start_at->format('d M Y, H:i') }}
+                    </p>
+                    <p class="text-sm text-gray-500 dark:text-gray-500">
+                        Location: {{ $registration->session->location }}
+                    </p>
+                </div>
             @empty
-                <p>You have no upcoming sessions.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">You have no upcoming registered sessions.</p>
             @endforelse
         </div>
 
