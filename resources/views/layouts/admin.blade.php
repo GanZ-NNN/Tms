@@ -83,7 +83,7 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.categories.*') ? 'active' : '' }}" href="{{ route('admin.categories.index') }}">
-                            <i class="bi bi-tags"></i> หมวดหมู่ & ระดับ
+                            <i class="bi bi-tags"></i> หมวดหมู่
                         </a>
                     </li>
                     <li class="nav-item">
