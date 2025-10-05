@@ -88,11 +88,11 @@
             <!-- Registration Trend Chart -->
             <div class="card shadow mb-4">
                 <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Monthly Registration Trend (Last 12 Months)</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Monthly Attendance (Last 12 Months)</h6>
                 </div>
                 <div class="card-body">
                     <div class="chart-area">
-                        <canvas id="registrationTrendChart"></canvas>
+                        <canvas id="attendanceChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -237,23 +237,37 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Line Chart
-        const lineChartElement = document.getElementById('registrationTrendChart');
-        if (lineChartElement) {
-            const lineCtx = lineChartElement.getContext('2d');
-            new Chart(lineCtx, {
-                type: 'line',
+        const attendanceChartElement = document.getElementById('attendanceChart'); // <-- 1. เปลี่ยน ID
+        if (attendanceChartElement) {
+            const ctx = attendanceChartElement.getContext('2d');
+            new Chart(ctx, {
+                type: 'bar', // <-- 2. เปลี่ยนประเภทเป็น 'bar'
                 data: {
-                    labels: {!! isset($chartData) ? json_encode($chartData['labels']) : '[]' !!},
+                    labels: {!! isset($attendanceChartData) ? json_encode($attendanceChartData['labels']) : '[]' !!},
                     datasets: [{
-                        label: 'Registrations',
-                        data: {!! isset($chartData) ? json_encode($chartData['data']) : '[]' !!},
+                        label: 'Attendees', // <-- 3. เปลี่ยน Label
+                        data: {!! isset($attendanceChartData) ? json_encode($attendanceChartData['data']) : '[]' !!},
+                        backgroundColor: 'rgba(78, 115, 223, 0.8)',
                         borderColor: 'rgba(78, 115, 223, 1)',
-                        backgroundColor: 'rgba(78, 115, 223, 0.05)',
-                        fill: true,
-                        tension: 0.3
+                        borderWidth: 1,
+                        borderRadius: 5, // ทำให้แท่งโค้งมนเล็กน้อย
                     }]
                 },
-                options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1 // แสดงเป็นเลขจำนวนเต็มเท่านั้น
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false // ซ่อน Legend "Attendees"
+                        }
+                    }
+                }
             });
         }
 
