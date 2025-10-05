@@ -12,7 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SessionCompletionController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\LevelController;
+
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\RegistrationController;
 
@@ -97,36 +97,23 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
     // Dashboard
     Route::get('/dashboard', [SessionDashboardController::class, 'index'])->name('dashboard');
 
-    // Resources
-    Route::resources([
-        'users' => UserController::class,
-        'programs' => AdminProgramController::class,
-        'trainers' => TrainerController::class,
-        'categories' => CategoryController::class,
-        'levels' => LevelController::class,
-        'sessions' => SessionController::class,
-        'certificates' => CertificateAdminController::class,
-    ]);
+        Route::resource('users', UserController::class);
+        Route::resource('programs', AdminProgramController::class); // <-- ใช้ Controller ที่เปลี่ยนชื่อ
+        Route::resource('trainers', TrainerController::class);
 
-    //program sessions (nested resource)
-    Route::prefix('programs/{program}')->group(function () {
-        Route::resource('sessions', SessionController::class)->names([
-            'index' => 'programs.sessions.index',
-            'create' => 'programs.sessions.create',
-            'store' => 'programs.sessions.store',
-            'edit' => 'programs.sessions.edit',
-            'update' => 'programs.sessions.update',
-            'destroy' => 'programs.sessions.destroy',
-        ]);
-    });
+        Route::get('/attendance/overview', [AttendanceController::class, 'overview'])
+        ->name('attendance.overview');
 
-    // Attendance
-    Route::get('/attendance/overview', [AttendanceController::class, 'overview'])->name('attendance.overview');
-    Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
-    Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+        Route::resource('certificates', CertificateAdminController::class);
 
-    // Session Registrations
-    Route::get('/sessions/{session}/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
+        Route::resource('categories', CategoryController::class);
+        Route::resource('levels', LevelController::class);
+        Route::resource('sessions', SessionController::class);
+
+        Route::resource('programs.sessions', SessionController::class);
+        Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
+        Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+                Route::get('/sessions/{session}/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
 
     // Complete Session
     Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');

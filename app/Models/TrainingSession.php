@@ -82,4 +82,16 @@ class TrainingSession extends Model
     {
         return $this->hasMany(Certificate::class, 'session_id');
     }
+    public const LEVEL_BEGINNER = 'Beginner';
+    public const LEVEL_INTERMEDIATE = 'Intermediate';
+    public const LEVEL_EXPERT = 'Expert';
+
+    public static function getLevels(): array
+    {
+        return [
+            self::LEVEL_BEGINNER,
+            self::LEVEL_INTERMEDIATE,
+            self::LEVEL_EXPERT,
+        ];
+    }
 }

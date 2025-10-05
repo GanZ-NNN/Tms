@@ -25,7 +25,8 @@ class SessionController extends Controller
     public function create(Program $program)
     {
         $trainers = Trainer::orderBy('name')->get();
-        $levels = Level::orderBy('name')->get();
+        $levels = TrainingSession::getLevels();
+
 
         return view('admin.sessions.create', compact('program', 'trainers', 'levels'));
     }
@@ -53,7 +54,7 @@ class SessionController extends Controller
     public function edit(Program $program, TrainingSession $session)
     {
         $trainers = Trainer::orderBy('name')->get();
-        $levels = Level::orderBy('name')->get();
+
 
         return view('admin.sessions.edit', compact('program', 'session', 'trainers', 'levels'));
     }
