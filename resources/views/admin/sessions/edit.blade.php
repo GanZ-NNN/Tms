@@ -94,13 +94,15 @@
         </div>
 
         {{-- Level --}}
+{{-- Level --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">ระดับ</label>
-            <select name="level_id" class="w-full px-4 py-2 border rounded-lg">
+            <select name="level" class="w-full px-4 py-2 border rounded-lg" required>
                 <option value="">-- เลือกระดับ --</option>
-                @foreach($levels as $level)
-                    <option value="{{ $level->id }}" @selected(old('level_id', $session->level_id) == $level->id)>
-                        {{ $level->name }}
+                {{-- วนลูปจาก Array ที่ชื่อ $levels --}}
+                @foreach($levels as $levelValue)
+                    <option value="{{ $levelValue }}" @selected(old('level', $session->level) == $levelValue)>
+                        {{ $levelValue }}
                     </option>
                 @endforeach
             </select>

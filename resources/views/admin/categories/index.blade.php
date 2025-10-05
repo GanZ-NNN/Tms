@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'จัดการ Categories & Levels')
+@section('title', 'จัดการ Categories ')
 
 @section('content')
 <main class="bg-white p-6 rounded-lg shadow-lg" x-data="{ tab: 'categories' }">
@@ -15,13 +15,13 @@
             class="py-2 px-4"
         >หมวดหมู่</button>
 
-        <button
+        {{-- <button
             @click="tab = 'levels'"
             :class="tab === 'levels'
                 ? 'text-orange-400 border-b-2 border-orange-400 font-semibold'
                 : 'text-gray-500 font-medium hover:text-orange-400'"
             class="py-2 px-4"
-        >Level</button>
+        >Level</button> --}}
     </div>
 
     <!-- Categories Table -->
@@ -70,7 +70,7 @@
     </div>
 
     <!-- Levels Table -->
-    <div x-show="tab === 'levels'" x-cloak>
+    {{-- <div x-show="tab === 'levels'" x-cloak>
         <div class="flex justify-between items-center mb-4">
             <h2 class="text-xl font-bold">Levels ทั้งหมด</h2>
             <a href="{{ route('admin.levels.create') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">➕ เพิ่ม Level</a>
@@ -106,7 +106,7 @@
             </table>
         </div>
         <div class="mt-6">{{ $levels->appends(request()->query())->links() }}</div>
-    </div>
+    </div> --}}
 
 </main>
 @endsection

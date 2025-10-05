@@ -12,7 +12,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-public function index(Request $request)
+public function index(Request $request) // เพิ่ม Request สำหรับ Search
 {
     $query = Category::query();
 
@@ -21,10 +21,9 @@ public function index(Request $request)
     }
 
     $categories = $query->latest()->paginate(10);
-    $levels = Level::orderBy('created_at','desc')
-                        ->paginate(10);
-
-    return view('admin.categories.index', compact('categories', 'levels'));
+    
+    // ส่งแค่ categories ไป ไม่ต้องส่ง levels
+    return view('admin.categories.index', compact('categories'));
 }
 
     /**
