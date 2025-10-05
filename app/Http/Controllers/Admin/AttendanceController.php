@@ -58,7 +58,8 @@ class AttendanceController extends Controller
                 );
             }
         }
-        return back()->with('success', 'Attendance has been saved successfully.');
+                return redirect()->route('admin.attendance.overview') 
+                     ->with('success', 'Attendance for "' . ($session->title ?? $session->program->title) . '" has been saved.');
     }
 
     public function overview()
