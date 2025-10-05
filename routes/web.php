@@ -50,7 +50,9 @@ Route::get('/sessions/{session}', [PublicSessionController::class, 'show'])->nam
 // หน้าตรวจสอบ Certificate
 Route::get('/certificate/verify', [CertificateController::class, 'showVerificationForm'])->name('certificates.verify.form');
 Route::post('/certificate/verify', [CertificateController::class, 'verify'])->name('certificates.verify');
-Route::get('/certificate/verify/{hash}', [CertificateController::class, 'verify']);
+Route::get('/certificate/verify/{hash}', [CertificateController::class, 'verify'])
+    ->name('certificates.verify.hash');
+
 
 // Certificate generate (Admin)
 Route::get('/certificate/generate/{user}/{session}', [CertificateController::class, 'generate']);

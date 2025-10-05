@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Level;
 use Database\Factories\SessionFactory;
+use Carbon\CarbonPeriod;
 
 class TrainingSession extends Model
 {
@@ -104,15 +104,25 @@ class TrainingSession extends Model
      */
     public function attendanceRateFor($user)
     {
-        $total = $this->attendances()->count();
-        $attended = $this->attendances()
-            ->where('user_id', $user->id)
-            ->where('status', 'present')
-            ->count();
+        $attendedSlots = 0;
 
-        if ($total === 0) return 0;
-        return round(($attended / $total) * 100, 2);
+        foreach ($this->registrations as $registration) {
+            if ($registration->user_id !== $user->id) continue;
+
+            foreach ($registration->dailyAttendances as $daily) {
+                $attendedSlots += ($daily->is_present_am ? 1 : 0);
+                $attendedSlots += ($daily->is_present_pm ? 1 : 0);
+            }
+        }
+
+        $period = CarbonPeriod::create($this->start_at, $this->end_at);
+        $totalSlots = count($period) * 2;
+
+        if ($totalSlots === 0) return 0;
+
+        return round(($attendedSlots / $totalSlots) * 100, 2);
     }
+
 
     /**
      * ตรวจสอบว่าผู้ใช้นี้ทำแบบประเมินแล้วหรือยัง
@@ -130,13 +140,8 @@ class TrainingSession extends Model
      */
     public function eligibleForCertificate(User $user)
 {
-    $attendanceRate = $this->attendances()
-                           ->where('user_id', $user->id)
-                           ->count() / $this->capacity * 100;
-
-    $hasFeedback = $this->feedback()->where('user_id', $user->id)->exists();
-
-    return $attendanceRate >= 80 && $hasFeedback;
+    return $this->attendanceRateFor($user) >= 80 && $this->hasFeedbackFrom($user);
 }
+
 
 }

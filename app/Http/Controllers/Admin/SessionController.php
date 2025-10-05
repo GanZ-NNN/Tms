@@ -102,4 +102,18 @@ class SessionController extends Controller
         return redirect()->route('admin.programs.index')
                          ->with('success', 'Session deleted successfully.');
     }
+
+    // ใน TrainingSession.php
+public function attendanceRateFor(User $user)
+{
+    $attended = $this->attendances()->where('user_id', $user->id)->count();
+    $total = $this->attendances()->count();
+    return $total > 0 ? ($attended / $total) * 100 : 0;
+}
+
+public function hasFeedbackFrom(User $user)
+{
+    return $this->feedbacks()->where('user_id', $user->id)->exists();
+}
+
 }

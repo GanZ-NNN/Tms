@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Feedback;
 use Illuminate\Http\Request;
+use App\Models\TrainingSession;
+use App\Models\Certificate;
+use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
@@ -61,4 +64,40 @@ class FeedbackController extends Controller
             'count' => $feedbacks->count(),
         ]);
     }
+
+    public function store(Request $request, $sessionId)
+{
+    $validated = $request->validate([
+        'speakers' => 'required|integer|min:1|max:5',
+        'content'  => 'required|integer|min:1|max:5',
+        'staff'    => 'required|integer|min:1|max:5',
+        'overall'  => 'required|integer|min:1|max:5',
+        'comment'  => 'nullable|string',
+    ]);
+
+    $user = auth()->user();
+
+    // บันทึก Feedback จริง
+    $feedback = Feedback::updateOrCreate(
+        [
+            'user_id' => $user->id,
+            'session_id' => $sessionId
+        ],
+        $validated
+    );
+
+    // ตรวจสอบ Attendance จริง
+    $session = TrainingSession::findOrFail($sessionId);
+    $attendanceRate = $session->attendanceRateFor($user);
+    $hasFeedback = $session->hasFeedbackFrom($user);
+
+    if ($attendanceRate >= 80 && $hasFeedback) {
+        Certificate::firstOrCreate([
+            'user_id' => $user->id,
+            'session_id' => $session->id
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Feedback submitted successfully.');
+}
 }

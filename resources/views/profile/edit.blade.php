@@ -83,26 +83,38 @@
             </div>
         </div>
 
-        {{-- My Certificates (ปรับปรุงใหม่) --}}
-        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">My Certificates</h3>
-            <div class="space-y-4">
-                @forelse($certificates as $certificate)
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $certificate->session->program->title }}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Issued on: {{ $certificate->issued_at->format('d M Y') }}</p>
-                        </div>
-                        {{-- ปุ่มสำหรับดาวน์โหลด Certificate --}}
-                        <a href="{{ route('certificates.download', $certificate) }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
-                            Download
-                        </a>
-                    </div>
-                @empty
-                    <p class="text-sm text-gray-500 dark:text-gray-400">You have no certificates yet.</p>
-                @endforelse
+        {{-- My Certificates --}}
+<div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">My Certificates</h3>
+    <div class="space-y-4">
+        @forelse($certificates as $certificate)
+            @php
+                $session = optional($certificate->session);
+                $program = optional($session->program);
+            @endphp
+
+            <div class="flex justify-between items-center">
+                <div>
+                    <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $program->title ?? 'N/A' }}</p>
+                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                        Issued on: {{ optional($certificate->issued_at)?->format('d M Y') ?? '-' }}
+                    </p>
+                </div>
+                {{-- ปุ่มดาวน์โหลด --}}
+                @if($certificate->pdf_path && \Illuminate\Support\Facades\Storage::exists($certificate->pdf_path))
+                    <a href="{{ route('certificates.download', $certificate) }}" class="inline-flex items-center px-3 py-1 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700">
+                        Download
+                    </a>
+                @else
+                    <span class="px-3 py-1 bg-gray-400 text-white rounded cursor-not-allowed">Not Ready</span>
+                @endif
             </div>
-        </div>
+        @empty
+            <p class="text-sm text-gray-500 dark:text-gray-400">You have no certificates yet.</p>
+        @endforelse
+    </div>
+</div>
+
 
                     {{-- Update Password & Delete Account (ย้ายมาไว้ล่างสุด) --}}
                     {{-- <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">

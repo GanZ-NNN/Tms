@@ -7,6 +7,8 @@ use App\Models\TrainingSession; // หรือ Session
 use App\Models\Attendance;
 use Illuminate\Http\Request;
 use Carbon\CarbonPeriod;
+use App\Models\Certificate;
+
 
 class AttendanceController extends Controller
 {
@@ -38,40 +40,87 @@ class AttendanceController extends Controller
      * Store the attendance data.
      */
     public function store(Request $request, TrainingSession $session)
-    {
-        $validated = $request->validate(['attendance' => 'nullable|array']);
-        
-        foreach ($session->registrations as $registration) {
-            $period = CarbonPeriod::create($session->start_at, $session->end_at);
-            foreach ($period as $date) {
-                $dateString = $date->format('Y-m-d');
-                
-                \App\Models\DailyAttendance::updateOrCreate(
-                    [
-                        'registration_id' => $registration->id,
-                        'attendance_date' => $dateString,
-                    ],
-                    [
-                        'is_present_am' => isset($validated['attendance'][$registration->id][$dateString]['am']),
-                        'is_present_pm' => isset($validated['attendance'][$registration->id][$dateString]['pm']),
-                    ]
-                );
-            }
+{
+    $validated = $request->validate(['attendance' => 'nullable|array']);
+
+    foreach ($session->registrations as $registration) {
+        $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
+
+        foreach ($period as $date) {
+            $dateString = $date->format('Y-m-d');
+
+            \App\Models\DailyAttendance::updateOrCreate(
+                [
+                    'registration_id' => $registration->id,
+                    'attendance_date' => $dateString,
+                ],
+                [
+                    'is_present_am' => $validated['attendance'][$registration->id][$dateString]['am'] ?? false,
+                    'is_present_pm' => $validated['attendance'][$registration->id][$dateString]['pm'] ?? false,
+                ]
+            );
         }
-                return redirect()->route('admin.attendance.overview') 
-                     ->with('success', 'Attendance for "' . ($session->title ?? $session->program->title) . '" has been saved.');
+
+        // ✅ ตรวจสอบเงื่อนไข Certificate
+        $user = $registration->user;
+        $attendanceRate = $session->attendanceRateFor($user);
+        $hasFeedback = $session->hasFeedbackFrom($user);
+
+        if ($attendanceRate >= 80 && $hasFeedback) {
+            Certificate::firstOrCreate([
+                'user_id' => $user->id,
+                'session_id' => $session->id
+            ]);
+        }
     }
+
+    return redirect()->route('admin.attendance.overview')
+                     ->with('success', 'Attendance for "' . ($session->title ?? $session->program->title) . '" has been saved.');
+}
 
     public function overview()
-    {
-        $programs = \App\Models\Program::with(['sessions' => function ($query) {
-                $query->where('status', '!=', 'cancelled')->orderBy('start_at', 'desc');
-            }, 'sessions.trainer', 'sessions.level'])
-            ->whereHas('sessions') // เอาเฉพาะ Program ที่มี Session
-            ->latest()
-            ->get();
+{
+    $programs = \App\Models\Program::with([
+        'sessions' => function ($query) {
+            $query->where('status', '!=', 'cancelled')->orderBy('start_at', 'desc');
+        },
+        'sessions.trainer',
+        'sessions.registrations.dailyAttendances',
+    ])->whereHas('sessions')
+      ->latest()
+      ->get();
 
-        return view('admin.attendance.overview', compact('programs'));
+    // เพิ่มค่าเฉลี่ย attendance ให้แต่ละ session
+    foreach ($programs as $program) {
+        foreach ($program->sessions as $session) {
+            $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
+            $daysCount = count($period);
+            $totalSlots = $session->registrations->count() * $daysCount * 2; // AM + PM
+
+            $attended = 0;
+            foreach ($session->registrations as $reg) {
+                $attended += $reg->dailyAttendances->sum(fn($a) => ($a->is_present_am ? 1 : 0) + ($a->is_present_pm ? 1 : 0));
+            }
+
+            $session->avg_attendance = $totalSlots > 0 ? round(($attended / $totalSlots) * 100, 2) : 0;
+        }
     }
-    
+
+    return view('admin.attendance.overview', compact('programs'));
+}
+
+
+
+    public function attendanceRate($registration, $session)
+{
+    $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
+    $totalSlots = count($period) * 2; // AM + PM ต่อวัน
+
+    $attended = $registration->dailyAttendances->sum(function($a) {
+        return ($a->is_present_am ? 1 : 0) + ($a->is_present_pm ? 1 : 0);
+    });
+
+    return $totalSlots > 0 ? round(($attended / $totalSlots) * 100, 2) : 0;
+}
+
 }

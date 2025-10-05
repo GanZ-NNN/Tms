@@ -10,10 +10,12 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use PDF;
-use QrCode;
+use Carbon\Carbon;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class IssueCertificateJob implements ShouldQueue
 {
@@ -35,41 +37,49 @@ class IssueCertificateJob implements ShouldQueue
      * Execute the job.
      */
     public function handle()
-    {
+{
+    try {
         $user = $this->user;
         $session = $this->session;
 
-        // ตรวจสอบเงื่อนไข eligibility
         if (!$session->eligibleForCertificate($user)) {
+            \Log::info("User {$user->id} not eligible for certificate for session {$session->id}");
             return;
         }
 
-        DB::transaction(function () use ($user, $session) {
-            // สร้าง cert_no และ verification_hash
+        \DB::transaction(function () use ($user, $session) {
             $cert_no = 'CERT-' . strtoupper(uniqid());
             $verification_hash = md5(uniqid());
+            $issued_at = now(); // <-- สร้างตัวแปร issued_at
             $path = "certificates/{$cert_no}.pdf";
 
-            // สร้าง PDF ก่อน
             $pdf = PDF::loadView('certificates.pdf', [
                 'user' => $user,
                 'session' => $session,
                 'cert_no' => $cert_no,
-                'qr' => QrCode::size(100)->generate(route('certificates.verify.hash', $verification_hash))
+                'qr' => QrCode::size(100)->generate(route('certificates.verify.hash', $verification_hash)),
+                'issued_at' => $issued_at, // <-- ส่งเข้า view
             ]);
 
             Storage::put($path, $pdf->output());
 
-            // สร้างหรืออัปเดต Certificate ใน DB พร้อม pdf_path
             Certificate::updateOrCreate(
                 ['user_id' => $user->id, 'session_id' => $session->id],
                 [
-                    'issued_at' => now(),
+                    'issued_at' => $issued_at,
                     'cert_no' => $cert_no,
                     'verification_hash' => $verification_hash,
                     'pdf_path' => $path,
+                    'issued_at' => $issued_at,
                 ]
             );
         });
+
+    } catch (\Exception $e) {
+        \Log::error("IssueCertificateJob failed: " . $e->getMessage());
+        throw $e;
     }
+}
+
+
 }
