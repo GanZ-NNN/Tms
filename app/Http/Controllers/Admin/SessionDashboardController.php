@@ -67,13 +67,14 @@ class SessionDashboardController extends Controller
         // --- Right Column Data (ส่วนที่เพิ่มเข้ามา) ---
 
         // 1. กราฟวงกลม: Overall Feedback Rating
+        // 'rating' column doesn't exist; use 'overall' which stores the overall rating
         $feedbackRating = Feedback::select(
-                'rating',
+                'overall',
                 DB::raw('COUNT(*) as count')
             )
-            ->groupBy('rating')
-            ->orderBy('rating', 'desc')
-            ->pluck('count', 'rating');
+            ->groupBy('overall')
+            ->orderBy('overall', 'desc')
+            ->pluck('count', 'overall');
 
         $feedbackChartData = [
             'labels' => $feedbackRating->keys()->map(fn($rating) => "$rating Stars"),
@@ -95,7 +96,7 @@ class SessionDashboardController extends Controller
                 if (empty($session->capacity) || $session->capacity == 0) return false;
                 return ($session->registrations->count() / $session->capacity) < 0.25;
             });
-        
+
         $nearingCapacitySessions = TrainingSession::with('registrations')
             ->where('start_at', '>', now())
             ->get()
@@ -103,12 +104,12 @@ class SessionDashboardController extends Controller
                 if (empty($session->capacity) || $session->capacity == 0) return false;
                 return ($session->registrations->count() / $session->capacity) > 0.85;
             });
-        
+
         // --- ส่งตัวแปรทั้งหมดไปที่ View ---
         return view('admin.dashboard', compact(
-            'stats', 
-            'chartData', 
-            'upcomingSessions', 
+            'stats',
+            'chartData',
+            'upcomingSessions',
             'sessionsToComplete',
             'feedbackChartData',
             'recentActivities',

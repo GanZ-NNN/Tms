@@ -1,63 +1,65 @@
 <?php
 
-// app/Http/Controllers/FeedbackController.php
 namespace App\Http\Controllers;
 
 use App\Models\Feedback;
+use App\Models\TrainingSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
-    public function index()
+    public function __construct()
     {
-        // ดึง feedback ทั้งหมด พร้อม session ที่เกี่ยวข้อง
-        $feedbacks = Feedback::with('session')->orderBy('created_at', 'desc')->paginate(20);
-
-        return view('admin.feedback.index', compact('feedbacks'));
+        $this->middleware('auth');
     }
 
-    public function store(Request $request)
+    public function create(TrainingSession $session)
+    {
+        // prevent duplicate - if exists, redirect to thankyou or show message
+        $exists = Feedback::where('session_id', $session->id)
+            ->where('user_id', Auth::id())
+            ->exists();
+
+        if ($exists) {
+            return redirect()->route('feedback.thankyou');
+        }
+        // example topics - in real app this may come from DB
+        $topics = [
+            'Advanced PHP', 'Laravel Internals', 'Testing', 'DevOps', 'Architecture'
+        ];
+
+        return view('feedback.create', compact('session', 'topics'));
+    }
+
+    public function store(Request $request, TrainingSession $session)
     {
         $request->validate([
-            'session_id' => 'required|exists:sessions,id',
-            'rating' => 'required|integer|min:1|max:5',
-            'comment' => 'nullable|string|max:1000',
+            'speakers' => 'nullable|integer|min:1|max:5',
+            'content' => 'nullable|integer|min:1|max:5',
+            'staff' => 'nullable|integer|min:1|max:5',
+            'overall' => 'nullable|integer|min:1|max:5',
+            'pre_knowledge' => 'nullable|integer|min:1|max:5',
+            'post_knowledge' => 'nullable|integer|min:1|max:5',
+            'comment' => 'nullable|string',
+            'future_topics' => 'nullable|array',
+            'future_topics.*' => 'string'
         ]);
 
-        Feedback::create([
-            'session_id' => $request->session_id,
-            'user_id' => auth()->id(),
-            'rating' => $request->rating,
-            'comment' => $request->comment,
-        ]);
+        // Prevent duplicate submission
+        $feedback = Feedback::firstOrCreate(
+            ['session_id' => $session->id, 'user_id' => Auth::id()],
+            array_merge($request->only(['speakers','content','staff','overall','pre_knowledge','post_knowledge','comment']), [
+                'future_topics' => $request->input('future_topics', [])
+            ])
+        );
 
-        return response()->json(['message' => 'บันทึกแบบประเมินสำเร็จ']);
+        return redirect()->route('feedback.thankyou');
     }
 
-    public function report($sessionId)
+    public function thankyou()
     {
-        $feedbacks = Feedback::where('session_id', $sessionId)->get();
-        $average = round($feedbacks->avg('rating'), 2);
-
-        // คำหลักที่พบบ่อย
-        $allComments = strtolower(implode(' ', $feedbacks->pluck('comment')->toArray()));
-        $words = str_word_count($allComments, 1);
-        $wordFrequency = array_count_values($words);
-        arsort($wordFrequency);
-        $topWords = array_slice($wordFrequency, 0, 10);
-
-        return response()->json([
-            'average' => $average,
-            'feedbacks' => $feedbacks,
-            'keywords' => $topWords,
-        ]);
+        return view('feedback.thankyou');
     }
-
-    // หน้าแบบฟอร์ม feedback
-    public function show()
-    {
-        return view('feedback.form'); // ต้องมีไฟล์ resources/views/feedback/form.blade.php
-    }
-
 }
 

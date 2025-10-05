@@ -108,6 +108,18 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
         'certificates' => CertificateAdminController::class,
     ]);
 
+    //program sessions (nested resource)
+    Route::prefix('programs/{program}')->group(function () {
+        Route::resource('sessions', SessionController::class)->names([
+            'index' => 'programs.sessions.index',
+            'create' => 'programs.sessions.create',
+            'store' => 'programs.sessions.store',
+            'edit' => 'programs.sessions.edit',
+            'update' => 'programs.sessions.update',
+            'destroy' => 'programs.sessions.destroy',
+        ]);
+    });
+
     // Attendance
     Route::get('/attendance/overview', [AttendanceController::class, 'overview'])->name('attendance.overview');
     Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
@@ -125,8 +137,8 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
 
     // Reports
     Route::prefix('reports')->name('reports.')->group(function () {
-        Route::get('/feedback', [FeedbackController::class, 'index'])->name('feedback.index');
-        Route::get('/feedback/{sessionId}', [FeedbackController::class, 'report'])->name('feedback.report');
+        Route::get('/feedback', [App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('feedback.index');
+        Route::get('/feedback/{sessionId}', [App\Http\Controllers\Admin\FeedbackController::class, 'report'])->name('feedback.report');
     });
 });
 
@@ -145,8 +157,9 @@ Route::post('/password/update-with-code', [PasswordResetController::class, 'upda
 | FEEDBACK REPORT (FRONTEND)
 |--------------------------------------------------------------------------
 */
-Route::get('/sessions/{session}/feedback', [FeedbackController::class, 'show'])->name('feedback.form');
+Route::get('/sessions/{session}/feedback', [FeedbackController::class, 'create'])->name('feedback.create');
 Route::post('/sessions/{session}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
+Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 
 
 /*

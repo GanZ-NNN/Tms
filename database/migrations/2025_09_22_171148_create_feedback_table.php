@@ -11,16 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('feedback', function (Blueprint $table) {
+        Schema::create('feedbacks', function (Blueprint $table) {
             $table->id();
             $table->foreignId('session_id')->constrained('training_sessions')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->integer('rating'); // 1-5
+            $table->tinyInteger('speakers')->nullable();
+            $table->tinyInteger('content')->nullable();
+            $table->tinyInteger('staff')->nullable();
+            $table->tinyInteger('overall')->nullable();
+            $table->tinyInteger('pre_knowledge')->nullable();
+            $table->tinyInteger('post_knowledge')->nullable();
+
             $table->text('comment')->nullable();
+            $table->json('future_topics')->nullable();
+
             $table->timestamp('submitted_at')->useCurrent();
             $table->timestamps();
-
-            $table->unique(['session_id', 'user_id']); // ป้องกัน duplicate feedback
+            $table->unique(['session_id','user_id']);
         });
     }
 
@@ -29,6 +36,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('feedback');
+        Schema::dropIfExists('feedbacks');
     }
 };
