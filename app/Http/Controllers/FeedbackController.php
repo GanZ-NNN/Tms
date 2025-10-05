@@ -9,57 +9,90 @@ use Illuminate\Support\Facades\Auth;
 
 class FeedbackController extends Controller
 {
-    public function __construct()
+    // แสดงฟอร์มสร้าง Feedback
+    public function create($sessionId)
     {
-        $this->middleware('auth');
-    }
-
-    public function create(TrainingSession $session)
-    {
-        // prevent duplicate - if exists, redirect to thankyou or show message
-        $exists = Feedback::where('session_id', $session->id)
-            ->where('user_id', Auth::id())
-            ->exists();
-
-        if ($exists) {
-            return redirect()->route('feedback.thankyou');
-        }
-        // example topics - in real app this may come from DB
+        $session = TrainingSession::findOrFail($sessionId);
         $topics = [
-            'Advanced PHP', 'Laravel Internals', 'Testing', 'DevOps', 'Architecture'
+            'การพัฒนาทักษะการสื่อสาร',
+            'การบริหารเวลา',
+            'การทำงานเป็นทีม',
+            'การแก้ปัญหาและคิดเชิงวิพากษ์',
+            'การใช้เทคโนโลยีในการทำงาน'
         ];
 
         return view('feedback.create', compact('session', 'topics'));
     }
 
-    public function store(Request $request, TrainingSession $session)
+    // บันทึก Feedback
+    public function store(Request $request, $sessionId)
     {
         $request->validate([
-            'speakers' => 'nullable|integer|min:1|max:5',
-            'content' => 'nullable|integer|min:1|max:5',
-            'staff' => 'nullable|integer|min:1|max:5',
+            'sex' => 'nullable|string',
+            'sex_other' => 'nullable|string',
+            'age' => 'nullable|string',
+            'speakers' => 'nullable|array',
+            'speakers.*' => 'integer|min:1|max:5',
+            'content' => 'nullable|array',
+            'content.*' => 'integer|min:1|max:5',
+            'staff' => 'nullable|array',
+            'staff.*' => 'integer|min:1|max:5',
             'overall' => 'nullable|integer|min:1|max:5',
             'pre_knowledge' => 'nullable|integer|min:1|max:5',
             'post_knowledge' => 'nullable|integer|min:1|max:5',
             'comment' => 'nullable|string',
             'future_topics' => 'nullable|array',
-            'future_topics.*' => 'string'
+            'future_topics_other' => 'nullable|string',
+            'suggestions' => 'nullable|string',
         ]);
 
-        // Prevent duplicate submission
-        $feedback = Feedback::firstOrCreate(
-            ['session_id' => $session->id, 'user_id' => Auth::id()],
-            array_merge($request->only(['speakers','content','staff','overall','pre_knowledge','post_knowledge','comment']), [
-                'future_topics' => $request->input('future_topics', [])
-            ])
-        );
+        // รวมค่า future_topics + ช่อง Other
+        $futureTopics = $request->input('future_topics', []);
+        if ($request->filled('future_topics_other')) {
+            $futureTopics[] = $request->input('future_topics_other');
+        }
 
-        return redirect()->route('feedback.thankyou');
+        Feedback::updateOrCreate(
+    [
+        'session_id' => $sessionId,
+        'user_id' => auth()->id(),
+    ],
+    [
+        'sex' => $request->sex === 'other' ? $request->sex_other : $request->sex,
+        'age' => $request->age,
+        'speakers' => $request->speakers ?: null,
+        'content' => $request->content ?: null,
+        'staff' => $request->staff ?: null,
+        'overall' => $request->overall,
+        'pre_knowledge' => $request->pre_knowledge,
+        'post_knowledge' => $request->post_knowledge,
+        'future_topics' => !empty($futureTopics) ? $futureTopics : null,
+        'comment' => $request->suggestions,
+        'submitted_at' => now(),
+    ]
+);
+
+
+        return redirect()->back()->with('success', 'Feedback submitted successfully!');
     }
 
-    public function thankyou()
+    // รายการ Feedback ทั้งหมด (สำหรับ admin)
+    public function index()
     {
-        return view('feedback.thankyou');
+        $feedbacks = Feedback::with(['user', 'session'])->latest()->paginate(20);
+        return view('feedback.index', compact('feedbacks'));
+    }
+
+    // แสดงรายละเอียด Feedback
+    public function show(Feedback $feedback)
+    {
+        return view('feedback.show', compact('feedback'));
+    }
+
+    // ลบ Feedback
+    public function destroy(Feedback $feedback)
+    {
+        $feedback->delete();
+        return redirect()->back()->with('success', 'Feedback deleted!');
     }
 }
-
