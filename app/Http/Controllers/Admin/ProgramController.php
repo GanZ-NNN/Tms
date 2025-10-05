@@ -18,7 +18,7 @@ class ProgramController extends Controller
         $query = Program::query();
 
         // โหลดความสัมพันธ์ที่จำเป็นทั้งหมด
-        $query->with(['category', 'sessions.trainer', 'sessions.level']);
+        $query->with(['category', 'sessions.trainer']);
 
         // (Optional) ทำให้ Search Bar ทำงานได้
         if ($request->filled('search')) {

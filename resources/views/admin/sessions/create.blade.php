@@ -23,8 +23,9 @@
         {{-- Session Number --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">รอบที่</label>
-            <input type="number" name="session_number" value="{{ old('session_number') }}"
-                   class="w-full px-4 py-2 border rounded-lg" required>
+            <input type="number" name="session_number"
+                value="{{ old('session_number', $nextSessionNumber) }}"
+                class="w-full px-4 py-2 border rounded-lg" required readonly>
         </div>
 
         {{-- Trainer --}}
@@ -85,16 +86,16 @@
 
        {{-- Level --}}
        <div class="mb-4">
-        <label class="block mb-1 font-semibold">ระดับ</label>
-        <select name="level_id" class="w-full px-4 py-2 border rounded-lg" required>
+            <label class="block mb-1 font-semibold">ระดับ</label>
+        <select name="level" required>
             <option value="">-- เลือกระดับ --</option>
             @foreach($levels as $level)
-                <option value="{{ $level->id }}" {{ old('level_id') == $level->id ? 'selected' : '' }}>
-                    {{ $level->name }}
-                </option>
+                <option value="{{ $level }}">{{ $level }}</option>
             @endforeach
         </select>
-    </div>
+
+        </div>
+
 
 
         {{-- Buttons --}}

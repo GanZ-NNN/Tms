@@ -86,4 +86,13 @@ public function edit(Request $request): View
 
         return Redirect::to('/');
     }
+
+    public function myCertificates()
+{
+    $user = auth()->user();
+    $certificates = $user->certificates()->with('session.program')->get();
+
+    return view('profile.certificates', compact('certificates'));
+}
+
 }

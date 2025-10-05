@@ -111,11 +111,16 @@
                                 <tr class="border-b last:border-b-0 hover:bg-gray-50">
                                     {{-- *** จัดลำดับ <td> ให้ตรงกับ <th> *** --}}
                                     <td class="py-3" x-text="session.session_number || '-'"></td>
-                                    <td class="py-3">
+                                <td class="py-3">
                                         <template x-if="session.level">
-                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800" x-text="session.level.name"></span>
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800" x-text="session.level"></span>
                                         </template>
-                                    </td>
+                                        <template x-if="!session.level">
+                                            <span class="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-500">-</span>
+                                        </template>
+                                </td>
+
+
                                     <td class="py-3" x-text="session.trainer ? session.trainer.name : 'N/A'"></td>
                                     <td class="py-3" x-text="new Date(session.start_at).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })"></td>
                                     <td class="py-3" x-text="session.location || '-'"></td>

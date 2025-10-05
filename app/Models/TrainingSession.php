@@ -22,7 +22,7 @@ class TrainingSession extends Model
         'end_at',
         'registration_start_at',
         'registration_end_at',
-        'level_id',
+        'level',
     ];
 
     /**
@@ -94,4 +94,49 @@ class TrainingSession extends Model
             self::LEVEL_EXPERT,
         ];
     }
+
+    // ---------------------------------------------------------
+    // ✅ เพิ่มส่วนนี้เพื่อรองรับระบบใบรับรอง
+    // ---------------------------------------------------------
+
+    /**
+     * คำนวณเปอร์เซ็นต์การเข้าร่วมของผู้ใช้
+     */
+    public function attendanceRateFor($user)
+    {
+        $total = $this->attendances()->count();
+        $attended = $this->attendances()
+            ->where('user_id', $user->id)
+            ->where('status', 'present')
+            ->count();
+
+        if ($total === 0) return 0;
+        return round(($attended / $total) * 100, 2);
+    }
+
+    /**
+     * ตรวจสอบว่าผู้ใช้นี้ทำแบบประเมินแล้วหรือยัง
+     */
+    public function hasFeedbackFrom($user)
+    {
+        return $this->feedback()
+            ->where('user_id', $user->id)
+            ->exists();
+    }
+
+    /**
+     * ตรวจสอบว่าผ่านเงื่อนไขออกใบรับรองหรือยัง
+     * (เข้าร่วม >= 80% และทำแบบประเมินแล้ว)
+     */
+    public function eligibleForCertificate(User $user)
+{
+    $attendanceRate = $this->attendances()
+                           ->where('user_id', $user->id)
+                           ->count() / $this->capacity * 100;
+
+    $hasFeedback = $this->feedback()->where('user_id', $user->id)->exists();
+
+    return $attendanceRate >= 80 && $hasFeedback;
+}
+
 }

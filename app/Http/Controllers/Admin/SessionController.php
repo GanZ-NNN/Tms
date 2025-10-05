@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Program; // อย่าลืม import model
-use Illuminate\Http\Request;
+use App\Models\Program;
 use App\Models\Trainer;
-use App\Models\Level;
 use App\Models\TrainingSession;
+use Illuminate\Http\Request;
 
 class SessionController extends Controller
 {
@@ -16,6 +15,7 @@ class SessionController extends Controller
      */
     public function index(Program $program)
     {
+        // ถ้าไม่ต้องแสดง session แค่ redirect
         return redirect()->route('admin.programs.index');
     }
 
@@ -27,10 +27,16 @@ class SessionController extends Controller
         $trainers = Trainer::orderBy('name')->get();
         $levels = TrainingSession::getLevels();
 
+        // คำนวณ session_number อัตโนมัติ
+        $lastSession = $program->sessions()->max('session_number');
+        $nextSessionNumber = $lastSession ? $lastSession + 1 : 1;
 
-        return view('admin.sessions.create', compact('program', 'trainers', 'levels'));
+        return view('admin.sessions.create', compact('program', 'trainers', 'levels', 'nextSessionNumber'));
     }
 
+    /**
+     * Store a newly created session in storage.
+     */
     public function store(Request $request, Program $program)
     {
         $validated = $request->validate([
@@ -42,23 +48,30 @@ class SessionController extends Controller
             'end_at' => 'required|date|after:start_at',
             'registration_start_at' => 'required|date',
             'registration_end_at' => 'required|date|after:registration_start_at',
-            'level_id' => 'nullable|exists:levels,id',
+            'level' => 'nullable|string|in:Beginner,Intermediate,Expert',
         ]);
 
+        // ใช้ create ผ่าน relationship
         $program->sessions()->create($validated);
 
         return redirect()->route('admin.programs.index')
                          ->with('success', 'Session created successfully.');
     }
 
+    /**
+     * Show the form for editing the specified session.
+     */
     public function edit(Program $program, TrainingSession $session)
     {
         $trainers = Trainer::orderBy('name')->get();
-
+        $levels = TrainingSession::getLevels();
 
         return view('admin.sessions.edit', compact('program', 'session', 'trainers', 'levels'));
     }
 
+    /**
+     * Update the specified session in storage.
+     */
     public function update(Request $request, Program $program, TrainingSession $session)
     {
         $validated = $request->validate([
@@ -70,7 +83,7 @@ class SessionController extends Controller
             'end_at' => 'required|date|after:start_at',
             'registration_start_at' => 'required|date',
             'registration_end_at' => 'required|date|after:registration_start_at',
-            'level_id' => 'nullable|exists:levels,id',
+            'level' => 'nullable|string|in:Beginner,Intermediate,Expert',
         ]);
 
         $session->update($validated);
@@ -79,6 +92,9 @@ class SessionController extends Controller
                          ->with('success', 'Session updated successfully.');
     }
 
+    /**
+     * Remove the specified session from storage.
+     */
     public function destroy(Program $program, TrainingSession $session)
     {
         $session->delete();

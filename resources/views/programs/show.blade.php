@@ -5,7 +5,7 @@
    <div class="container my-5" style="min-height: 900px;">
     <div class="row justify-content-center">
         <div class="col-lg-11 col-xl-10">
-                
+
                 {{-- ไม่ต้องมี Logic ปุ่มตรงนี้ --}}
 
                 <div class="card h-100 shadow-sm border-0 rounded-lg course-card">
@@ -38,14 +38,14 @@
                             <div class="d-flex justify-content-between align-items-center border-bottom py-3">
                                 {{-- ส่วนแสดงข้อมูล Session --}}
                                 <div>
-                                    <div class="fw-semibold">{{ $session->title ?? 'รอบที่ ' . $session->session_number }} - {{ $session->level?->name }}</div>
+                                    <div class="fw-semibold">{{ $session->title ?? 'รอบที่ ' . $session->session_number }} - {{ $session->level ?? '-' }}</div>
                                     <div class="small text-muted">
-                                        <i class="far fa-calendar-alt"></i> {{ $session->start_at->format('d M Y') }} | 
+                                        <i class="far fa-calendar-alt"></i> {{ $session->start_at->format('d M Y') }} |
                                         <i class="far fa-user"></i> {{ $session->trainer?->name }} |
                                         <i class="fas fa-map-marker-alt"></i> {{ $session->location }}
                                     </div>
                                 </div>
-                                
+
                                 {{-- *** ย้าย Logic ปุ่มที่ถูกต้องมาไว้ที่นี่ *** --}}
                                 <div>
                                     @auth
