@@ -8,7 +8,7 @@
                 
                 {{-- ไม่ต้องมี Logic ปุ่มตรงนี้ --}}
 
-                <div class="card shadow-lg border-0 rounded-3 overflow-hidden">
+                <div class="card h-100 shadow-sm border-0 rounded-lg course-card">
 
                     {{-- รูปหลักสูตร --}}
                     @if($program->image)
