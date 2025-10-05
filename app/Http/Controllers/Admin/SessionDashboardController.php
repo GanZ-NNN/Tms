@@ -9,6 +9,7 @@ use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\Feedback;
+use App\Models\Attendance;
 
 class SessionDashboardController extends Controller
 {
@@ -32,11 +33,10 @@ class SessionDashboardController extends Controller
 
         // --- Left Column Data ---
 
-        // 1. กราฟเส้น: Monthly Registration Trend
-        $registrationTrend = Registration::select(
+        $monthlyAttendance = \App\Models\Attendance::select(
                 DB::raw('YEAR(created_at) as year'),
                 DB::raw('MONTH(created_at) as month'),
-                DB::raw('COUNT(*) as count')
+                DB::raw('COUNT(DISTINCT user_id) as count') // นับจำนวนผู้เข้าร่วมที่ไม่ซ้ำกัน
             )
             ->where('created_at', '>=', now()->subMonths(12))
             ->groupBy('year', 'month')
@@ -44,9 +44,21 @@ class SessionDashboardController extends Controller
             ->orderBy('month', 'asc')
             ->get();
 
-        $chartData = [
-            'labels' => $registrationTrend->map(fn($item) => date('M Y', mktime(0, 0, 0, $item->month, 1, $item->year))),
-            'data' => $registrationTrend->pluck('count'),
+        // สร้าง Labels และ Data สำหรับ 12 เดือนย้อนหลัง
+        $labels = [];
+        $data = [];
+        for ($i = 11; $i >= 0; $i--) {
+            $month = now()->subMonths($i);
+            $labels[] = $month->format('M Y');
+            $data[] = $monthlyAttendance->first(function ($item) use ($month) {
+                return $item->year == $month->year && $item->month == $month->month;
+            })->count ?? 0;
+        }
+
+        // เปลี่ยนชื่อตัวแปรที่ส่งไป View
+        $attendanceChartData = [
+            'labels' => $labels,
+            'data' => $data,
         ];
 
         // 2. ตาราง: Upcoming Sessions (List)
@@ -107,7 +119,7 @@ class SessionDashboardController extends Controller
         // --- ส่งตัวแปรทั้งหมดไปที่ View ---
         return view('admin.dashboard', compact(
             'stats', 
-            'chartData', 
+            'attendanceChartData', 
             'upcomingSessions', 
             'sessionsToComplete',
             'feedbackChartData',
