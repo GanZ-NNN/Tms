@@ -109,7 +109,7 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
         Route::resource('certificates', CertificateAdminController::class);
 
         Route::resource('categories', CategoryController::class);
-        Route::resource('levels', LevelController::class);
+        // Route::resource('levels', LevelController::class);
 
 
         Route::resource('programs.sessions', SessionController::class);
