@@ -21,6 +21,8 @@
         @csrf
         @method('PUT') {{-- สำคัญมากสำหรับการแก้ไข --}}
 
+        
+
         <div class="mb-4">
             <label for="name" class="block text-gray-700 text-sm font-bold mb-2">ชื่อหมวดหมู่:</label>
             <input type="text" name="name" id="name" value="{{ old('name', $category->name) }}"

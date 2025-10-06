@@ -33,6 +33,27 @@
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
+        {{-- Phone Number --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">เบอร์โทรศัพท์</label>
+            <input type="text" name="phone_number" value="{{ old('phone_number') }}"
+                   class="w-full px-4 py-2 border rounded-lg">
+        </div>
+
+        {{-- Occupation --}}
+        <div class="mb-4">
+            <label class="block mb-1 font-semibold">อาชีพ/สถานะ</label>
+            <select name="occupation" class="w-full px-4 py-2 border rounded-lg">
+                <option value="">-- เลือกอาชีพ/สถานะ --</option>
+                <option value="นักศึกษาในคณะ" {{ old('occupation') == 'นักศึกษาในคณะ' ? 'selected' : '' }}>นักศึกษาในคณะ</option>
+                <option value="นักศึกษามข" {{ old('occupation') == 'นักศึกษามข' ? 'selected ' : '' }}>นักศึกษามข</option>
+                <option value="อาจารย์ในคณะ" {{ old('occupation') == 'อาจารย์ในคณะ' ? 'selected' : '' }}>อาจารย์ในคณะ</option>
+                <option value="อาจารย์มข" {{ old('occupation') == 'อาจารย์มข' ? 'selected' : '' }}>อาจารย์มข</option>
+                <option value="บุคคลภายนอก" {{ old('occupation') == 'บุคคลภายนอก' ? 'selected' : '' }}>บุคคลภายนอก</option>
+            </select>
+        </div>
+
+
         {{-- Password --}}
         <div class="mb-4">
             <label class="block mb-1 font-semibold">Password</label>

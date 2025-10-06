@@ -21,7 +21,7 @@ public function index(Request $request) // เพิ่ม Request สำหร�
     }
 
     $categories = $query->latest()->paginate(10);
-    
+
     // ส่งแค่ categories ไป ไม่ต้องส่ง levels
     return view('admin.categories.index', compact('categories'));
 }

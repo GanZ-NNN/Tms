@@ -26,40 +26,44 @@ class CertificateAdminController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'session_id' => 'required|exists:training_sessions,id',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|exists:users,id',
+        'session_id' => 'required|exists:training_sessions,id',
+    ]);
 
-        $user = User::findOrFail($request->user_id);
-        $session = TrainingSession::findOrFail($request->session_id);
+    $user = User::findOrFail($request->user_id);
+    $session = TrainingSession::findOrFail($request->session_id);
 
-        // สร้าง certificate record
-        $certificate = Certificate::create([
-            'user_id' => $user->id,
-            'session_id' => $session->id,
-            'issued_at' => now(),
-        ]);
+    // สร้าง certificate record
+    $certificate = Certificate::create([
+        'user_id' => $user->id,
+        'session_id' => $session->id,
+        'issued_at' => now(),
+    ]);
 
-        // สร้าง PDF
-        $pdf = Pdf::loadView('certificates.template', [
-            'certificate' => $certificate,
-            'user' => $user,
-            'session' => $session,
-            'qrCode' => base64_encode(
-                QrCode::format('png')->size(120)->generate(
-                    url("/certificate/verify/" . $certificate->verification_hash)
-                )
-            )
-        ]);
+    // สร้าง QR code แบบ base64 ใช้ GD
+    $qrCode = base64_encode(
+        QrCode::format('png')->size(150)->generate(
+            url("/certificate/verify/{$certificate->verification_hash}")
+        )
+    );
 
-        $filePath = "certificates/{$certificate->cert_no}.pdf";
-        Storage::put($filePath, $pdf->output());
-        $certificate->update(['pdf_path' => $filePath]);
+    // สร้าง PDF
+    $pdf = Pdf::loadView('certificates.template', [
+        'certificate' => $certificate,
+        'user' => $user,
+        'session' => $session,
+        'qrCode' => $qrCode,
+    ]);
 
-        return redirect()->route('admin.certificates.index')->with('success', 'Certificate generated successfully!');
-    }
+    $filePath = "certificates/{$certificate->cert_no}.pdf";
+    Storage::put($filePath, $pdf->output());
+    $certificate->update(['pdf_path' => $filePath]);
+
+    return redirect()->route('admin.certificates.index')->with('success', 'Certificate generated successfully!');
+}
+
 
     public function show(Certificate $certificate)
     {

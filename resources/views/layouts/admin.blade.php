@@ -110,11 +110,11 @@
                             <i class="bi bi-award"></i> ใบประกาศนียบัตร
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}" href="{{ route('admin.reports.feedback.index') }}">
                             <i class="bi bi-file-earmark-text"></i> รายงาน
                         </a>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
         </nav>

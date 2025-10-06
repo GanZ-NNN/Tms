@@ -30,6 +30,32 @@
                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-500"/>
                 </div>
 
+                <!-- Phone Number -->
+                <div>
+                    <x-input-label for="phone_number" :value="__('Phone Number')" class="font-semibold text-gray-700 dark:text-gray-300"/>
+                    <x-text-input id="phone_number" class="block mt-1 w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg shadow-sm focus:ring-orange-400 focus:border-orange-400"
+                        type="text" name="phone_number" :value="old('phone_number')" autocomplete="tel" />
+                    <x-input-error :messages="$errors->get('phone_number')" class="mt-2 text-sm text-red-500"/>
+                </div>
+
+                <!-- Occupation -->
+                <div>
+                    <x-input-label for="occupation" :value="__('Occupation')" class="font-semibold text-gray-700 dark:text-gray-300"/>
+
+                    <select id="occupation" name="occupation"
+                        class="block mt-1 w-full border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-lg shadow-sm focus:ring-orange-400 focus:border-orange-400">
+                        <option value="">-- เลือกอาชีพ/สถานะ --</option>
+                        <option value="นักศึกษาในคณะ" {{ old('occupation') == 'นักศึกษาในคณะ' ? 'selected' : '' }}>นักศึกษาในคณะ</option>
+                        <option value="นักศึกษามข" {{ old('occupation') == 'นักศึกษามข' ? 'selected' : '' }}>นักศึกษามข</option>
+                        <option value="อาจารย์ในคณะ" {{ old('occupation') == 'อาจารย์ในคณะ' ? 'selected' : '' }}>อาจารย์ในคณะ</option>
+                        <option value="อาจารย์มข" {{ old('occupation') == 'อาจารย์มข' ? 'selected' : '' }}>อาจารย์มข</option>
+                        <option value="บุคคลภายนอก" {{ old('occupation') == 'บุคคลภายนอก' ? 'selected' : '' }}>บุคคลภายนอก</option>
+                    </select>
+
+                    <x-input-error :messages="$errors->get('occupation')" class="mt-2 text-sm text-red-500"/>
+                </div>
+
+
                 <!-- Password -->
                 <div>
                     <x-input-label for="password" :value="__('Password')" class="font-semibold text-gray-700 dark:text-gray-300"/>

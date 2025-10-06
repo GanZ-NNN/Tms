@@ -1,90 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Certificate of Completion</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Roboto&display=swap');
+<meta charset="UTF-8">
+<title>Certificate of Completion</title>
+<style>
+    body {
+        font-family: 'Times New Roman', serif;
+        background: linear-gradient(to right, #fff8ec, #fff4d4);
+        margin: 0;
+        padding: 0;
+    }
+    .certificate {
+        border: 15px solid #d4af37;
+        padding: 40px 70px;
+        margin: 20px auto;
+        width: 90%;
+        height: 700px;
+        background-color: #fffef9;
+        box-shadow: 0 0 15px rgba(0,0,0,0.15);
+        position: relative;
+        text-align: center;
+    }
 
-        body {
-            font-family: 'Roboto', sans-serif;
-            background: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
+    h1 {
+        font-size: 40px;
+        margin-top: 20px;
+        color: #2e2e2e;
+    }
+    p {
+        font-size: 18px;
+        color: #444;
+    }
 
-        .certificate {
-            width: 800px;
-            height: 600px;
-            padding: 50px;
-            border: 10px solid #2c3e50;
-            background: #fff;
-            box-shadow: 0 0 20px rgba(0,0,0,0.1);
-            text-align: center;
-            position: relative;
-        }
+    .name {
+        font-size: 36px;
+        font-weight: bold;
+        color: #b85c00;
+        margin: 25px 0;
+    }
+    .course {
+        font-size: 24px;
+        color: #b07a00;
+        margin-bottom: 10px;
+    }
 
-        .certificate h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 40px;
-            color: #2c3e50;
-            margin-bottom: 10px;
-        }
+    .meta {
+        font-size: 16px;
+        margin-top: 30px;
+    }
 
-        .certificate h2 {
-            font-size: 28px;
-            color: #34495e;
-            margin: 20px 0;
-        }
+    .logo {
+        position: absolute;
+        left: 60px;
+        bottom: 60px;
+        text-align: center;
+    }
+    .logo img {
+        width: 100px;
+        height: auto;
+    }
 
-        .certificate p {
-            font-size: 18px;
-            margin: 10px 0;
-            color: #555;
-        }
+    .signature {
+        position: absolute;
+        right: 100px;
+        bottom: 50px;
+        text-align: center;
+    }
+    .signature img {
+        width: 160px;
+        height: auto;
+    }
 
-        .certificate .highlight {
-            font-weight: bold;
-            color: #e74c3c;
-        }
-
-        .certificate .footer {
-            position: absolute;
-            bottom: 50px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            padding: 0 50px;
-            font-size: 16px;
-            color: #777;
-        }
-
-        .certificate .qr {
-            margin-top: 30px;
-        }
-    </style>
+    .qr {
+        position: absolute;
+        left: 60px;
+        top: 60px;
+    }
+    .qr img {
+        width: 100px;
+        height: 100px;
+    }
+</style>
 </head>
 <body>
-    <div class="certificate">
-        <h1>Certificate of Completion</h1>
-        <p>This is to certify that</p>
-        <h2 class="highlight">{{ $user->name }}</h2>
-        <p>has successfully completed the program</p>
-        <h2 class="highlight">{{ $session->program->title }}</h2>
-        <p>Certificate No: <span class="highlight">{{ $cert_no }}</span></p>
-        <p>Date: <span class="highlight">{{ $issued_at->format('d M Y') }}</span></p>
-
+<div class="certificate">
+    {{-- QR Code --}}
+    @if(isset($qr_storage_path) && file_exists($qr_storage_path))
         <div class="qr">
-            {!! $qr !!}
+            <img src="data:image/png;base64,{{ base64_encode(file_get_contents($qr_storage_path)) }}" alt="QR Code">
         </div>
+    @endif
 
-        <div class="footer">
-            <div>Signature</div>
-            <div>Logo</div>
-        </div>
+    <h1>Certificate of Completion</h1>
+    <p>This is to certify that</p>
+    <div class="name">{{ ucfirst($name) }}</div>
+    <p>has successfully completed the course</p>
+    <div class="course">{{ ucfirst($course) }}</div>
+
+    <div class="meta">
+        <p>Certificate ID: <strong>{{ $cert_no }}</strong></p>
+        <p>Date Issued: <strong>{{ $date }}</strong></p>
     </div>
+
+    <div class="logo">
+        @if(isset($logo_url))
+            <img src="{{ $logo_url }}" alt="Logo">
+        @endif
+        <div>Authorized Logo</div>
+    </div>
+
+    <div class="signature">
+        @if(isset($signature_image_url))
+            <img src="{{ $signature_image_url }}" alt="Signature">
+        @endif
+        <div>Instructor Signature</div>
+    </div>
+</div>
 </body>
 </html>

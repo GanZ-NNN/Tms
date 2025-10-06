@@ -2,9 +2,9 @@
 
 @section('content')
 <h3>Certificates</h3>
-<div class="mb-3">
+<!-- <div class="mb-3">
     <a href="{{ route('admin.certificates.create') }}" class="btn btn-primary">+ Generate Certificate</a>
-</div>
+</div> -->
 
 @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>

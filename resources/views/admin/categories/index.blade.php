@@ -39,6 +39,7 @@
                 <thead>
                     <tr class="text-left text-sm text-gray-500 uppercase tracking-wider">
                         <th class="px-6 py-3">ID</th>
+
                         <th class="px-6 py-3">ชื่อหมวดหมู่</th>
                         <th class="px-6 py-3 text-right">จัดการ</th>
                     </tr>
@@ -47,6 +48,7 @@
                     @forelse ($categories as $category)
                         <tr>
                             <td class="px-6 py-4">{{ $category->id }}</td>
+                            
                             <td class="px-6 py-4">{{ $category->name }}</td>
                             <td class="px-6 py-4 text-right space-x-2">
                                 <a href="{{ route('admin.categories.edit', $category) }}"

@@ -31,6 +31,8 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'phone_number' => ['nullable', 'string', 'max:15'],
+            'occupation' => ['nullable', 'string', 'max:100'],
         ]);
 
         // สร้างผู้ใช้
@@ -38,6 +40,8 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'phone_number' => $request->phone_number,
+            'occupation' => $request->occupation,
         ]);
 
         // ส่งอีเมลต้อนรับ
