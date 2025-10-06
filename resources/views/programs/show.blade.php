@@ -131,4 +131,21 @@
         font-weight: bold;
     }
     </style>
+
+    @push('scripts')
+<script>
+    // ตรวจสอบว่ามี session 'registration_success' ถูกส่งมาหรือไม่
+    @if (session('registration_success'))
+        // ถ้ามี ให้แสดง Pop-up ของ SweetAlert2
+        Swal.fire({
+            title: 'ลงทะเบียนสำเร็จ!',
+            text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'ยอดเยี่ยม',
+            timer: 3000, // (Optional) ปิดอัตโนมัติใน 3 วินาที
+            timerProgressBar: true
+        })
+    @endif
+</script>
+@endpush
 </x-app-layout>

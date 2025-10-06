@@ -46,7 +46,7 @@ class RegistrationController extends Controller
         ]);
 
         // 5. Redirect กลับไปหน้าเดิม พร้อมข้อความแจ้งเตือน
-        return back()->with('success', 'You have successfully registered for the session!');
+        return back()->with('registration_success', true);
     }
 
     public function destroy(Registration $registration)

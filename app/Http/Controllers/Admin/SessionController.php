@@ -8,6 +8,7 @@ use App\Models\Trainer;
 use App\Models\TrainingSession;
 use Illuminate\Http\Request;
 
+
 class SessionController extends Controller
 {
     /**
@@ -48,7 +49,7 @@ class SessionController extends Controller
             'end_at' => 'required|date|after:start_at',
             'registration_start_at' => 'required|date',
             'registration_end_at' => 'required|date|after:registration_start_at',
-            'level' => 'nullable|string|in:Beginner,Intermediate,Expert',
+            'level' => 'nullable|string|in:Beginner,Intermediate,Advanced',
         ]);
 
         // ใช้ create ผ่าน relationship
@@ -83,7 +84,7 @@ class SessionController extends Controller
             'end_at' => 'required|date|after:start_at',
             'registration_start_at' => 'required|date',
             'registration_end_at' => 'required|date|after:registration_start_at',
-            'level' => 'nullable|string|in:Beginner,Intermediate,Expert',
+            'level' => 'nullable|string|in:Beginner,Intermediate,Advanced',
         ]);
 
         $session->update($validated);

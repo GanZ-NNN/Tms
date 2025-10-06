@@ -24,7 +24,7 @@
                                 {{ Str::limit($program->title, 60) }}
                             </h5>
 
-                            <!-- 🔹 ระดับ (Beginner / Intermediate / Expert) + ประเภทหลักสูตร -->
+                            <!-- 🔹 ระดับ (Beginner / Intermediate / Advanced) + ประเภทหลักสูตร -->
                             @php
                              $levelName = $program->sessions->first()->level ?? 'ไม่ระบุระดับ';
                             @endphp

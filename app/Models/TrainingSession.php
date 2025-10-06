@@ -84,14 +84,14 @@ class TrainingSession extends Model
     }
     public const LEVEL_BEGINNER = 'Beginner';
     public const LEVEL_INTERMEDIATE = 'Intermediate';
-    public const LEVEL_EXPERT = 'Expert';
+    public const LEVEL_ADVANCED = 'Advanced';
 
     public static function getLevels(): array
     {
         return [
             self::LEVEL_BEGINNER,
             self::LEVEL_INTERMEDIATE,
-            self::LEVEL_EXPERT,
+            self::LEVEL_ADVANCED,
         ];
     }
 

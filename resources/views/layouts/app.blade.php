@@ -56,5 +56,14 @@
 
     <!-- Swiper JS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
+        <!-- ========== เพิ่ม 2 ส่วนนี้เข้ามา ========== -->
+    <!-- SweetAlert2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Custom Scripts per page -->
+    @stack('scripts')
+    <!-- ============================================= -->
+    
 </body>
 </html>
