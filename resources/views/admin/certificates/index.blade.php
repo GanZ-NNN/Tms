@@ -31,7 +31,8 @@
             <td>{{ $cert->session->title }}</td>
             <td>{{ $cert->issued_at }}</td>
             <td>
-                <a href="{{ Storage::url($cert->pdf_path) }}" target="_blank" class="btn btn-sm btn-success">Download</a>
+                <a href="{{ route('certificates.download', $cert) }}" class="btn btn-sm btn-success">Download</a>
+
             </td>
             <td>
                 <form action="{{ route('admin.certificates.destroy', $cert) }}" method="POST" onsubmit="return confirm('Are you sure?');">
