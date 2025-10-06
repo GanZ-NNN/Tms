@@ -100,4 +100,52 @@ class FeedbackController extends Controller
 
     return redirect()->back()->with('success', 'Feedback submitted successfully.');
 }
+
+// ✅ Export CSV
+    public function export()
+    {
+        $feedbacks = Feedback::with(['user', 'session'])->get();
+
+        $csvData = [];
+        $csvData[] = [
+            'Session',
+            'User',
+            'Speakers',
+            'Content',
+            'Staff',
+            'Overall',
+            'Comment',
+            'Submitted At'
+        ];
+
+        foreach ($feedbacks as $f) {
+            $csvData[] = [
+                $f->session->title ?? '-',
+                $f->user->name ?? '-',
+                json_encode($f->speakers),
+                json_encode($f->content),
+                json_encode($f->staff),
+                $f->overall,
+                $f->comment,
+                $f->submitted_at,
+            ];
+        }
+
+        $filename = 'feedbacks_' . now()->format('Ymd_His') . '.csv';
+        $handle = fopen('php://temp', 'r+');
+
+        foreach ($csvData as $row) {
+            fputcsv($handle, $row);
+        }
+
+        rewind($handle);
+        $contents = stream_get_contents($handle);
+        fclose($handle);
+
+        return Response::make($contents, 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => "attachment; filename=\"$filename\"",
+        ]);
+    }
+
 }

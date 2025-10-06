@@ -129,6 +129,10 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
         Route::get('/feedback', [App\Http\Controllers\Admin\FeedbackController::class, 'index'])->name('feedback.index');
         Route::get('/feedback/{sessionId}', [App\Http\Controllers\Admin\FeedbackController::class, 'report'])->name('feedback.report');
     });
+
+    // ✅ เพิ่ม route สำหรับ export CSV
+    Route::get('/feedbacks/export', [FeedbackController::class, 'export'])
+        ->name('feedbacks.export');
 });
 
 /*

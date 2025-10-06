@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('feedbacks', function (Blueprint $table) {
@@ -20,19 +17,40 @@ return new class extends Migration
 
             // Demographics
             $table->string('sex')->nullable();
+            $table->string('sex_other')->nullable();
             $table->string('age')->nullable();
 
             // Ratings stored as JSON
             $table->json('speakers')->nullable();
             $table->json('content')->nullable();
             $table->json('staff')->nullable();
+            $table->json('faculty_related')->nullable();
+
+            // Overall ratings
             $table->tinyInteger('overall')->nullable();
             $table->tinyInteger('pre_knowledge')->nullable();
             $table->tinyInteger('post_knowledge')->nullable();
 
-            // Suggestions and future topics
-            $table->text('comment')->nullable();
+            // Communication preferences
+            $table->string('want_news')->nullable();
+            $table->json('news_channels')->nullable();
+            $table->string('news_channels_other')->nullable();
+
+            // Future topics
             $table->json('future_topics')->nullable();
+            $table->string('future_topics_other')->nullable();
+
+            // Activity preferences
+            $table->string('participated_before')->nullable();
+            $table->string('activity_format')->nullable();
+            $table->string('activity_format_other')->nullable();
+
+            // Influence factors
+            $table->string('instructor_info_influence')->nullable();
+            $table->string('outside_hours_influence')->nullable();
+
+            // Comments
+            $table->text('comment')->nullable();
 
             // Timestamp
             $table->timestamp('submitted_at')->useCurrent();
@@ -42,9 +60,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('feedbacks');
