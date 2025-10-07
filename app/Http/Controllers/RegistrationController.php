@@ -67,6 +67,6 @@ class RegistrationController extends Controller
         $registration->delete();
 
         // 3. Redirect กลับไปหน้าเดิม พร้อมข้อความแจ้งเตือน
-        return back()->with('success', 'Your registration has been successfully cancelled.');
+        return back()->with('cancel_success', true);
     }
 }

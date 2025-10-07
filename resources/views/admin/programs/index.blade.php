@@ -156,3 +156,20 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    // ตรวจสอบว่ามี session 'session_created' ถูกส่งมาหรือไม่
+    @if (session('session_created'))
+        // ถ้ามี ให้แสดง Pop-up ของ SweetAlert2
+        Swal.fire({
+            title: 'สร้างรอบอบรมสำเร็จ!',
+            text: 'ข้อมูลรอบอบรมใหม่ได้ถูกบันทึกเรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'รับทราบ',
+            timer: 3000,
+            timerProgressBar: true
+        })
+    @endif
+</script>
+@endpush

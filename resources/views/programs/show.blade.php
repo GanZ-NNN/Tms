@@ -70,7 +70,7 @@
                                                 <form action="{{ route('registrations.cancel', $userRegistration) }}" method="POST" onsubmit="return confirm('Are you sure?');">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger fw-bold">ยกเลิกการลงทะเบียน</button>
+                                                    <button type="submit" class="btn btn-danger fw-bold">ยกเลิกการสมัครรอบอบรมนี้</button>
                                                 </form>
                                             @endif
                                         @else
@@ -79,7 +79,7 @@
                                             @else
                                                 <form action="{{ route('sessions.register', $session) }}" method="POST">
                                                     @csrf
-                                                    <button type="submit" class="btn btn-success fw-bold">ลงทะเบียน</button>
+                                                    <button type="submit" class="btn btn-success fw-bold">สมัครรอบอบรมนี้</button>
                                                 </form>
                                             @endif
                                         @endif
@@ -144,6 +144,26 @@
             confirmButtonText: 'ยอดเยี่ยม',
             timer: 3000, // (Optional) ปิดอัตโนมัติใน 3 วินาที
             timerProgressBar: true
+        })
+    @endif
+
+        @if (session('registration_success'))
+        Swal.fire({
+            title: 'ลงทะเบียนสำเร็จ!',
+            text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'ยอดเยี่ยม'
+        })
+    @endif
+
+    // *** เพิ่มโค้ดส่วนนี้เข้ามา ***
+    // Pop-up สำหรับ "ยกเลิกสำเร็จ"
+    @if (session('cancel_success'))
+        Swal.fire({
+            title: 'ยกเลิกสำเร็จ!',
+            text: 'การลงทะเบียนของคุณได้ถูกยกเลิกเรียบร้อยแล้ว',
+            icon: 'info', // ใช้ไอคอน 'info' หรือ 'warning' จะเหมาะสมกว่า
+            confirmButtonText: 'รับทราบ'
         })
     @endif
 </script>

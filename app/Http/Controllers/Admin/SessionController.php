@@ -45,10 +45,15 @@ class SessionController extends Controller
             'session_number' => 'required|integer',
             'location' => 'nullable|string',
             'capacity' => 'required|integer|min:1|max:40',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
-            'registration_start_at' => 'required|date',
-            'registration_end_at' => 'required|date|after:registration_start_at',
+            'start_at' => 'required|date|after_or_equal:today', // <-- 1. วันเริ่มต้องเป็นวันนี้หรืออนาคต
+            'end_at' => 'required|date|after:start_at', // <-- 2. วันจบต้องอยู่หลังวันเริ่ม
+            'registration_start_at' => 'required|date|after_or_equal:today',
+            'registration_end_at' => [
+                'required',
+                'date',
+                'after_or_equal:registration_start_at', // 1. ปิดสมัครต้องไม่ก่อนวันเปิด
+                'before:start_at'                       // 2. ต้องปิดรับสมัคร "ก่อน" วันอบรมเริ่ม
+            ],
             'level' => 'nullable|string|in:Beginner,Intermediate,Advanced',
         ]);
 
@@ -56,7 +61,7 @@ class SessionController extends Controller
         $program->sessions()->create($validated);
 
         return redirect()->route('admin.programs.index')
-                         ->with('success', 'Session created successfully.');
+                         ->with('session_created', true);
     }
 
     /**
@@ -80,10 +85,15 @@ class SessionController extends Controller
             'session_number' => 'required|integer',
             'location' => 'nullable|string',
             'capacity' => 'required|integer|min:1|max:40',
-            'start_at' => 'required|date',
-            'end_at' => 'required|date|after:start_at',
-            'registration_start_at' => 'required|date',
-            'registration_end_at' => 'required|date|after:registration_start_at',
+            'start_at' => 'required|date|after_or_equal:today', // <-- 1. วันเริ่มต้องเป็นวันนี้หรืออนาคต
+            'end_at' => 'required|date|after:start_at', // <-- 2. วันจบต้องอยู่หลังวันเริ่ม
+            'registration_start_at' => 'required|date|after_or_equal:today',
+            'registration_end_at' => [
+                'required',
+                'date',
+                'after_or_equal:registration_start_at', // 1. ปิดสมัครต้องไม่ก่อนวันเปิด
+                'before:start_at'                       // 2. ต้องปิดรับสมัคร "ก่อน" วันอบรมเริ่ม
+            ],
             'level' => 'nullable|string|in:Beginner,Intermediate,Advanced',
         ]);
 

@@ -60,6 +60,7 @@
         <div class="mb-4">
             <label class="block mb-1 font-semibold">วันเริ่ม</label>
             <input type="datetime-local" name="start_at" value="{{ old('start_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
@@ -67,6 +68,7 @@
         <div class="mb-4">
             <label class="block mb-1 font-semibold">วันสิ้นสุด</label>
             <input type="datetime-local" name="end_at" value="{{ old('end_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
@@ -74,6 +76,7 @@
         <div class="mb-4">
             <label class="block mb-1 font-semibold">เริ่มเปิดสมัคร</label>
             <input type="datetime-local" name="registration_start_at" value="{{ old('registration_start_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
@@ -81,6 +84,7 @@
         <div class="mb-4">
             <label class="block mb-1 font-semibold">ปิดสมัคร</label>
             <input type="datetime-local" name="registration_end_at" value="{{ old('registration_end_at') }}"
+            min="{{ now()->format('Y-m-d\TH:i') }}"
                    class="w-full px-4 py-2 border rounded-lg" required>
         </div>
 
