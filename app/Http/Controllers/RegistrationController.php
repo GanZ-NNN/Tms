@@ -2,71 +2,78 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TrainingSession; // หรือ Session
+use App\Models\TrainingSession;
 use App\Models\Registration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\RegistrationSuccessMail;
+use App\Mail\RegistrationCanceledMail;
 
 class RegistrationController extends Controller
 {
     /**
-     * Store a new registration in storage.
+     * บันทึกข้อมูลการลงทะเบียนใหม่
      */
     public function store(Request $request, TrainingSession $session)
     {
-        // 1. ตรวจสอบว่าผู้ใช้ Login แล้วหรือยัง
+        // 1. ตรวจสอบการล็อกอิน
         if (!Auth::check()) {
-            // ถ้ายังไม่ Login, ให้จำ URL นี้ไว้ แล้วส่งไปหน้า Login
             return redirect()->guest(route('login'));
         }
 
         $user = Auth::user();
 
-        // 2. ตรวจสอบว่าเคยลงทะเบียนไปแล้วหรือยัง
+        // 2. ตรวจสอบว่าเคยลงทะเบียนหรือยัง
         $alreadyRegistered = Registration::where('user_id', $user->id)
                                          ->where('session_id', $session->id)
                                          ->exists();
         if ($alreadyRegistered) {
-            return back()->with('error', 'You are already registered for this session.');
+            return back()->with('error', 'คุณได้ลงทะเบียนในรอบนี้แล้ว');
         }
 
-        // 3. ตรวจสอบว่าที่นั่งเต็มหรือยัง (ถ้ามี capacity)
+        // 3. ตรวจสอบจำนวนที่นั่ง
         if ($session->capacity) {
             $registrationCount = Registration::where('session_id', $session->id)->count();
             if ($registrationCount >= $session->capacity) {
-                return back()->with('error', 'Sorry, this session is full.');
+                return back()->with('error', 'ขออภัย รอบอบรมนี้เต็มแล้ว');
             }
         }
-        
-        // 4. ถ้าทุกอย่างผ่าน, ทำการสร้างการลงทะเบียน
-        Registration::create([
+
+        // 4. สร้างการลงทะเบียน
+        $registration = Registration::create([
             'user_id' => $user->id,
             'session_id' => $session->id,
-            // 'status' => 'registered', // ถ้าตาราง registrations มีคอลัมน์ status
         ]);
 
-        // 5. Redirect กลับไปหน้าเดิม พร้อมข้อความแจ้งเตือน
+        // 5. ส่งอีเมลแจ้งผู้ลงทะเบียน
+        Mail::to($user->email)->send(new RegistrationSuccessMail($user, $session));
+
+        // 6. กลับไปพร้อม SweetAlert
         return back()->with('registration_success', true);
     }
 
+    /**
+     * ยกเลิกการลงทะเบียน
+     */
     public function destroy(Registration $registration)
     {
-        // 1. ตรวจสอบสิทธิ์ (Authorization)
-        //    ให้แน่ใจว่าคนที่กำลังจะลบ คือเจ้าของการลงทะเบียนนั้นจริงๆ
-        if (Auth::id() !== $registration->user_id) {
+        $user = Auth::user(); // ✅ ต้องประกาศก่อนใช้
+
+        // ตรวจสอบสิทธิ์
+        if ($user->id !== $registration->user_id) {
             abort(403, 'Unauthorized Action');
         }
 
-        // (Optional) ตรวจสอบเงื่อนไขเพิ่มเติม
-        // เช่น ไม่สามารถยกเลิกได้หากการอบรมเริ่มไปแล้ว
-        // if ($registration->session->start_at < now()) {
-        //     return back()->with('error', 'You cannot cancel a registration for a session that has already started.');
-        // }
+        // เก็บ session ก่อนลบ (เพราะลบแล้วจะอ้างอิงไม่ได้)
+        $session = $registration->session;
 
-        // 2. ทำการลบข้อมูลการลงทะเบียน
+        // ลบการลงทะเบียน
         $registration->delete();
 
-        // 3. Redirect กลับไปหน้าเดิม พร้อมข้อความแจ้งเตือน
+        // ส่งอีเมลยืนยันการยกเลิก
+        Mail::to($user->email)->send(new RegistrationCanceledMail($user, $session));
+
         return back()->with('cancel_success', true);
     }
 }

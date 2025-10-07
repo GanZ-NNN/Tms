@@ -1,6 +1,10 @@
-/* ===== TMS Enhanced Styles (style.css) ===== */
+/* =========================================================
+   ===== TMS Enhanced Styles (style.css) - FINAL VERSION =====
+   ========================================================= */
 
-/* CSS Reset & Variables */
+/* ---------------------------------
+   1. CSS Reset & Variables
+   --------------------------------- */
 * {
     margin: 0;
     padding: 0;
@@ -49,7 +53,9 @@
     --transition-fast: all 0.15s ease-out;
 }
 
-/* Base Styles */
+/* ---------------------------------
+   2. Base Styles & Typography
+   --------------------------------- */
 html {
     scroll-behavior: smooth;
     font-size: 16px;
@@ -63,7 +69,6 @@ body {
     min-height: 100vh;
 }
 
-/* Typography */
 h1, h2, h3, h4, h5, h6 {
     font-weight: 700;
     color: var(--dark-color);
@@ -83,7 +88,9 @@ p {
     color: var(--gray-600);
 }
 
-/* Layout */
+/* ---------------------------------
+   3. Layout & Utilities
+   --------------------------------- */
 .main-wrapper {
     min-height: 100vh;
     display: flex;
@@ -101,7 +108,29 @@ p {
     padding: 0 1rem;
 }
 
-/* Header Styles */
+.glass {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.gradient-text {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.text-center { text-align: center; }
+.mb-4 { margin-bottom: 2rem; }
+.mb-5 { margin-bottom: 3rem; }
+.mt-5 { margin-top: 3rem; }
+.py-3 { padding: 1rem 0; }
+
+
+/* ---------------------------------
+   4. Header & Navigation
+   --------------------------------- */
 .header {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -218,7 +247,9 @@ p {
     color: var(--primary-color);
 }
 
-/* Button Styles */
+/* ---------------------------------
+   5. Button Styles
+   --------------------------------- */
 .btn {
     font-weight: 600;
     padding: 0.75rem 1.5rem;
@@ -288,16 +319,45 @@ p {
     transform: none;
 }
 
-/* Card Styles */
-/* --- Card Container --- */
-.course-card { /* ใช้ class ที่เจาะจงขึ้น */
+/* ---------------------------------
+   6. Form Styles
+   --------------------------------- */
+.form-control {
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--gray-300);
+    border-radius: var(--border-radius-sm);
+    background: white;
+    transition: var(--transition);
+    width: 100%;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.form-control.is-invalid {
+    border-color: var(--danger-color);
+}
+
+.invalid-feedback {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+}
+
+/* ---------------------------------
+   7. Card & Carousel Styles
+   --------------------------------- */
+.course-card {
     background: rgba(255, 255, 255, 0.9);
-    backdrop-filter: blur(10px); /* ลด blur ลงเล็กน้อยเพื่อประสิทธิภาพ */
-    -webkit-backdrop-filter: blur(10px); /* สำหรับ Safari */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: var(--border-radius, 0.75rem); /* ใส่ค่า fallback */
-    box-shadow: var(--shadow-md, 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1));
-    transition: all 0.3s ease-in-out;
+    border-radius: var(--border-radius, 0.75rem);
+    box-shadow: var(--shadow-md);
+    transition: var(--transition);
     overflow: hidden;
     position: relative;
     margin-bottom: 2rem;
@@ -310,43 +370,65 @@ p {
     left: 0;
     right: 0;
     height: 4px;
-    background: var(--gradient-primary, linear-gradient(to right, #6366f1, #8b5cf6));
+    background: var(--gradient-primary);
     opacity: 0;
     transition: opacity 0.3s ease-in-out;
 }
 
 .course-card:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-xl, 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1));
+    box-shadow: var(--shadow-xl);
 }
 
 .course-card:hover::before {
     opacity: 1;
 }
 
-/* --- Card Content --- */
-/* เราจะ Override padding ของ .card-body โดยตรง */
 .course-card .card-body {
-    padding: 1.5rem; /* ปรับค่าให้เหมาะสม */
+    padding: 1.5rem;
 }
 
-/* ทำให้ Title มี margin-bottom ที่แน่นอน */
 .course-card .card-title {
-    font-size: 1.25rem; /* ปรับขนาดให้เหมาะสมกับ Card */
+    font-size: 1.25rem;
     font-weight: 700;
-    color: var(--dark-color, #333);
-    margin-bottom: 0.5rem !important; /* บังคับใช้ค่านี้ */
+    color: var(--dark-color);
+    margin-bottom: 0.5rem !important;
 }
 
-/* ทำให้ Text มี margin ที่ถูกต้อง */
 .course-card .card-text {
-    color: var(--gray-600, #555);
-    margin-bottom: 1rem !important; /* บังคับใช้ค่านี้ */
+    color: var(--gray-600);
+    margin-bottom: 1rem !important;
 }
 
-/* จัดการกับ p ตัวสุดท้ายใน card-body ไม่ให้มี margin-bottom */
 .course-card .card-body p:last-child {
     margin-bottom: 0;
+}
+
+/* --- Level Tag Styles (NEW) --- */
+.course-level-tag {
+    position: absolute; /* ทำให้ Tag ลอยอยู่เหนือ Card */
+    top: 0.75rem;
+    left: 0.75rem;
+    padding: 0.25rem 0.75rem;
+    background-color: var(--primary-color); /* สี Default/ไม่ระบุระดับ */
+    color: var(--white);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: 9999px; /* รูปทรงแคปซูล */
+    z-index: 10;
+    text-transform: uppercase;
+    box-shadow: var(--shadow-sm);
+}
+
+/* สี Tag ตามระดับหลักสูตร (ใช้ชื่อคลาสเดียวกับใน preview.html) */
+.tag-advanced {
+    background-color: var(--danger-color); /* Red */
+}
+.tag-beginner {
+    background-color: var(--success-color); /* Green */
+}
+.tag-intermediate {
+    background-color: var(--warning-color); /* Amber */
 }
 
 /* Carousel Styles */
@@ -357,43 +439,14 @@ p {
     margin-bottom: 2rem;
 }
 
-.carousel-item {
-    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
 .carousel-control-prev,
 .carousel-control-next {
-    width: 60px;
-    height: 60px;
-    background: rgba(102, 126, 234, 0.9);
-    border-radius: 50%;
-    top: 50%;
-    transform: translateY(-50%);
-    opacity: 0.8;
-    transition: var(--transition);
-    border: none;
+    /* ... carousel control styles ... */
 }
 
-.carousel-control-prev {
-    left: 20px;
-}
-
-.carousel-control-next {
-    right: 20px;
-}
-
-.carousel-control-prev:hover,
-.carousel-control-next:hover {
-    opacity: 1;
-    transform: translateY(-50%) scale(1.1);
-}
-
-.carousel-control-prev-icon,
-.carousel-control-next-icon {
-    background-size: 20px 20px;
-}
-
-/* Table Styles */
+/* ---------------------------------
+   8. Table Styles
+   --------------------------------- */
 .table-container {
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(20px);
@@ -451,144 +504,145 @@ p {
     vertical-align: middle;
 }
 
-/* Footer Styles */
-.footer {
-    background: linear-gradient(135deg, var(--dark-color) 0%, #4a5568 100%);
-    color: white;
-    padding: 0rem 0;
-    margin-top: auto;
-    position: relative;
-    overflow: hidden;
+/* ---------------------------------
+   9. FOOTER STYLES (KKU Footer)
+   --------------------------------- */
+.main-footer {
+    /* ใช้สไตล์ Footer ใหม่ที่คุณต้องการ */
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 1rem 0 0;
+    margin-top: auto; /* ดัน Footer ไปอยู่ด้านล่างสุดของหน้าจอ */
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.2);
+    font-family: 'Inter', 'Prompt', sans-serif;
 }
 
-.footer::before {
+.footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding:  0rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 0rem;
+}
+
+.footer-logo {
+    font-size: 1.75rem;
+    font-weight: 900;
+    color: #fff;
+    margin-bottom: 1.5rem;
+}
+
+/* หัวข้อและเส้นใต้ */
+.footer-col h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+    color: #00bcd4; /* สี Cyan */
+    position: relative;
+}
+.footer-col h4::after {
     content: '';
     position: absolute;
-    top: -50px;
     left: 0;
-    right: 0;
-    height: 100px;
-    background: var(--gradient-primary);
-    opacity: 0.1;
-    transform: skewY(-2deg);
+    bottom: -5px;
+    height: 3px;
+    width: 50px;
+    background-color: #00bcd4;
+    border-radius: 2px;
 }
 
-.footer .container {
-    position: relative;
-    z-index: 1;
-    text-align: center;
+/* เนื้อหาในคอลัมน์ */
+.footer-col.about p,
+.footer-col.contact-info p {
+    color: #ccc;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+.footer-col.contact-info i {
+    margin-right: 10px;
+    color: #00bcd4;
 }
 
-/* Form Styles */
-.form-control {
-    padding: 0.75rem 1rem;
-    border: 2px solid var(--gray-300);
-    border-radius: var(--border-radius-sm);
-    background: white;
+/* Social Media Icons */
+.social-links a {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+    border: 1px solid #555;
+    border-radius: 50%;
+    color: #ccc;
+    font-size: 1.1rem;
     transition: var(--transition);
-    width: 100%;
+}
+.social-links a:hover {
+    background-color: #00bcd4;
+    color: #1a1a1a;
+    border-color: #00bcd4;
+    transform: translateY(-3px);
 }
 
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+/* ลิงก์นโยบาย */
+.policy-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 0.9rem;
+}
+.policy-links li {
+    margin-bottom: 0.5rem;
+}
+.policy-links a {
+    color: #888;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+.policy-links a:hover {
+    color: #ccc;
+    text-decoration: underline;
 }
 
-.form-control.is-invalid {
-    border-color: var(--danger-color);
+/* ส่วนล่างสุด (Copyright) */
+.footer-bottom {
+    background-color: #111;
+    padding: 1rem 1.5rem;
+    margin-top: 0rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.85rem;
+    color: #888;
+}
+.footer-bottom .back-to-top {
+    color: #888;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+}
+.footer-bottom .back-to-top:hover {
+    color: #00bcd4;
 }
 
-.invalid-feedback {
-    color: var(--danger-color);
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
-}
 
-/* Animations */
+/* ---------------------------------
+   10. Animations & Loading
+   --------------------------------- */
 @keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    /* ... animation definitions ... */
 }
-
-@keyframes fadeInLeft {
-    from {
-        opacity: 0;
-        transform: translateX(-30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
-@keyframes fadeInRight {
-    from {
-        opacity: 0;
-        transform: translateX(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateX(0);
-    }
-}
-
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
-}
-
-.animate-fade-in-up {
-    animation: fadeInUp 0.8s ease-out forwards;
-}
-
-.animate-fade-in-left {
-    animation: fadeInLeft 0.8s ease-out forwards;
-}
-
-.animate-fade-in-right {
-    animation: fadeInRight 0.8s ease-out forwards;
-}
-
-/* Utility Classes */
-.glass {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-}
-
-.gradient-text {
-    background: var(--gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.mb-4 {
-    margin-bottom: 2rem;
-}
-
-.mb-5 {
-    margin-bottom: 3rem;
-}
-
-.mt-5 {
-    margin-top: 3rem;
-}
-
-.py-3 {
-    padding: 1rem 0;
 }
 
 .loading {
@@ -601,107 +655,182 @@ p {
     animation: spin 1s ease-in-out infinite;
 }
 
-/* Responsive Design */
+/* ---------------------------------
+   11. Responsive Design
+   --------------------------------- */
+@media (max-width: 992px) {
+    /* ปรับ Footer เป็น 1 คอลัมน์สำหรับแท็บเล็ต/มือถือ */
+    .footer-container {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .footer-col h4::after {
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 0 1rem;
     }
-
+    /* ... Responsive Styles เดิมสำหรับ Navbar, Headings, Tables ... */
     .navbar {
         flex-direction: column;
         gap: 1rem;
     }
-
     .navbar-nav {
         flex-direction: column;
         width: 100%;
         text-align: center;
     }
-
-    h1 { font-size: 2rem; }
-    h2 { font-size: 1.75rem; }
-    h3 { font-size: 1.5rem; }
-
-    .navbar-brand {
-        font-size: 1.5rem;
-    }
-
-    .card-body,
-    .card .p-3 {
-        padding: 1.5rem;
-    }
-
-    .btn {
-        padding: 0.625rem 1.25rem;
-        font-size: 0.875rem;
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        width: 40px;
-        height: 40px;
-    }
-
-    .table-container {
-        padding: 1rem;
-        margin: 1rem 0;
-        overflow-x: auto;
-    }
-
-    .table {
-        min-width: 600px;
-    }
-
-    .table thead th,
-    .table tbody td {
-        padding: 0.75rem 0.5rem;
-        font-size: 0.875rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .page-wrapper {
-        padding: 1rem 0;
-    }
-
-    .card:hover {
-        transform: translateY(-4px);
-    }
-
-    .carousel-control-prev,
-    .carousel-control-next {
-        display: none;
-    }
-
-    .table {
-        font-size: 0.8rem;
-        min-width: 500px;
-    }
-
-    .navbar-nav {
-        gap: 0;
-    }
-
-    .nav-link {
-        padding: 0.5rem 1rem;
-        width: 100%;
-    }
-    .sidebar {
-        z-index: 100;
-
-
-    }
-}
-
-@media (max-width: 768px) {
     .section-search form {
-        flex-direction: column;   /* ปุ่มอยู่ใต้ input */
+        flex-direction: column;
         gap: 0.5rem;
     }
 
     .section-search .form-control,
     .section-search .btn-primary {
-        width: 100% !important;   /* เต็มความกว้างบนมือถือ */
+        width: 100% !important;
     }
 }
 
+@media (max-width: 576px) {
+    .page-wrapper {
+        padding: 1rem 0;
+    }
+    /* ปรับปรุง Footer สำหรับมือถือ */
+    .footer-col {
+        padding-bottom: 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 1px solid #333; /* เส้นแบ่งคอลัมน์ */
+    }
+    .footer-col:last-child {
+        border-bottom: none;
+    }
+    .social-links {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+    .footer-bottom {
+        flex-direction: column;
+    }
+    .footer-bottom .back-to-top {
+        margin-top: 10px;
+    }
+    /* ... Responsive Styles อื่นๆ ... */
+}
+/* ---------------------------------
+   12. Course Card & Collection Styles
+   --------------------------------- */
+
+/* คอลัมน์หลักสูตร */
+.course-collection {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+}
+
+.course-item {
+    width: 100%;
+    max-width: 350px;
+}
+
+/* ซ่อนสำหรับ show more */
+.hidden {
+    display: none;
+}
+
+/* การ์ดหลักสูตร */
+.course-card {
+    background-color: #fff;
+    border: 1px solid #f1f3f4;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+.course-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* wrapper รูปภาพหลักสูตร */
+.course-image-wrapper {
+    background-color: #fafafa;
+    overflow: hidden;
+}
+.course-image-wrapper img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+/* เนื้อหาหลัก */
+.course-content {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.course-content h5 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #212529;
+    min-height: 48px;
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+/* meta (level + category) */
+.course-meta {
+    display: flex;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: #6c757d;
+    align-items: center;
+}
+
+/* Show More button */
+.show-more-btn {
+    display: inline-block;
+    padding: 0.5rem 1.5rem;
+    border-radius: 9999px;
+    border: 1px solid #212529;
+    background-color: transparent;
+    color: #212529;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.show-more-btn:hover {
+    background-color: #212529;
+    color: #fff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .course-item {
+        max-width: 100%;
+    }
+}
+.category-filter .btn {
+    border-radius: 20px;
+    transition: all 0.3s ease;
+}
+
+.category-filter .btn:hover {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.category-filter .btn.active {
+    background-color: #007bff;
+    color: #fff;
+    border-color: #007bff;
+}
