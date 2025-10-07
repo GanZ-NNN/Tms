@@ -3,7 +3,7 @@
 
 ยินดีต้อนรับสู่ระบบของเรา 🎉
 
-@component('mail::button', ['url' => route('dashboard')])
+@component('mail::button', ['url' => route('home')])
 ไปหน้า Dashboard
 @endcomponent
 

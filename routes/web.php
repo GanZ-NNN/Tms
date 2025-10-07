@@ -65,7 +65,7 @@ Route::get('/certificate/generate/{user}/{session}', [CertificateController::cla
 Route::middleware('auth')->group(function () {
 
     // Dashboard redirect
-    Route::get('/dashboard', fn() => redirect()->route('profile.edit'))->name('dashboard');
+
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

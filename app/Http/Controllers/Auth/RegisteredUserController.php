@@ -51,6 +51,6 @@ class RegisteredUserController extends Controller
         Auth::login($user);
 
         // Redirect ไปหน้า dashboard พร้อมข้อความ
-        return redirect()->route('dashboard')->with('success', 'สมัครสมาชิกสำเร็จ — ยินดีต้อนรับ!');
+        return redirect()->route('home')->with('success', 'สมัครสมาชิกสำเร็จ — ยินดีต้อนรับ!');
     }
 }
