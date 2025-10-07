@@ -43,7 +43,7 @@
                         </h5>
                         <p class="card-text text-muted fs-5 text-center">{{ $program->detail }}</p>
 
-                        <div class="mt-3 text-center">
+                        <div class="mt-3 p-3 ">
                             <span class="fw-semibold text-dark">{{ ucfirst($levelName) }}</span> ·
                             <span>{{ $program->category->name ?? 'Course' }}</span>
                         </div>
@@ -65,18 +65,19 @@
                                             <span class="text-muted small">{{ $session->start_at->format('d M Y') }} - {{ $session->end_at->format('d M Y') }}</span>
                                         </div>
                                         <div class="small text-muted">
-                                            <i class="far fa-clock"></i> {{ $session->start_at->format('H:i') }} - {{ $session->end_at->format('H:i') }} น. |
-                                            <i class="far fa-user"></i> {{ $session->trainer?->name ?? '-' }} |
-                                            <i class="fas fa-map-marker-alt"></i> {{ $session->location ?? '-' }} |
-                                            <i class="fas fa-users"></i> {{ $session->capacity ?? '-' }}
+                                            <div class="mb-1"><i class="far fa-clock"></i> {{ $session->start_at->format('H:i') }} - {{ $session->end_at->format('H:i') }} น.</div>
+                                            <div class="mb-1"><i class="far fa-user"></i> {{ $session->trainer?->name ?? '-' }}</div>
+                                            <div class="mb-1"><i class="fas fa-map-marker-alt"></i> {{ $session->location ?? '-' }}</div>
+                                            <div class="mb-0"><i class="fas fa-users"></i> {{ $session->capacity ?? '-' }}</div>
                                         </div>
+
 
                                         @if ($regOpen && $now->lt($regOpen))
                                             <span class="badge bg-primary mt-1">🕓 เปิดรับสมัคร: {{ $regOpen->format('d M Y H:i') }}</span>
                                         @elseif ($canRegister)
-                                            <span class="badge bg-success mt-1">✅ เปิดรับสมัคร (ถึง {{ $regClose->format('d M Y H:i') }})</span>
+                                            <span class="badge bg-success mt-1"> เปิดรับสมัคร (ถึง {{ $regClose->format('d M Y H:i') }})</span>
                                         @elseif ($regClose && $now->gte($regClose))
-                                            <span class="badge bg-danger mt-1">⛔ ปิดรับสมัครเมื่อ {{ $regClose->format('d M Y H:i') }}</span>
+                                            <span class="badge bg-danger mt-1"> ปิดรับสมัครเมื่อ {{ $regClose->format('d M Y H:i') }}</span>
                                         @endif
                                     </div>
 
@@ -87,24 +88,24 @@
                                             @endphp
 
                                             @if ($userRegistration)
-                                                <form class="cancel-form" action="{{ route('registrations.cancel', $userRegistration) }}" method="POST">
+                                                <form class=" cancel-form text-center" action="{{ route('registrations.cancel', $userRegistration) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="button" class="btn btn-danger btn-sm fw-bold cancel-btn">ยกเลิก</button>
+                                                    <button type="button" class="mt-5 btn btn-danger btn-sm fw-bold cancel-btn">ยกเลิก</button>
                                                 </form>
                                             @else
                                                 @if ($canRegister)
-                                                    <form class="register-form" action="{{ route('sessions.register', $session) }}" method="POST">
+                                                    <form class="register-form text-center" action="{{ route('sessions.register', $session) }}" method="POST">
                                                         @csrf
-                                                        <button type="button" class="btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
+                                                        <button type="button" class="mt-5 btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
                                                     </form>
                                                 @else
-                                                    <button class="btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
+                                                    <button class="mt-5 btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
                                                 @endif
                                             @endif
                                         @else
-                                            <div class="d-flex justify-content-center mt-2">
-                                                <a href="javascript:void(0)" class="btn btn-primary btn-sm fw-bold login-alert-btn">สมัคร</a>
+                                            <div class="d-flex text-center  mt-2">
+                                                <a href="javascript:void(0)" class="mt-5 btn btn-primary btn-sm fw-bold login-alert-btn">สมัคร</a>
                                             </div>
                                         @endauth
                                     </div>
@@ -257,6 +258,18 @@ button.btn {
 {{-- SweetAlert2 --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+
+// @if (session('registration_success'))
+//  Swal.fire({
+//     title: 'ลงทะเบียนสำเร็จ!',
+//     text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
+//     icon: 'success',
+//     confirmButtonText: 'ยอดเยี่ยม',
+//     timer: 3000,
+//     timerProgressBar: true
+// });
+// @endif
+
 document.addEventListener('DOMContentLoaded', function () {
 
     // Login alert
@@ -282,36 +295,61 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelectorAll('.register-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             let form = btn.closest('form');
-            form.submit();
+            // form.submit();
             Swal.fire({
-                title: 'ลงทะเบียนสำเร็จ!',
-                text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
-                icon: 'success',
-                timer: 2000,
-                timerProgressBar: true,
-                showConfirmButton: false
-            });
+            title: 'ยืนยันการสมัคร?',
+            text: 'คุณต้องการสมัครรอบนี้หรือไม่?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // แสดงข้อความสำเร็จก่อน submit
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'การลงทะเบียนสำเร็จ',
+                    icon: 'success',
+                    timer: 3000,
+                    showConfirmButton: false
+                }).then(() => {
+                    form.submit(); // ส่งฟอร์มหลังจากป๊อปอัพปิด
+                });
+            }
+        });
         });
     });
 
     // Cancel registration with SweetAlert confirm
-    document.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            let form = btn.closest('form');
-            Swal.fire({
-                title: 'ยืนยันการยกเลิก?',
-                text: 'คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'ยืนยัน',
-                cancelButtonText: 'ยกเลิก'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    form.submit();
-                }
-            });
+   document.querySelectorAll('.cancel-btn').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+        e.preventDefault(); // ป้องกันการ submit ฟอร์มทันที
+        let form = btn.closest('form');
+
+        Swal.fire({
+            title: 'ยืนยันการยกเลิก?',
+            text: 'คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'ยืนยัน',
+            cancelButtonText: 'ยกเลิก'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // แสดงข้อความสำเร็จก่อน submit
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'การยกเลิกการลงทะเบียนสำเร็จ',
+                    icon: 'success',
+                    timer: 3000,
+                    showConfirmButton: false
+                }).then(() => {
+                    form.submit(); // ส่งฟอร์มหลังจากป๊อปอัพปิด
+                });
+            }
         });
     });
+});
+
 
 });
 </script>
