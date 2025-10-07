@@ -90,6 +90,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/my-courses/upcoming', [ProfileController::class, 'upcomingCourses'])->name('profile.courses.upcoming');
     Route::get('/my-courses/history', [ProfileController::class, 'courseHistory'])->name('profile.courses.history');
+
+    Route::get('/my-certificates', [CertificateController::class, 'collection'])->name('certificates.collection');
 });
 
 /*

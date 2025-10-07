@@ -23,6 +23,9 @@
                         <x-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
                             {{ __('ประวัติการอบรม') }}
                         </x-nav-link>
+                        <x-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
+                            {{ __('ใบรับรอง') }}
+                        </x-nav-link>
                     @else
                         {{-- ถ้ายังไม่ Login ให้แสดงเมนูหลักสูตรทั้งหมด --}}
                         {{-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
@@ -108,6 +111,9 @@
             </x-responsive-nav-link>
             <x-responsive-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
                 {{ __('ประวัติการอบรม') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
+            {{ __('ใบรับรอง') }}
             </x-responsive-nav-link>
         @else
             {{-- ถ้ายังไม่ Login --}}
