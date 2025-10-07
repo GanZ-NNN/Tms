@@ -69,14 +69,14 @@ class SessionDashboardController extends Controller
                                 ->limit(5)
                                 ->get();
 
-            // --- Feedback Chart Data ---
+        // --- Feedback Chart Data (แก้ไขให้ตรงกับ DB) ---
         $feedbackRating = Feedback::select(
-                'rating', // <-- แก้ไข
+                'overall',
                 DB::raw('COUNT(*) as count')
             )
-            ->groupBy('rating') // <-- แก้ไข
-            ->orderBy('rating', 'desc')
-            ->pluck('count', 'rating'); // <-- แก้ไข
+            ->groupBy('overall')
+            ->orderBy('overall', 'desc')
+            ->pluck('count', 'overall');
 
         $feedbackChartData = [
             'labels' => $feedbackRating->keys()->map(fn($rating) => "$rating Stars"),

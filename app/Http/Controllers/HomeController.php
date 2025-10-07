@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Program;
 use App\Models\Category;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -20,25 +21,8 @@ public function index(Request $request)
     // ดึงทั้งหมด แทน paginate
     $programs = $query->latest()->get();
 
-    $features = [
-        [
-            'icon' => '<svg>...</svg>',
-            'title' => 'Explore new skills',
-            'description' => 'Access 10,000+ courses in AI, business, technology, and more.',
-        ],
-        [
-            'icon' => '<svg>...</svg>',
-            'title' => 'Earn valuable credentials',
-            'description' => 'Get certificates for every course you finish and boost your chances of getting hired.',
-        ],
-        [
-            'icon' => '<svg>...</svg>',
-            'title' => 'Learn from the best',
-            'description' => 'Take your skills to the next level with expert-led courses and AI guidance.',
-        ],
-    ];
 
-    return view('home', compact('programs', 'features'));
+    return view('home', compact('programs'));
 }
 
 
