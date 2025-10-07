@@ -24,16 +24,24 @@
                                         {{ $registration->session->title ?? 'รอบที่ ' . $registration->session->session_number }}
                                     </p>
                                 </div>
-                                <!-- Cancel Button -->
+                                <!-- Cancel Button Logic -->
                                 <div class="mt-4 md:mt-0">
-                                    <form id="cancel-form-{{ $registration->id }}" action="{{ route('registrations.cancel', $registration) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        {{-- เพิ่ม @click event ของ Alpine.js เข้าไปในปุ่ม --}}
-                                        <button type="button" @click.prevent="confirmCancel({{ $registration->id }})" class="text-sm text-red-600 hover:text-red-800 hover:underline focus:outline-none">
-                                            ยกเลิกการลงทะเบียน
-                                        </button>
-                                    </form>
+                                    
+                                    {{-- *** ส่วนที่แก้ไข *** --}}
+                                    @if (now()->lt($registration->session->registration_end_at))
+                                        {{-- ใช้ onsubmit แบบคลาสสิกที่ทำงานได้แน่นอน --}}
+                                        <form action="{{ route('registrations.cancel', $registration) }}" method="POST" onsubmit="confirmCancel(event, this)">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-sm text-red-600 hover:text-red-800 hover:underline focus:outline-none">
+                                                ยกเลิกการลงทะเบียน
+                                            </button>
+                                        </form>
+                                    @else
+                                        <span class="text-sm text-gray-400">เลยกำหนดการยกเลิก</span>
+                                    @endif
+                                    {{-- *** สิ้นสุดส่วนที่แก้ไข *** --}}
+
                                 </div>
                             </div>
                             <!-- Session Details -->
@@ -46,10 +54,6 @@
                     @empty
                         <div class="text-center py-12">
                             <p class="text-gray-500 dark:text-gray-400 mb-4">คุณยังไม่มีหลักสูตรที่กำลังจะมาถึง</p>
-                            {{-- <a href="{{ route('programs.index') }}" class="inline-block px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition-colors">
-                                ดูหลักสูตรทั้งหมด
-                            </a> --}}
-                        </div>
                     @endforelse
 
                 </div>
@@ -57,34 +61,42 @@
         </div>
     </div>
 </x-app-layout>
-@push('scripts')
+
+{{-- *** เพิ่ม Script ทั้งหมดที่จำเป็นเข้ามาในหน้านี้โดยตรง *** --}}
+<!-- SweetAlert2 JS Library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <script>
-    function confirmCancel(formId) {
+    // ฟังก์ชันสำหรับแสดง Pop-up ยืนยันการยกเลิก
+    function confirmCancel(event, form) {
+        event.preventDefault(); // หยุดการ submit form ทันที
+        
         Swal.fire({
             title: 'ยืนยันการยกเลิก?',
             text: "คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?",
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#6366f1', // สีม่วง
-            cancelButtonColor: '#6b7280', // สีเทา
-            confirmButtonText: 'ยืนยัน',
-            cancelButtonText: 'ยกเลิก'
+            confirmButtonColor: '#dc3545',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'ใช่, ยกเลิกเลย',
+            cancelButtonText: 'ไม่'
         }).then((result) => {
             if (result.isConfirmed) {
-                // ถ้าผู้ใช้กดยืนยัน ให้ submit form
-                document.getElementById('cancel-form-' + formId).submit();
+                // ถ้าผู้ใช้กดยืนยัน ค่อยสั่งให้ form submit
+                form.submit();
             }
-        })
+        });
     }
 
-    // Pop-up สำหรับ "ยกเลิกสำเร็จ"
-    @if (session('cancel_success'))
-        Swal.fire({
-            title: 'ยกเลิกสำเร็จ!',
-            text: 'การลงทะเบียนของคุณได้ถูกยกเลิกเรียบร้อยแล้ว',
-            icon: 'success',
-            confirmButtonText: 'รับทราบ'
-        })
-    @endif
+    // ใช้ IIFE เพื่อรันโค้ดแสดง Pop-up "ยกเลิกสำเร็จ" ทันที
+    (function () {
+        @if (session('cancel_success'))
+            Swal.fire({
+                title: 'ยกเลิกสำเร็จ!',
+                text: 'การลงทะเบียนของคุณได้ถูกยกเลิกแล้ว',
+                icon: 'success',
+                confirmButtonText: 'รับทราบ'
+            });
+        @endif
+    })();
 </script>
-@endpush
