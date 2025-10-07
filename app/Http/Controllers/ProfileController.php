@@ -95,4 +95,36 @@ public function edit(Request $request): View
     return view('profile.certificates', compact('certificates'));
 }
 
+/**
+ * Display the user's upcoming registered courses.
+ */
+public function upcomingCourses(Request $request): View
+{
+    $user = $request->user();
+    
+    $upcomingSessions = $user->registrations()
+        ->with(['session.program', 'session.trainer', 'session.level'])
+        ->whereHas('session', fn($query) => $query->where('status', '!=', 'completed'))
+        ->get()
+        ->sortBy('session.start_at');
+
+    return view('my-courses.upcoming', compact('upcomingSessions'));
+}
+
+/**
+ * Display the user's completed course history.
+ */
+public function courseHistory(Request $request): View
+{
+    $user = $request->user();
+
+    $trainingHistory = $user->registrations()
+        ->with(['session.program', 'session.trainer', 'session.level'])
+        ->whereHas('session', fn($query) => $query->where('status', 'completed'))
+        ->get()
+        ->sortByDesc('session.end_at');
+
+    return view('my-courses.history', compact('trainingHistory'));
+}
+
 }

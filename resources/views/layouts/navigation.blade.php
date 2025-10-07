@@ -15,9 +15,20 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('หน้าหลัก') }}
                     </x-nav-link>
-                    <!-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
-                        {{ __('หลักสูตร') }}
-                    </x-nav-link> -->
+                    @auth
+                        {{-- ถ้า Login แล้ว ให้แสดงเมนูสำหรับ User --}}
+                        <x-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
+                            {{ __('หลักสูตรที่กำลังเรียน') }}
+                        </x-nav-link>
+                        <x-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
+                            {{ __('ประวัติการอบรม') }}
+                        </x-nav-link>
+                    @else
+                        {{-- ถ้ายังไม่ Login ให้แสดงเมนูหลักสูตรทั้งหมด --}}
+                        {{-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                            {{ __('หลักสูตรทั้งหมด') }}
+                        </x-nav-link> --}}
+                    @endauth
                 </div>
             </div>
 
@@ -90,9 +101,20 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('หน้าหลัก') }}
             </x-responsive-nav-link>
-             <!-- <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('courses.index')">
-                {{ __('หลักสูตร') }}
-            </x-responsive-nav-link> -->
+        @auth
+            {{-- ถ้า Login แล้ว --}}
+            <x-responsive-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
+                {{ __('หลักสูตรที่กำลังเรียน') }}
+            </x-responsive-nav-link>
+            <x-responsive-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
+                {{ __('ประวัติการอบรม') }}
+            </x-responsive-nav-link>
+        @else
+            {{-- ถ้ายังไม่ Login --}}
+            {{-- <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                {{ __('หลักสูตรทั้งหมด') }}
+            </x-responsive-nav-link> --}}
+        @endauth
         </div>
 
         <!-- Responsive Settings Options -->

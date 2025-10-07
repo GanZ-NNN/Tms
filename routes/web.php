@@ -87,6 +87,9 @@ Route::middleware('auth')->group(function () {
 
     // Logout (POST)
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::get('/my-courses/upcoming', [ProfileController::class, 'upcomingCourses'])->name('profile.courses.upcoming');
+    Route::get('/my-courses/history', [ProfileController::class, 'courseHistory'])->name('profile.courses.history');
 });
 
 /*

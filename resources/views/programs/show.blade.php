@@ -67,11 +67,13 @@
                                             @if ($session->status === 'completed')
                                                 <button class="btn btn-secondary fw-bold" disabled>Session Completed</button>
                                             @else
-                                                <form action="{{ route('registrations.cancel', $userRegistration) }}" method="POST" onsubmit="return confirm('Are you sure?');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="btn btn-danger fw-bold">ยกเลิกการสมัครรอบอบรมนี้</button>
-                                                </form>
+                                            <form action="{{ route('registrations.cancel', $registration) }}" method="POST" onsubmit="confirmCancel(event, this)">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-sm text-red-600 ...">
+                                                    ยกเลิกการลงทะเบียน
+                                                </button>
+                                            </form>
                                             @endif
                                         @else
                                             @if ($session->status === 'completed')
@@ -132,39 +134,44 @@
     }
     </style>
 
-    @push('scripts')
+ @push('scripts')
 <script>
-    // ตรวจสอบว่ามี session 'registration_success' ถูกส่งมาหรือไม่
-    @if (session('registration_success'))
-        // ถ้ามี ให้แสดง Pop-up ของ SweetAlert2
+    // ฟังก์ชันสำหรับแสดง Pop-up ยืนยันการยกเลิก
+    function confirmCancel(event, form) {
+        event.preventDefault(); // หยุดการ submit form ตามปกติ
+        
         Swal.fire({
-            title: 'ลงทะเบียนสำเร็จ!',
-            text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
-            icon: 'success',
-            confirmButtonText: 'ยอดเยี่ยม',
-            timer: 3000, // (Optional) ปิดอัตโนมัติใน 3 วินาที
-            timerProgressBar: true
+            title: 'ยืนยันการยกเลิก?',
+            text: "คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc3545', // สีแดง Bootstrap
+            cancelButtonColor: '#6c757d', // สีเทา Bootstrap
+            confirmButtonText: 'ใช่, ยกเลิกเลย',
+            cancelButtonText: 'ไม่'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // ถ้าผู้ใช้กดยืนยัน ให้ submit form นั้นๆ
+                form.submit();
+            }
         })
-    @endif
+    }
 
-        @if (session('registration_success'))
+    // ตรวจสอบ Session Flash Data แล้วแสดง Pop-up
+    @if (session('registration_success'))
         Swal.fire({
             title: 'ลงทะเบียนสำเร็จ!',
             text: 'คุณได้ลงทะเบียนเข้าร่วมการอบรมเรียบร้อยแล้ว',
             icon: 'success',
             confirmButtonText: 'ยอดเยี่ยม'
-        })
-    @endif
-
-    // *** เพิ่มโค้ดส่วนนี้เข้ามา ***
-    // Pop-up สำหรับ "ยกเลิกสำเร็จ"
-    @if (session('cancel_success'))
+        });
+    @elseif (session('cancel_success'))
         Swal.fire({
             title: 'ยกเลิกสำเร็จ!',
             text: 'การลงทะเบียนของคุณได้ถูกยกเลิกเรียบร้อยแล้ว',
-            icon: 'info', // ใช้ไอคอน 'info' หรือ 'warning' จะเหมาะสมกว่า
+            icon: 'success', // ใช้ success ก็ได้เพื่อให้ดูดี
             confirmButtonText: 'รับทราบ'
-        })
+        });
     @endif
 </script>
 @endpush
