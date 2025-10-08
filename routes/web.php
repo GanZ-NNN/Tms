@@ -110,6 +110,7 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
 
         Route::get('/attendance/overview', [AttendanceController::class, 'overview'])
         ->name('attendance.overview');
+        Route::get('/attendance/history', [AttendanceController::class, 'history'])->name('attendance.history');
 
         Route::resource('certificates', CertificateAdminController::class);
 

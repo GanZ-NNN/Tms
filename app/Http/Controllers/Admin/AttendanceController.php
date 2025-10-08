@@ -78,36 +78,51 @@ class AttendanceController extends Controller
                      ->with('success', 'Attendance for "' . ($session->title ?? $session->program->title) . '" has been saved.');
 }
 
-    public function overview()
-{
-    $programs = \App\Models\Program::with([
-        'sessions' => function ($query) {
-            $query->where('status', '!=', 'cancelled')->orderBy('start_at', 'desc');
-        },
-        'sessions.trainer',
-        'sessions.registrations.dailyAttendances',
-    ])->whereHas('sessions')
-      ->latest()
-      ->get();
+public function overview()
+    {
+        $programs = \App\Models\Program::with([
+            'sessions' => function ($query) {
+                // *** ส่วนที่แก้ไข: กรองเอาเฉพาะที่ยังไม่ Complete ***
+                $query->where('status', '!=', 'completed') 
+                      ->where('status', '!=', 'cancelled')
+                      ->orderBy('start_at', 'desc');
+            },
+            'sessions.trainer',
+            'sessions.level', // <-- เพิ่ม Level เพื่อให้แสดงผลใน View ได้
+            'sessions.registrations.dailyAttendances',
+        ])
+        // *** ส่วนที่แก้ไข: กรอง Program ให้มี Session ที่ยังไม่ Complete เท่านั้น ***
+        ->whereHas('sessions', function ($query) {
+            $query->where('status', '!=', 'completed')
+                  ->where('status', '!=', 'cancelled');
+        })
+        ->latest()
+        ->get();
 
-    // เพิ่มค่าเฉลี่ย attendance ให้แต่ละ session
-    foreach ($programs as $program) {
-        foreach ($program->sessions as $session) {
-            $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
-            $daysCount = count($period);
-            $totalSlots = $session->registrations->count() * $daysCount * 2; // AM + PM
+        // ส่วนการคำนวณ avg_attendance (ไม่มีการเปลี่ยนแปลง)
+        foreach ($programs as $program) {
+            foreach ($program->sessions as $session) {
+                // ตรวจสอบเพื่อป้องกัน Error ถ้า start_at หรือ end_at เป็น null
+                if (!$session->start_at || !$session->end_at) {
+                    $session->avg_attendance = 0;
+                    continue;
+                }
+                
+                $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
+                $daysCount = $period->count();
+                $totalPossibleSlots = $session->registrations->count() * $daysCount * 2;
 
-            $attended = 0;
-            foreach ($session->registrations as $reg) {
-                $attended += $reg->dailyAttendances->sum(fn($a) => ($a->is_present_am ? 1 : 0) + ($a->is_present_pm ? 1 : 0));
+                $totalAttendedSlots = 0;
+                foreach ($session->registrations as $reg) {
+                    $totalAttendedSlots += $reg->dailyAttendances->sum(fn($a) => ($a->is_present_am ? 1 : 0) + ($a->is_present_pm ? 1 : 0));
+                }
+
+                $session->avg_attendance = $totalPossibleSlots > 0 ? round(($totalAttendedSlots / $totalPossibleSlots) * 100) : 0;
             }
-
-            $session->avg_attendance = $totalSlots > 0 ? round(($attended / $totalSlots) * 100, 2) : 0;
         }
-    }
 
-    return view('admin.attendance.overview', compact('programs'));
-}
+        return view('admin.attendance.overview', compact('programs'));
+    }
 
 
 
@@ -122,5 +137,42 @@ class AttendanceController extends Controller
 
     return $totalSlots > 0 ? round(($attended / $totalSlots) * 100, 2) : 0;
 }
+
+    /**
+     * Display a history of completed session attendances.
+     */
+    public function history()
+    {
+        // ดึงเฉพาะ Program ที่มี Session ที่ 'completed' แล้วเท่านั้น
+        $programs = \App\Models\Program::with(['sessions' => function ($query) {
+                $query->where('status', 'completed')->orderBy('end_at', 'desc');
+            }, 'sessions.trainer', 'sessions.level'])
+            ->whereHas('sessions', fn($q) => $q->where('status', 'completed'))
+            ->latest()
+            ->get();
+
+                // *** เพิ่ม Logic การคำนวณ avg_attendance ***
+    foreach ($programs as $program) {
+        foreach ($program->sessions as $session) {
+            if (!$session->start_at || !$session->end_at || $session->registrations->isEmpty()) {
+                $session->avg_attendance = 0;
+                continue;
+            }
+            
+            $period = \Carbon\CarbonPeriod::create($session->start_at, $session->end_at);
+            $daysCount = $period->count();
+            $totalPossibleSlots = $session->registrations->count() * $daysCount * 2;
+
+            $totalAttendedSlots = 0;
+            foreach ($session->registrations as $reg) {
+                $totalAttendedSlots += $reg->dailyAttendances->sum(fn($a) => ($a->is_present_am ? 1 : 0) + ($a->is_present_pm ? 1 : 0));
+            }
+
+            $session->avg_attendance = $totalPossibleSlots > 0 ? round(($totalAttendedSlots / $totalPossibleSlots) * 100) : 0;
+        }
+    }
+
+        return view('admin.attendance.history', compact('programs'));
+    }
 
 }
