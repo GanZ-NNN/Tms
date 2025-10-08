@@ -1,71 +1,142 @@
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+.hero-section {
+    background-image: linear-gradient(rgba(26, 37, 83, 0.7), rgba(26, 37, 83, 0.7)), url('/assets/img/hero-background.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    padding: 6rem 0;
+}
+
+/* แก้ไขสี Placeholder และสี Text ของช่องค้นหาใน Hero Banner */
+.hero-section .form-control::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+.hero-section .form-control {
+    color: #212529 !important;
+}
+
+
+/* ==========================================================================
+   Feature Section (Invest in Your Career)
+   ========================================================================== */
+.feature-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+}
+
+.feature-card h3 {
+    font-weight: 600;
+    margin-top: 1rem; /* ปรับ margin ให้เหมาะสม */
+}
+
+.feature-card p {
+    color: #6c757d; /* ปรับสีให้อ่านง่ายขึ้น */
+}
+
+
+/* ==========================================================================
+   Course Card & Collection
+   ========================================================================== */
 .rc-ProductCardCollection {
     padding: 20px 0;
 }
 
 .course-collection {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* ปรับ minmax ให้กว้างขึ้นเล็กน้อย */
+    gap: 2rem; /* ใช้ gap ที่เหมาะสม */
 }
 
 .course-card {
-    flex: 0 0 33.333%; /* 3 คอลัมน์ต่อแถว */
-}
-
-.hover-card {
+    /* ใช้ class นี้กับ card container หลัก (div ที่มี class="card") */
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    height: 100%; /* ทำให้ card ทุกใบสูงเท่ากันใน grid */
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 0.75rem;
-    background-color: #fff;
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    transition: all 0.3s ease-in-out;
     overflow: hidden;
-    height: auto; /* แทน 100% */
+    position: relative;
 }
 
+.course-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(to right, #6366f1, #8b5cf6);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
 
-.hover-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+.course-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
     cursor: pointer;
 }
 
-.hover-card img.card-img-top {
+.course-card:hover::before {
+    opacity: 1;
+}
+
+.course-card img.card-img-top {
     height: 180px;
     width: 100%;
     object-fit: cover;
-    border-top-left-radius: 0.75rem;
-    border-top-right-radius: 0.75rem;
 }
 
-.hover-card .card-body {
+.course-card .card-body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    padding: 15px;
+    padding: 1.5rem;
+    flex-grow: 1; /* ทำให้ card-body ยืดเต็มพื้นที่ที่เหลือ */
 }
 
+.course-card .card-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.course-card .card-text {
+    color: #555;
+    margin-bottom: 1rem;
+    flex-grow: 1; /* ทำให้ card-text ยืดเพื่อดันส่วนล่างสุดลงไป */
+}
+
+/* ==========================================================================
+   Formatted Details List (สำหรับ Bullet Points)
+   ========================================================================== */
+/* *** เพิ่มส่วนนี้เข้ามา *** */
+.formatted-details ul {
+    list-style-type: disc !important; /* บังคับให้แสดง bullet (•) */
+    padding-left: 2rem !important;   /* เพิ่มระยะห่างด้านซ้าย */
+    margin-top: 1rem;
+    margin-bottom: 0; /* ลบ margin ล่างของ ul */
+}
+
+.formatted-details li {
+    margin-bottom: 0.5rem; /* เพิ่มระยะห่างระหว่างแต่ละรายการ */
+}
+/* *** สิ้นสุดส่วนที่เพิ่มเข้ามา *** */
+
+
+/* Utility class (เหมือนเดิม) */
 .d-none {
     display: none !important;
-}
-
-/* Feature Section */
-.feature-card svg {
-    width: 1px;
-    height: 1px;
-    /* color: #ffffff; */
-    background-color: #ffffff;
-    size:2px;
-
-}
-
-.feature-card h3 {
-    font-weight: 600;
-    margin-top: 0.1rem;
-
-}
-
-.feature-card p {
-    color: #000000;
-
 }

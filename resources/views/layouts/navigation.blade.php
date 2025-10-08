@@ -15,29 +15,37 @@
                     <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
                         {{ __('หน้าหลัก') }}
                     </x-nav-link>
+
+                    {{-- *** ส่วนที่แก้ไข: แสดงเมนูตาม Role *** --}}
                     @auth
-                        {{-- ถ้า Login แล้ว ให้แสดงเมนูสำหรับ User --}}
-                        <x-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
-                            {{ __('หลักสูตรที่กำลังเรียน') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
-                            {{ __('ประวัติการอบรม') }}
-                        </x-nav-link>
-                        <x-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
-                            {{ __('ใบรับรอง') }}
-                        </x-nav-link>
+                        @if (Auth::user()->role === 'admin')
+                            {{-- เมนูสำหรับ Admin --}}
+                            <x-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                                {{ __('Admin Dashboard') }}
+                            </x-nav-link>
+                        @else
+                            {{-- เมนูสำหรับ User ธรรมดา --}}
+                            <x-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
+                                {{ __('หลักสูตรที่กำลังเรียน') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
+                                {{ __('ประวัติการอบรม') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
+                                {{ __('ใบรับรอง') }}
+                            </x-nav-link>
+                        @endif
                     @else
                         {{-- ถ้ายังไม่ Login ให้แสดงเมนูหลักสูตรทั้งหมด --}}
-                        {{-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                        <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
                             {{ __('หลักสูตรทั้งหมด') }}
-                        </x-nav-link> --}}
+                        </x-nav-link>
                     @endauth
                 </div>
             </div>
 
             <!-- Settings Dropdown / Login & Register Links -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-
                 <!-- Dark Mode Toggle -->
                 <div class="me-4">
                     <x-dark-mode-toggle />
@@ -57,16 +65,13 @@
                         </x-slot>
 
                         <x-slot name="content">
-                            <x-dropdown-link :href="route('profile.edit')">
-                                {{ __('Profile') }}
-                            </x-dropdown-link>
-
-                            @if(Auth::user()->role === 'admin')
-                                <x-dropdown-link :href="route('admin.dashboard')">
-                                    {{ __('Admin Dashboard') }}
+                            {{-- *** ส่วนที่แก้ไข: ซ่อน Profile จาก Admin *** --}}
+                            @if(Auth::user()->role !== 'admin')
+                                <x-dropdown-link :href="route('profile.edit')">
+                                    {{ __('Profile') }}
                                 </x-dropdown-link>
                             @endif
-
+                            
                             <!-- Authentication -->
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -104,23 +109,29 @@
             <x-responsive-nav-link :href="route('home')" :active="request()->routeIs('home')">
                 {{ __('หน้าหลัก') }}
             </x-responsive-nav-link>
-        @auth
-            {{-- ถ้า Login แล้ว --}}
-            <x-responsive-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
-                {{ __('หลักสูตรที่กำลังเรียน') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
-                {{ __('ประวัติการอบรม') }}
-            </x-responsive-nav-link>
-            <x-responsive-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
-            {{ __('ใบรับรอง') }}
-            </x-responsive-nav-link>
-        @else
-            {{-- ถ้ายังไม่ Login --}}
-            {{-- <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
-                {{ __('หลักสูตรทั้งหมด') }}
-            </x-responsive-nav-link> --}}
-        @endauth
+            
+            {{-- *** ส่วนที่แก้ไข: Responsive Menu *** --}}
+            @auth
+                @if (Auth::user()->role === 'admin')
+                    <x-responsive-nav-link :href="route('admin.dashboard')" :active="request()->routeIs('admin.*')">
+                        {{ __('Admin Dashboard') }}
+                    </x-responsive-nav-link>
+                @else
+                    <x-responsive-nav-link :href="route('profile.courses.upcoming')" :active="request()->routeIs('profile.courses.upcoming')">
+                        {{ __('หลักสูตรที่กำลังเรียน') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('profile.courses.history')" :active="request()->routeIs('profile.courses.history')">
+                        {{ __('ประวัติการอบรม') }}
+                    </x-responsive-nav-link>
+                    <x-responsive-nav-link :href="route('certificates.collection')" :active="request()->routeIs('certificates.collection')">
+                        {{ __('ใบรับรอง') }}
+                    </x-responsive-nav-link>
+                @endif
+            @else
+                <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                    {{ __('หลักสูตรทั้งหมด') }}
+                </x-responsive-nav-link>
+            @endauth
         </div>
 
         <!-- Responsive Settings Options -->
@@ -131,16 +142,13 @@
                     <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
                 </div>
                 <div class="mt-3 space-y-1">
-                    <x-responsive-nav-link :href="route('profile.edit')">
-                        {{ __('Profile') }}
-                    </x-responsive-nav-link>
-
-                    @if(Auth::user()->role === 'admin')
-                        <x-responsive-nav-link :href="route('admin.dashboard')">
-                            {{ __('Admin Dashboard') }}
+                    {{-- *** ส่วนที่แก้ไข: ซ่อน Profile จาก Admin (Responsive) *** --}}
+                    @if(Auth::user()->role !== 'admin')
+                        <x-responsive-nav-link :href="route('profile.edit')">
+                            {{ __('Profile') }}
                         </x-responsive-nav-link>
                     @endif
-
+                    
                     <!-- Authentication -->
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf

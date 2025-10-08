@@ -252,3 +252,42 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 </script>
+
+{{-- *** เพิ่ม Script เข้ามาที่นี่ *** --}}
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // เปิด popup รายละเอียดเมื่อคลิกการ์ด
+        document.querySelectorAll('.program-card').forEach(card => {
+            card.addEventListener('click', function(e) {
+                // ป้องกันไม่ให้ popup ทำงานเมื่อคลิกที่ปุ่ม "ดูรายละเอียด"
+                if (e.target.closest('a')) {
+                    return;
+                }
+
+                const title = card.dataset.title;
+                const detail = card.dataset.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
+                const image = card.dataset.image;
+
+                Swal.fire({
+                    title: `<h3 class="fw-bold">${title}</h3>`,
+                    html: `
+                        <div style="text-align:center;">
+                            <img src="${image}" alt="${title}" style="width:100%;max-width:500px;border-radius:12px;margin-bottom:20px;">
+                            <div style="text-align:left; font-size:16px; line-height:1.6;">
+                                ${
+                                    // แปลง <ul> ที่ได้มา ให้มี inline style
+                                    detail.replace('<ul>', '<ul style="list-style-type: disc; padding-left: 2rem; margin: 0;">')
+                                }
+                            </div>
+                        </div>
+                    `,
+                    width: '800px',
+                    confirmButtonText: 'ปิด',
+                    showCloseButton: true,
+                });
+            });
+        });
+    });
+</script>
+@endpush

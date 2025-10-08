@@ -834,3 +834,14 @@ p {
     color: #fff;
     border-color: #007bff;
 }
+
+/* Style สำหรับ Bulleted List ที่ถูกสร้างจาก Accessor */
+.formatted-details ul {
+    list-style-type: disc !important; /* บังคับให้แสดง bullet (•) */
+    padding-left: 2rem !important;   /* เพิ่มระยะห่างด้านซ้าย */
+    margin-top: 0.5rem;
+}
+
+.formatted-details li {
+    margin-bottom: 0.25rem;
+}

@@ -29,10 +29,9 @@
                         </h1>
 
                         {{-- รายละเอียดหลักสูตร --}}
-                        <p class="card-text text-muted fs-5">
-                            {{ $program->detail }}
-                        </p>
-
+                        <div class="course-details-list text-muted fs-5">
+                            {!! $program->detail !!}
+                        </div>
                         <hr class="my-4">
 
                         {{-- แสดงรอบอบรมที่เปิดรับสมัคร --}}
