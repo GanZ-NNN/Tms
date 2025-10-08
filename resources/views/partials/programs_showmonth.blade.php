@@ -164,64 +164,91 @@ button.btn, a.btn { cursor: pointer; }
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    function showSwalConfirm(title, text, icon, confirmText, callback) {
+    // 🔹 ฟังก์ชันแสดง popup ยืนยัน
+    function showSwalConfirm(title, text, icon, confirmText, onConfirm) {
         Swal.fire({
-            title,
-            text,
-            icon,
+            title: title,
+            text: text,
+            icon: icon,
             showCancelButton: true,
             confirmButtonText: confirmText,
             cancelButtonText: 'ยกเลิก'
-        }).then(result => { if(result.isConfirmed) callback(); });
+        }).then(result => {
+            if (result.isConfirmed && typeof onConfirm === 'function') {
+                onConfirm();
+            }
+        });
     }
 
-    // Register
+    // ✅ ปุ่มสมัคร
     document.querySelectorAll('.register-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
             const form = btn.closest('form');
-            showSwalConfirm('ยืนยันการสมัคร?', 'คุณต้องการสมัครรอบนี้หรือไม่?', 'warning', 'ยืนยัน', () => form.submit());
+
+            showSwalConfirm('ยืนยันการสมัคร?', 'คุณต้องการสมัครรอบนี้หรือไม่?', 'warning', 'ยืนยัน', () => {
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'การลงทะเบียนสำเร็จ',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => form.submit());
+            });
         });
     });
 
-    // Cancel
+    // ✅ ปุ่มยกเลิก
     document.querySelectorAll('.cancel-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
             const form = btn.closest('form');
-            showSwalConfirm('ยืนยันการยกเลิก?', 'คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?', 'warning', 'ยืนยัน', () => form.submit());
+
+            showSwalConfirm('ยืนยันการยกเลิก?', 'คุณต้องการยกเลิกการลงทะเบียนรอบนี้หรือไม่?', 'warning', 'ยืนยัน', () => {
+                Swal.fire({
+                    title: 'สำเร็จ!',
+                    text: 'การยกเลิกการลงทะเบียนสำเร็จ',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(() => form.submit());
+            });
         });
     });
 
-    // Login alert
+    // ✅ ปุ่มสมัคร (กรณียังไม่ login)
     document.querySelectorAll('.login-alert-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.stopPropagation();
-            showSwalConfirm('ยังไม่ได้เข้าสู่ระบบ', 'กรุณาเข้าสู่ระบบก่อนทำการสมัคร', 'warning', 'Login', () => window.location.href = "{{ route('login') }}");
+            showSwalConfirm('ยังไม่ได้เข้าสู่ระบบ', 'กรุณาเข้าสู่ระบบก่อนทำการสมัคร', 'warning', 'เข้าสู่ระบบ', () => {
+                window.location.href = "{{ route('login') }}";
+            });
         });
     });
 
-    // Show program details in popup
+    // ✅ เปิด popup รายละเอียดเมื่อคลิกการ์ด
     document.querySelectorAll('.program-card').forEach(card => {
-        card.addEventListener('click', function (e) {
-            if(e.target.closest('button') || e.target.closest('a')) return; // ป้องกันคลิกปุ่ม register/cancel/login
-            const title = this.getAttribute('data-title');
-            const detail = this.getAttribute('data-detail') || 'ไม่มีรายละเอียดเพิ่มเติม';
-            const image = this.getAttribute('data-image');
+        card.addEventListener('click', function(e) {
+            if (e.target.closest('button') || e.target.closest('a')) return; // ป้องกันปุ่มใน card
+            const title = card.dataset.title;
+            const detail = card.dataset.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
+            const image = card.dataset.image;
 
             Swal.fire({
                 title: title,
-                html: `<div style="text-align:center;">
+                html: `
+                    <div style="text-align:center;">
                         <img src="${image}" alt="${title}" style="width:100%;max-width:500px;border-radius:12px;margin-bottom:15px;">
                         <div style="text-align:left; font-size:16px; line-height:1.6;">${detail}</div>
-                    </div>`,
-                showConfirmButton: true,
-                confirmButtonText: 'ปิด',
+                    </div>
+                `,
                 width: 700,
-                padding: '2em',
+                confirmButtonText: 'ปิด',
+                showCloseButton: true,
             });
         });
     });
 
 });
+
 </script>
