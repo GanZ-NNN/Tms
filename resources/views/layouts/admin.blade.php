@@ -9,17 +9,17 @@
 
     <!-- Alpine.js (สำหรับ Accordion/Tabs) -->
     <script src="//unpkg.com/alpinejs" defer></script>
-    
+
     @vite(['resources/css/app.css','resources/js/app.js',])
     <style>
     /* Custom Sidebar */
     .sidebar {
         height: 100vh; /* เปลี่ยนเป็น 100vh เพื่อให้เต็มความสูงของหน้าจอ */
-        background: #1f2937;
+        background: #FFFFFFFF;
         color: #fff;
     }
     .sidebar .nav-link {
-        color: #cbd5e1;
+        color: #000000FF;
         display: flex;
         align-items: center;
     }
@@ -28,7 +28,7 @@
         font-size: 1.2rem;
     }
     .sidebar .nav-link.active {
-        background: #334155;
+        background: #756F6FFF;
         color: #fff;
         border-radius: 0.375rem;
     }
@@ -44,7 +44,7 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<!-- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
         <button class="btn btn-outline-light d-md-none me-2" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
             <i class="bi bi-list"></i>
@@ -57,7 +57,9 @@
             </form>
         </div>
     </div>
-</nav>
+</nav> -->
+
+@include('layouts.navigation')
 
 <div class="container-fluid">
     <div class="row">
@@ -70,11 +72,11 @@
                             <i class="bi bi-speedometer2"></i> แดชบอร์ด
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('programs.index') ? 'active' : '' }}" href="{{ route('programs.index') }}">
                             <i class="bi bi-speedometer2"></i> ลายละเอียด
                         </a>
-                    </li>
+                    </li> -->
                     <li class="nav-item">
                         <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}" href="{{ route('admin.users.index') }}">
                             <i class="bi bi-people"></i> ผู้ใช้งาน
@@ -112,7 +114,7 @@
 
         <!-- Main content -->
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
-            
+
             <!-- *** ส่วนที่เพิ่ม/แก้ไข *** -->
             <div class="container-fluid mb-4">
                 @if(session('success'))
@@ -131,7 +133,7 @@
             </div>
 
             @yield('content')
-            
+
         </main>
     </div>
 </div>
