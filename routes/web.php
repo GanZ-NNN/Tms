@@ -96,19 +96,23 @@ Route::middleware(['auth','is.admin'])->prefix('admin')->name('admin.')->group(f
     // Dashboard
     Route::get('/dashboard', [SessionDashboardController::class, 'index'])->name('dashboard');
 
-    // CRUD
-    Route::resource('users', UserController::class);
-    Route::resource('programs', AdminProgramController::class);
-    Route::resource('trainers', TrainerController::class);
-    Route::resource('categories', CategoryController::class);
-    Route::resource('certificates', CertificateAdminController::class);
-    Route::resource('programs.sessions', SessionController::class);
+        Route::resource('users', UserController::class);
+        Route::resource('programs', AdminProgramController::class); // <-- ใช้ Controller ที่เปลี่ยนชื่อ
+        Route::resource('trainers', TrainerController::class);
 
-    // Attendance
-    Route::get('/attendance/overview', [AttendanceController::class, 'overview'])->name('attendance.overview');
-    Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
-    Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
-    Route::get('/sessions/{session}/registrations', [\App\Http\Controllers\RegistrationController::class, 'index'])->name('registrations.index');
+        Route::get('/attendance/overview', [AttendanceController::class, 'overview'])
+        ->name('attendance.overview');
+
+        Route::resource('certificates', CertificateAdminController::class);
+
+        Route::resource('categories', CategoryController::class);
+        // Route::resource('levels', LevelController::class);
+
+
+        Route::resource('programs.sessions', SessionController::class);
+        Route::get('/sessions/{session}/attendance', [AttendanceController::class, 'show'])->name('attendance.show');
+        Route::post('/sessions/{session}/attendance', [AttendanceController::class, 'store'])->name('attendance.store');
+                Route::get('/sessions/{session}/registrations', [RegistrationController::class, 'index'])->name('registrations.index');
 
     // Complete Session
     Route::post('/sessions/{session}/complete', [SessionCompletionController::class, 'complete'])->name('sessions.complete');
