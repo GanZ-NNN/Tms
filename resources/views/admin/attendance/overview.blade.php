@@ -45,23 +45,24 @@
                                                         <span>{{ $session->trainer->name ?? 'N/A' }}</span>
                                                     </div>
                                                 </td>
-                                                    <td class="py-3 text-right">
-                                                        @if ($session->status === 'completed')
-                                                            {{-- ถ้า Complete แล้ว: แสดง Badge และอาจจะมีลิงก์ดูผล --}}
-                                                            <span class="badge bg-secondary">Completed</span>
-                                                            {{-- <a href="#" class="btn btn-sm btn-outline-info ml-1">View Results</a> --}}
-                                                        @else
-                                                            {{-- ถ้ายังไม่ Complete: แสดงปุ่ม Attendance และ Complete --}}
-                                                            <a href="{{ route('admin.attendance.show', $session) }}" class="btn btn-info btn-sm">
-                                                                Attendance
-                                                            </a>
-
-                                                            <form action="{{ route('admin.sessions.complete', $session) }}" method="POST" class="d-inline ml-1" onsubmit="return confirm('Are you sure you want to mark this session as complete?');">
-                                                                @csrf
-                                                                <button type="submit" class="btn btn-success btn-sm">Complete</button>
-                                                            </form>
-                                                        @endif
-                                                    </td>
+                                                <td class="py-3 text-right">
+                                                    @if ($session->status === 'completed')
+                                                        {{-- ถ้า Complete แล้ว: แสดง Badge และปุ่ม "View" --}}
+                                                        <a href="{{ route('admin.attendance.show', $session) }}" class="btn btn-outline-secondary btn-sm">
+                                                            View Attendance
+                                                        </a>
+                                                        <span class="badge bg-success ms-1">Completed</span>
+                                                    @else
+                                                        {{-- ถ้ายังไม่ Complete: แสดงปุ่ม "Mark" และ "Complete" --}}
+                                                        <a href="{{ route('admin.attendance.show', $session) }}" class="btn btn-info btn-sm">
+                                                            Mark Attendance
+                                                        </a>
+                                                        <form action="{{ route('admin.sessions.complete', $session) }}" method="POST" class="d-inline ml-1" onsubmit="return confirm('Are you sure?');">
+                                                            @csrf
+                                                            <button type-="submit" class="btn btn-success btn-sm">Complete</button>
+                                                        </form>
+                                                    @endif
+                                                </td>
                                             </tr>
                                         @empty
                                             <tr><td class="py-3 text-muted">No sessions for this program.</td></tr>

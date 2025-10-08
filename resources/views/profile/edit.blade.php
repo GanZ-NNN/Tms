@@ -11,19 +11,12 @@
 
                 <!-- ========== Left Column: Personal Details ========== -->
                 <div class="md:col-span-1 space-y-6">
-
                     {{-- Personal Info Card --}}
                     <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                         <div class="flex flex-col items-center text-center">
-                            {{-- Placeholder for Profile Picture --}}
-                            <div class="w-24 h-24 bg-gray-200 dark:bg-gray-700 rounded-full mb-4 flex items-center justify-center">
-                                <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                            </div>
-                            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $user->name }}</h3>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                            {{-- ... โค้ดแสดงรูปโปรไฟล์, ชื่อ, อีเมล ... --}}
                         </div>
                     </div>
-
                     {{-- Edit Profile Information Form --}}
                     <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
                         <div class="max-w-xl">
@@ -33,55 +26,57 @@
                 </div>
 
                 <!-- ========== Right Column: Training & Certificates ========== -->
-    <div class="md:col-span-2 space-y-6">
+                <div class="md:col-span-2 space-y-6">
 
-        {{-- Upcoming Sessions (เหมือนเดิม) --}}
-    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Sessions</h3>
-        <div class="space-y-4">
-            @forelse($upcomingSessions as $registration)
-                <div class="border-l-4 border-indigo-500 pl-4">
-                    <p class="font-semibold text-gray-800 dark:text-gray-200">
-                        {{ $registration->session->program->title }}
-                    </p>
-                    <p class="text-sm text-gray-600 dark:text-gray-400">
-                        Date: {{ $registration->session->start_at->format('d M Y, H:i') }}
-                    </p>
-                    <p class="text-sm text-gray-500 dark:text-gray-500">
-                        Location: {{ $registration->session->location }}
-                    </p>
-                </div>
-            @empty
-                <p class="text-sm text-gray-500 dark:text-gray-400">You have no upcoming registered sessions.</p>
-            @endforelse
-        </div>
-
-        {{-- Training History (ปรับปรุงใหม่) --}}
-        <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
-            <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Training History</h3>
-            <div class="space-y-4">
-                @forelse($trainingHistory as $registration)
-                    <div class="flex justify-between items-center border-l-4 border-gray-300 pl-4 py-2">
-                        <div>
-                            <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $registration->session->program->title }}</p>
-                            <p class="text-sm text-gray-600 dark:text-gray-400">Completed on: {{ $registration->session->end_at->format('d M Y') }}</p>
-                        </div>
-                        <div>
-                            {{-- ตรวจสอบว่าเคยส่ง Feedback แล้วหรือยัง --}}
-                            @if(in_array($registration->session_id, $submittedFeedbackSessionIds))
-                                <span class="text-sm text-green-600">Feedback Submitted ✔</span>
-                            @else
-                                <a href="{{ route('feedback.create', $registration->session) }}" class="text-sm text-indigo-600 hover:underline">
-                                    Give Feedback
-                                </a>
-                            @endif
+                    {{-- Upcoming Sessions (ฉบับแก้ไข) --}}
+                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Upcoming Sessions</h3>
+                        <div class="space-y-4">
+                            @forelse($upcomingSessions as $registration)
+                                <div class="border-l-4 border-indigo-500 pl-4">
+                                    <p class="font-semibold text-gray-800 dark:text-gray-200">
+                                        {{ $registration->session->program->title }}
+                                    </p>
+                                    <p class="text-sm text-gray-600 dark:text-gray-400">
+                                        {{ $registration->session->title ?? 'รอบที่ ' . $registration->session->session_number }}
+                                    </p>
+                                    <div class="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                                        <span>Date: {{ $registration->session->start_at->format('d M Y, H:i') }}</span> |
+                                        <span>Location: {{ $registration->session->location ?? 'N/A' }}</span>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">You have no upcoming registered sessions.</p>
+                            @endforelse
                         </div>
                     </div>
-                @empty
-                    <p class="text-sm text-gray-500 dark:text-gray-400">You have no completed sessions yet.</p>
-                @endforelse
-            </div>
-        </div>
+
+                    {{-- Training History (ฉบับแก้ไข) --}}
+                    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">Training History</h3>
+                        <div class="space-y-4">
+                            @forelse($trainingHistory as $registration)
+                                <div class="flex justify-between items-center border-l-4 border-gray-300 dark:border-gray-600 pl-4 py-2">
+                                    <div>
+                                        <p class="font-semibold text-gray-800 dark:text-gray-200">{{ $registration->session->program->title }}</p>
+                                        <p class="text-sm text-gray-600 dark:text-gray-400">{{ $registration->session->title ?? 'รอบที่ ' . $registration->session->session_number }}</p>
+                                        <p class="text-xs text-gray-500 dark:text-gray-500 mt-1">Completed on: {{ $registration->session->end_at->format('d M Y') }}</p>
+                                    </div>
+                                    <div>
+                                        @if(in_array($registration->session_id, $submittedFeedbackSessionIds))
+                                            <span class="text-sm text-green-600 dark:text-green-400">Feedback Submitted ✔</span>
+                                        @else
+                                            <a href="{{ route('feedback.create', $registration->session) }}" class="text-sm text-indigo-600 hover:underline">
+                                                Give Feedback
+                                            </a>
+                                        @endif
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-sm text-gray-500 dark:text-gray-400">You have no completed sessions yet.</p>
+                            @endforelse
+                        </div>
+                    </div>
 
         {{-- My Certificates --}}
 <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg">
