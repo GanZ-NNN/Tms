@@ -97,6 +97,17 @@
 @push('scripts')
 <script>
     // ตรวจสอบว่ามี session 'session_completed' ถูกส่งมาหรือไม่
+        @if (session('attendance_saved'))
+        Swal.fire({
+            title: 'บันทึกสำเร็จ!',
+            text: 'ข้อมูลการเข้าเรียนได้ถูกบันทึกเรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'รับทราบ',
+            timer: 3000,
+            timerProgressBar: true
+        })
+    @endif
+    
     @if (session('session_completed'))
         // ถ้ามี ให้แสดง Pop-up ของ SweetAlert2
         Swal.fire({
