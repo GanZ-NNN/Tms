@@ -60,59 +60,38 @@ public function collection(Request $request): View
 {
     $user = $request->user();
 
-    // 1. ดึง Certificate ที่ได้รับแล้ว (เหมือนเดิม)
+    // 1. ดึง Certificate ทั้งหมดที่ผู้ใช้ได้รับแล้ว
     $issuedCertificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
+    $issuedSessionIds = $issuedCertificates->pluck('session_id'); // <-- เก็บ ID ของ Session ที่มี Cert แล้ว
 
     // 2. ดึงประวัติการอบรมทั้งหมดที่จบแล้ว
     $completedSessionsHistory = $user->registrations()
-        ->with([
-            'session.program',
-            'session.attendances' => fn($q) => $q->where('user_id', $user->id),
-            'session.feedback' => fn($q) => $q->where('user_id', $user->id) // <-- เพิ่ม Eager Load
-        ])
+        ->with(['session.program', 'session.attendances', 'session.feedback' => fn($q) => $q->where('user_id', $user->id)])
         ->whereHas('session', fn($q) => $q->where('status', 'completed'))
+        // *** สำคัญ: ไม่ต้องดึง Session ที่มี Cert แล้วมาซ้ำ ***
+        ->whereNotIn('session_id', $issuedSessionIds) 
         ->get();
-
-    // 3. กรองหา "Certificate ที่ไม่ผ่านเกณฑ์" (ส่วนที่แก้ไข)
-    $unissuedCertificates = $completedSessionsHistory->filter(function ($registration) use ($issuedCertificates, $user) {
-        
-        // ถ้ามี Certificate ออกให้แล้ว -> ไม่ต้องแสดงในส่วนนี้
-        if ($issuedCertificates->contains('session_id', $registration->session_id)) {
-            return false;
-        }
-
-        // --- นี่คือ Logic การตัดสินใหม่ ---
+    
+    // 3. กรองหา "Certificate ที่ไม่ผ่านเกณฑ์" จากรายการที่เหลือ
+    $unissuedCertificates = $completedSessionsHistory->map(function ($registration) {
         $reasons = [];
-
-        // เงื่อนไข 1: การเข้าเรียน
+        
+        // ... Logic การหาเหตุผล (เหมือนเดิม) ...
         $attended = $registration->session->attendances->isNotEmpty();
-        if (!$attended) {
-            $reasons[] = 'ไม่ผ่านเกณฑ์การเข้าเรียน';
-        }
+        if (!$attended) $reasons[] = 'ไม่ผ่านเกณฑ์การเข้าเรียน';
 
-        // เงื่อนไข 2: การส่ง Feedback
         $submittedFeedback = $registration->session->feedback->isNotEmpty();
-        if (!$submittedFeedback) {
-            $reasons[] = 'ยังไม่ได้ส่งแบบประเมิน';
-        }
-        
-        // ถ้ามีเหตุผลที่ไม่ผ่านอย่างน้อย 1 ข้อ -> ถือว่าไม่ผ่านเกณฑ์
-        if (!empty($reasons)) {
-            // เก็บเหตุผลไว้ใน property ใหม่
-            $registration->reasonsForFailure = implode(' และ ', $reasons);
-            return true;
-        }
-        
-        // ถ้าผ่านทุกเงื่อนไข แต่ยังไม่มี Certificate (อาจจะกำลังรอ Admin สร้าง)
-        return false;
+        if (!$submittedFeedback) $reasons[] = 'ยังไม่ได้ส่งแบบประเมิน';
 
-    })->map(function ($registration) {
-        // สร้าง Object ปลอมๆ เพื่อให้ใช้ง่ายใน View
-        return (object)[
-            'session' => $registration->session,
-            'reason' => $registration->reasonsForFailure // ใช้เหตุผลที่เรารวบรวมไว้
-        ];
-    });
+        // ถ้ามีเหตุผล ก็สร้าง object
+        if (!empty($reasons)) {
+            return (object)[
+                'session' => $registration->session,
+                'reason' => implode(' และ ', $reasons)
+            ];
+        }
+        return null; // ถ้าผ่านเกณฑ์ แต่ยังไม่มี Cert (รอ Admin สร้าง) ก็ไม่ต้องแสดง
+    })->filter(); // filter() จะลบค่า null ออกไป
 
     return view('certificates.collection', compact('issuedCertificates', 'unissuedCertificates'));
 }

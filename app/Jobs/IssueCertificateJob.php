@@ -15,9 +15,9 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
-use chillerlan\QRCode\QRCode;
-use chillerlan\QRCode\QROptions;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use App\Mail\CertificateMail;
+
 
 class IssueCertificateJob implements ShouldQueue
 {
@@ -32,7 +32,7 @@ class IssueCertificateJob implements ShouldQueue
         $this->session = $session;
     }
 
-    public function handle()
+public function handle()
     {
         try {
             $user = $this->user;
@@ -51,7 +51,36 @@ class IssueCertificateJob implements ShouldQueue
                 $issued_at = now();
                 $pdfPath = "certificates/{$cert_no}.pdf";
 
-                // สร้าง/อัปเดต Certificate
+                // --- *** ส่วนที่แก้ไขทั้งหมด *** ---
+
+                // 1. สร้าง QR Code ด้วยวิธีที่เรียบง่ายและถูกต้อง
+                $verificationUrl = route('certificates.verify.hash', $verification_hash);
+                $qrImage = \SimpleSoftwareIO\QrCode\Facades\QrCode::format('png')->size(150)->generate($verificationUrl);
+                $qrCodeBase64 = base64_encode($qrImage);
+
+                // --- สิ้นสุดส่วน QR Code ---
+
+
+                // Logo / Signature
+                $logoPath = public_path('images/logo.png');
+                $signaturePath = public_path('images/signature.png');
+                $logoBase64 = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : null;
+                $signatureBase64 = file_exists($signaturePath) ? base64_encode(file_get_contents($signaturePath)) : null;
+
+                // PDF
+                $pdf = PDF::loadView('certificates.template', [
+                    'user' => $user,
+                    'session' => $session,
+                    'cert_no' => $cert_no,
+                    'qrCodeBase64' => $qrCodeBase64,
+                    'logoBase64' => $logoBase64,
+                    'signatureBase64' => $signatureBase64,
+                    'issued_at' => $issued_at,
+                ])->setPaper('a4', 'landscape');
+                    
+                Storage::put($pdfPath, $pdf->output());
+
+                // สร้าง/อัปเดต Certificate Record
                 $certificate = Certificate::updateOrCreate(
                     ['user_id' => $user->id, 'session_id' => $session->id],
                     [
@@ -62,44 +91,12 @@ class IssueCertificateJob implements ShouldQueue
                     ]
                 );
 
-                // QR Code
-                $qrOptions = new QROptions([
-                    'outputType' => QRCode::OUTPUT_IMAGE_PNG,
-                    'eccLevel' => QRCode::ECC_H,
-                    'scale' => 5,
-                ]);
-                $qrcode = new QRCode($qrOptions);
-                $qrCodeBase64 = base64_encode($qrcode->render(route('certificates.verify.hash', $verification_hash)));
-
-                // Logo / Signature
-                $logoPath = public_path('images/logo.png');
-                $signaturePath = public_path('images/signature.png');
-
-                $logoBase64 = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : null;
-                $signatureBase64 = file_exists($signaturePath) ? base64_encode(file_get_contents($signaturePath)) : null;
-
-                // PDF
-                $pdf = Pdf::loadView('certificates.template', [
-                    'user' => $user,
-                    'session' => $session,
-                    'certificate' => $certificate,
-                    'qrCodeBase64' => $qrCodeBase64,
-                    'logoBase64' => $logoBase64,
-                    'signatureBase64' => $signatureBase64
-                ])->setPaper('a4', 'landscape');
-
-                Storage::put($pdfPath, $pdf->output());
-
-                // Update PDF path
-                $certificate->update(['pdf_path' => $pdfPath]);
-
                 // ส่ง Email แนบ PDF
-                Mail::to($user->email)
-                    ->queue(new CertificateMail($user, $certificate));
+                Mail::to($user->email)->queue(new CertificateMail($user, $certificate));
             });
 
         } catch (\Exception $e) {
-            Log::error("IssueCertificateJob failed: " . $e->getMessage());
+            Log::error("IssueCertificate-Job failed for user {$this->user->id} and session {$this->session->id}: " . $e->getMessage());
             throw $e;
         }
     }

@@ -2,183 +2,108 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>Certificate of Completion</title>
     <style>
-    @page {
-        size: 8.5in 11in;
-        margin: 0;
-    }
-    body {
-        margin: 0;
-        padding: 0;
-        font-family: 'Times New Roman', serif;
-        background-color: #fffef9;
-    }
-    .certificate-container {
-        width: 8.5in;
-        height: 11in;
-        border: 12px solid #D4AF37;
-        padding: 30px 50px;
-        box-sizing: border-box;
-        text-align: center;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        page-break-inside: avoid;
-        page-break-after: avoid;
-    }
-    .main-content {
-        flex: 1;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        margin-top: -40px;
-    }
-    .title {
-        color: #D4AF37;
-        font-size: 48px;
-        font-weight: bold;
-        letter-spacing: 6px;
-        margin-bottom: 0;
-        line-height: 1;
-    }
-    .subtitle {
-        color: #444;
-        font-size: 28px;
-        margin-top: 5px;
-        line-height: 1;
-    }
-    .presented-text {
-        font-size: 16px;
-        margin: 35px 0 15px 0;
-    }
-    .recipient {
-        font-size: 34px;
-        font-weight: bold;
-        text-transform: uppercase;
-        border-bottom: 2px solid #444;
-        display: inline-block;
-        padding: 5px 30px;
-        margin: 0;
-    }
-    .completion-text {
-        font-size: 16px;
-        margin: 25px 0 12px 0;
-    }
-    .course {
-        font-size: 20px;
-        font-style: italic;
-        margin: 0;
-        line-height: 1.3;
-    }
-    .offered-by {
-        font-size: 13px;
-        color: #555;
-        margin: 18px 0;
-    }
-    .meta-info {
-        font-size: 12px;
-        color: #555;
-        margin: 15px 0 0 0;
-    }
-    .footer {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        width: 100%;
-        padding-top: 20px;
-    }
-    .footer-item {
-        width: 30%;
-        text-align: center;
-    }
-    .footer-item img {
-        display: block;
-        margin: 0 auto 8px;
-    }
-    .footer-item small {
-        display: block;
-        color: #666;
-        font-size: 11px;
-        line-height: 1.3;
-    }
-    .signature-line {
-        width: 160px;
-        height: 1px;
-        background-color: #333;
-        margin: 5px auto 3px;
-    }
-    .verify-text {
-        font-size: 9px;
-        color: #777;
-        margin-top: 2px;
-    }
-    .dean-name {
-        font-size: 13px;
-        font-weight: bold;
-        margin: 3px 0 2px 0;
-    }
-</style>
+  
+        /* --- Global Styles --- */
+        @page {
+            margin: 0; /* ลบ margin ของหน้ากระดาษ */
+        }
+        body { 
+            font-family: 'DejaVu Sans', 'THSarabunNew', sans-serif;
+            margin: 0; 
+            padding: 0;
+            font-size: 16px;
+        }
+
+        /* --- Layout Styles (ส่วนที่แก้ไข) --- */
+        .page-container {
+            width: 297mm;  /* A4 Landscape width */
+            height: 210mm; /* A4 Landscape height */
+            position: relative;
+        }
+        .page-border {
+            border: 5mm solid #c9a96a;
+            position: absolute;
+            top: 10mm;
+            left: 10mm;
+            right: 10mm;
+            bottom: 10mm;
+        }
+        .content-wrapper {
+            position: absolute;
+            top: 15mm;
+            left: 15mm;
+            right: 15mm;
+            bottom: 15mm;
+            text-align: center;
+        }
+        
+        /* --- Content Styles --- */
+        h1 { font-size: 42px; font-weight: bold; color: #b8860b; margin: 20px 0 40px 0; letter-spacing: 4px;}
+        p { font-size: 20px; color: #333; margin: 5px 0; }
+        .user-name { font-size: 38px; font-weight: bold; color: #000; margin: 40px 0; border-bottom: 2px solid #555; display: inline-block; padding-bottom: 5px;}
+        .course-name { font-size: 30px; font-weight: bold; color: #b8860b; margin: 40px 0; }
+        .details { font-size: 16px; color: #555; margin-top: 50px; }
+        
+        /* --- Footer Styles --- */
+        .footer {
+            position: absolute;
+            bottom: 25mm;
+            left: 25mm;
+            right: 25mm;
+        }
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .footer-table td {
+            width: 50%;
+            vertical-align: bottom;
+        }
+        .qr-code { text-align: left; font-size: 14px; }
+        .dean-signature { text-align: right; font-size: 16px; }
+        .signature-line { border-top: 1px solid #555; margin-top: 50px; padding-top: 5px; }
+    </style>
 </head>
 <body>
-    <div class="certificate-container">
-        <div class="main-content">
-            <!-- Title -->
+    <div class="page-container">
+        {{-- กรอบจะถูกวาดก่อน --}}
+        <div class="page-border"></div>
+
+        {{-- เนื้อหาทั้งหมดจะอยู่ใน wrapper นี้ --}}
+        <div class="content-wrapper">
+            {{-- ส่วนเนื้อหาตรงกลาง --}}
             <div>
-                <div class="title">CERTIFICATE</div>
-                <div class="subtitle">OF COMPLETION</div>
+                <h1>CERTIFICATE OF COMPLETION</h1>
+                <p>This is proudly presented to</p>
+                <div class="user-name">{{ $user->name }}</div>
+                <p>for successfully completing the course</p>
+                <div class="course-name">{{ $session->program->title }}</div>
+                <p class="details">
+                    Certificate ID: {{ $cert_no }} | Date Issued: {{ $issued_at->format('F d, Y') }}
+                </p>
             </div>
 
-            <!-- Recipient -->
-            <p class="presented-text">This is proudly presented to</p>
-            <div class="recipient">{{ strtoupper($user->name) }}</div>
-
-            <!-- Course Info -->
-            <p class="completion-text">for successfully completing the course</p>
-            <div class="course">
-                {{ strtoupper(optional($session->program)->title ?? $session->title) }}
-            </div>
-
-            <p class="offered-by">
-                Offered by Faculty of Engineering, Khon Kaen University
-            </p>
-
-            <!-- Metadata -->
-            <div class="meta-info">
-                Certificate ID: <strong>{{ $certificate->cert_no }}</strong> |
-                Date Issued: <strong>{{ $certificate->issued_at->format('F d, Y') }}</strong>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <!-- QR Code -->
-            <div class="footer-item">
-                @if(!empty($qrCodeBase64))
-                    <img src="data:image/png;base64,{{ $qrCodeBase64 }}" width="90" height="90" alt="QR Code">
-                @endif
-                <small>Verification QR Code</small>
-                <small class="verify-text">Scan to verify authenticity</small>
-            </div>
-
-            <!-- Authorized Logo -->
-            <div class="footer-item">
-                @if(!empty($logoBase64))
-                    <img src="data:image/png;base64,{{ $logoBase64 }}" width="70" height="70" alt="Authorized Logo">
-                @endif
-                <small>Authorized Logo/Seal</small>
-            </div>
-
-            <!-- Signature -->
-            <div class="footer-item">
-                @if(!empty($signatureBase64))
-                    <img src="data:image/png;base64,{{ $signatureBase64 }}" width="120" height="50" alt="Signature">
-                @endif
-                <div class="signature-line"></div>
-                <div class="dean-name">Assoc. Prof. Ratchaphon Suntivarakorn, Ph.D.</div>
-                <small>Dean, Faculty of Engineering</small>
+            {{-- ส่วนท้าย (Footer) --}}
+            <div class="footer">
+                <table class="footer-table">
+                    <tr>
+                        <td class="qr-code">
+                            <strong>QR Code</strong><br>
+                            <span>Verification Link</span><br>
+                            <img src="data:image/png;base64, {{ $qrCodeBase64 }} ">
+                        </td>
+                        <td class="dean-signature">
+                            <img src="{{ public_path('assets/img/KKU_SLA_Logo.svg.png') }}" alt="KKU Logo" style="width: 150px; margin-bottom: 10px;">
+                            <div class="signature-line">
+                                <strong>Assoc. Prof. Rachapon Santiwarakorn, Ph.D.</strong><br>
+                                <span>Dean, Faculty of Engineering</span>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
     </div>

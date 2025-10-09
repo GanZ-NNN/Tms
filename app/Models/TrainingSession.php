@@ -138,9 +138,29 @@ class TrainingSession extends Model
      * ตรวจสอบว่าผ่านเงื่อนไขออกใบรับรองหรือยัง
      * (เข้าร่วม >= 80% และทำแบบประเมินแล้ว)
      */
-    public function eligibleForCertificate(User $user)
+public function eligibleForCertificate(User $user)
 {
-    return $this->attendanceRateFor($user) >= 80 && $this->hasFeedbackFrom($user);
+    // 1. หาข้อมูลการลงทะเบียน
+    $registration = $this->registrations()->where('user_id', $user->id)->first();
+    if (!$registration) return false;
+
+    // 2. ตรวจสอบการส่ง Feedback
+    $submittedFeedback = Feedback::where('user_id', $user->id)->where('session_id', $this->id)->exists();
+    if (!$submittedFeedback) return false;
+
+    // 3. คำนวณ % Attendance ที่แม่นยำ
+    $period = \Carbon\CarbonPeriod::create($this->start_at, $this->end_at);
+    $totalSlots = $period->count() * 2; // AM + PM
+    if ($totalSlots == 0) return false;
+
+    $attendedAM = $registration->dailyAttendances()->where('is_present_am', true)->count();
+    $attendedPM = $registration->dailyAttendances()->where('is_present_pm', true)->count();
+    $totalAttended = $attendedAM + $attendedPM;
+    
+    $attendancePercent = ($totalAttended / $totalSlots) * 100;
+
+    // 4. ตรวจสอบเงื่อนไข
+    return $attendancePercent >= 80;
 }
 
 
