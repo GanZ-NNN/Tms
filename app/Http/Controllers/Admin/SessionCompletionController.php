@@ -26,6 +26,6 @@ class SessionCompletionController extends Controller
         // IssueCertificatesJob::dispatch($session);
 
         // 4. Redirect กลับไปหน้าเดิม พร้อมข้อความแจ้งเตือน
-        return back()->with('success', "Session '{$session->title}' has been marked as complete.");
+        return back()->with('session_completed', true);
     }
 }

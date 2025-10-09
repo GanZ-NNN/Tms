@@ -93,3 +93,20 @@
     </div>
 </main>
 @endsection
+
+@push('scripts')
+<script>
+    // ตรวจสอบว่ามี session 'session_completed' ถูกส่งมาหรือไม่
+    @if (session('session_completed'))
+        // ถ้ามี ให้แสดง Pop-up ของ SweetAlert2
+        Swal.fire({
+            title: 'รอบอบรมเสร็จสิ้น!',
+            text: 'สถานะของรอบอบรมได้ถูกเปลี่ยนเป็น "Completed" เรียบร้อยแล้ว',
+            icon: 'success',
+            confirmButtonText: 'รับทราบ',
+            timer: 3000, // ปิดอัตโนมัติใน 3 วินาที
+            timerProgressBar: true
+        })
+    @endif
+</script>
+@endpush
