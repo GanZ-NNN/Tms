@@ -14,8 +14,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use chillerlan\QRCode\QRCode;
 use chillerlan\QRCode\QROptions;
+use App\Mail\CertificateMail;
 
 class IssueCertificateJob implements ShouldQueue
 {
@@ -24,25 +26,19 @@ class IssueCertificateJob implements ShouldQueue
     public $user;
     public $session;
 
-    /**
-     * Create a new job instance.
-     */
     public function __construct(User $user, TrainingSession $session)
     {
         $this->user = $user;
         $this->session = $session;
     }
 
-    /**
-     * Execute the job.
-     */
     public function handle()
     {
         try {
             $user = $this->user;
             $session = $this->session;
 
-            // ตรวจสอบสิทธิ์ก่อนออกใบประกาศ
+            // ตรวจสอบ attendance + feedback
             if (!$session->eligibleForCertificate($user)) {
                 Log::info("User {$user->id} not eligible for certificate for session {$session->id}");
                 return;
@@ -53,46 +49,53 @@ class IssueCertificateJob implements ShouldQueue
                 $cert_no = 'CERT-' . strtoupper(uniqid());
                 $verification_hash = md5(uniqid());
                 $issued_at = now();
-                $path = "certificates/{$cert_no}.pdf";
+                $pdfPath = "certificates/{$cert_no}.pdf";
 
-                // สร้างหรืออัปเดต certificate record
+                // สร้าง/อัปเดต Certificate
                 $certificate = Certificate::updateOrCreate(
                     ['user_id' => $user->id, 'session_id' => $session->id],
                     [
                         'cert_no' => $cert_no,
                         'verification_hash' => $verification_hash,
-                        'pdf_path' => $path,
+                        'pdf_path' => $pdfPath,
                         'issued_at' => $issued_at,
                     ]
                 );
 
-                // Generate QR Code using chillerlan/php-qrcode
-                $options = new QROptions([
+                // QR Code
+                $qrOptions = new QROptions([
                     'outputType' => QRCode::OUTPUT_IMAGE_PNG,
                     'eccLevel' => QRCode::ECC_H,
                     'scale' => 5,
-                    'imageBase64' => false,
                 ]);
+                $qrcode = new QRCode($qrOptions);
+                $qrCodeBase64 = base64_encode($qrcode->render(route('certificates.verify.hash', $verification_hash)));
 
-                $qrcode = new QRCode($options);
-                $qrCodeBase64 = base64_encode(
-                    $qrcode->render(route('certificates.verify.hash', $verification_hash))
-                );
+                // Logo / Signature
+                $logoPath = public_path('images/logo.png');
+                $signaturePath = public_path('images/signature.png');
 
-                // Generate PDF
+                $logoBase64 = file_exists($logoPath) ? base64_encode(file_get_contents($logoPath)) : null;
+                $signatureBase64 = file_exists($signaturePath) ? base64_encode(file_get_contents($signaturePath)) : null;
+
+                // PDF
                 $pdf = Pdf::loadView('certificates.template', [
                     'user' => $user,
                     'session' => $session,
                     'certificate' => $certificate,
-                    'qrCodeBase64' => $qrCodeBase64
+                    'qrCodeBase64' => $qrCodeBase64,
+                    'logoBase64' => $logoBase64,
+                    'signatureBase64' => $signatureBase64
                 ])->setPaper('a4', 'landscape');
 
+                Storage::put($pdfPath, $pdf->output());
 
-                // บันทึก PDF ลง Storage
-                Storage::put($path, $pdf->output());
+                // Update PDF path
+                $certificate->update(['pdf_path' => $pdfPath]);
 
-                // อัปเดต pdf_path ในฐานข้อมูล
-                $certificate->update(['pdf_path' => $path]);
+                // ส่ง Email แนบ PDF
+                Mail::to($user->email)
+                    ->queue(new CertificateMail($user, $certificate));
             });
 
         } catch (\Exception $e) {

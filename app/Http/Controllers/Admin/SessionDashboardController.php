@@ -27,6 +27,24 @@ class SessionDashboardController extends Controller
                                             ->count(),
         ];
 
+        // --- Users by Occupation Chart Data ---
+$userByOccupation = User::select('occupation', DB::raw('COUNT(*) as total'))
+    ->whereIn('occupation', [
+        'นักศึกษาในคณะ',
+        'นักศึกษามข',
+        'อาจารย์ในคณะ',
+        'อาจารย์มข',
+        'บุคคลภายนอก',
+    ])
+    ->groupBy('occupation')
+    ->pluck('total', 'occupation');
+
+$occupationChartData = [
+    'labels' => $userByOccupation->keys(),
+    'data' => $userByOccupation->values(),
+];
+
+
         // --- Attendance Chart Data ---
         $monthlyAttendance = Attendance::select(
                 DB::raw('YEAR(created_at) as year'),
@@ -111,6 +129,7 @@ class SessionDashboardController extends Controller
             'recentActivities',
             'lowEnrollmentSessions',
             'nearingCapacitySessions'
+            ,'occupationChartData'
         ));
     }
 }

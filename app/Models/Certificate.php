@@ -17,6 +17,11 @@ class Certificate extends Model
         'pdf_path',
         'issued_at',
         'verification_hash',
+        'status',
+    ];
+
+    protected $casts = [
+        'issued_at' => 'datetime',
     ];
 
     protected static function boot()
@@ -24,11 +29,14 @@ class Certificate extends Model
         parent::boot();
 
         static::creating(function ($certificate) {
-            // รหัสใบรับรอง เช่น CERT-2025-0001
+            // รหัสใบรับรอง เช่น CERT-2025-ABC123
             $certificate->cert_no = 'CERT-' . now()->format('Y') . '-' . strtoupper(Str::random(6));
 
             // ใช้สำหรับตรวจสอบผ่าน QR
             $certificate->verification_hash = Str::uuid();
+
+            // ตั้งค่า default status
+            $certificate->status = 'pending';
         });
     }
 

@@ -1,5 +1,5 @@
 <?php
-
+use App\Models\Certificate;
 use Illuminate\Support\Facades\Route;
 
 // --- Controllers ---
@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AttendanceController;
 use App\Http\Controllers\Admin\SessionCompletionController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\CertificateAdminController;
 
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\RegistrationController;
@@ -23,7 +24,7 @@ use App\Http\Controllers\PublicSessionController;
 use App\Http\Controllers\FeedbackController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CertificateController;
-use App\Http\Controllers\CertificateAdminController;
+
 
 // Auth (Breeze / OTP Reset Password)
 use App\Http\Controllers\Auth\PasswordResetController;
@@ -112,6 +113,7 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
         ->name('attendance.overview');
         Route::get('/attendance/history', [AttendanceController::class, 'history'])->name('attendance.history');
 
+        // Route::resource('certificates', App\Http\Controllers\Admin\CertificateAdminController::class);
         Route::resource('certificates', CertificateAdminController::class);
 
         Route::resource('categories', CategoryController::class);
@@ -137,7 +139,7 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
     });
 
     // ✅ เพิ่ม route สำหรับ export CSV
-    Route::get('/feedbacks/export', [FeedbackController::class, 'export'])
+    Route::get('/feedbacks/export', [App\Http\Controllers\Admin\FeedbackController::class, 'export'])
         ->name('feedbacks.export');
 });
 
@@ -160,6 +162,16 @@ Route::get('/sessions/{session}/feedback', [FeedbackController::class, 'create']
 Route::post('/sessions/{session}/feedback', [FeedbackController::class, 'store'])->name('feedback.store');
 Route::get('/feedback/thankyou', [FeedbackController::class, 'thankyou'])->name('feedback.thankyou');
 
+
+Route::get('/admin/users/search', [CertificateAdminController::class, 'searchUsers'])->name('admin.users.search');
+Route::get('/admin/sessions/search', [CertificateAdminController::class, 'searchSessions'])->name('admin.sessions.search');
+
+Route::get('/admin/certificates/{certificate}/pdf', function(Certificate $certificate) {
+    if (!$certificate->pdf_path || !Storage::exists($certificate->pdf_path)) {
+        abort(404); // ถ้าไฟล์ไม่มี
+    }
+    return Storage::download($certificate->pdf_path, $certificate->cert_no . '.pdf');
+})->name('admin.certificates.download');
 
 /*
 |--------------------------------------------------------------------------

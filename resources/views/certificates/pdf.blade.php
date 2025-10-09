@@ -117,7 +117,9 @@
         <div class="footer">
             <!-- QR Code -->
             <div class="footer-item">
-                <img src="data:image/png;base64,{{ $qrCode }}" width="80" height="80" alt="QR Code">
+                @if(isset($qrCodePath))
+                    <img src="{{ $qrCodePath }}" alt="QR Code">
+                @endif
                 <small>Verification QR Code</small>
                 <small class="verify-text">Scan to verify authenticity</small>
             </div>

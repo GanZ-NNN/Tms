@@ -24,11 +24,12 @@ class FeedbackController extends Controller
     {
         $query = Feedback::with(['user','trainingSession']);
 
+
         if ($request->filled('session')) {
             $query->where('session_id', $request->session);
         }
 
-        $feedbacks = $query->orderBy('created_at', 'desc')->paginate(20);
+        $feedbacks = $query->orderBy('created_at', 'desc')->paginate(10);
 
         $allFeedbacks = $query->get();
         $count = $allFeedbacks->count();
