@@ -50,7 +50,7 @@ class RegistrationController extends Controller
         Mail::to($user->email)->send(new RegistrationSuccessMail($user, $session));
 
         // 6. กลับไปพร้อม SweetAlert
-        return back()->with('registration_success', true);
+        return redirect()->route('home')->with('registration_success', true);
     }
 
     /**

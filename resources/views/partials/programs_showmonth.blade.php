@@ -79,7 +79,7 @@
                                             <div class="mb-1"><i class="far fa-clock"></i> {{ $session->start_at->format('H:i') }} - {{ $session->end_at->format('H:i') }} น.</div>
                                             <div class="mb-1"><i class="far fa-user"></i> {{ $session->trainer?->name ?? '-' }}</div>
                                             <div class="mb-1"><i class="fas fa-map-marker-alt"></i> {{ $session->location ?? '-' }}</div>
-                                            <div class="mb-0"><i class="fas fa-users"></i> {{ $session->capacity ?? '-' }}</div>
+                                            <div class="mb-0"><i class="fas fa-users"></i> {{ $session->registrations->count() }} / {{ $session->capacity ?? '-' }}</div>
                                         </div>
 
                                         @if ($regOpen && $now->lt($regOpen))
@@ -91,6 +91,7 @@
                                         @endif
                                     </div>
 
+                                    {{-- *** นี่คือ Logic ปุ่มที่อัปเดตแล้ว *** --}}
                                     <div>
                                         @auth
                                             @php
@@ -98,27 +99,33 @@
                                             @endphp
 
                                             @if ($userRegistration)
+                                                {{-- ถ้าลงทะเบียนแล้ว -> แสดงปุ่ม "ยกเลิก" --}}
                                                 <form class="cancel-form text-center" action="{{ route('registrations.cancel', $userRegistration) }}" method="POST">
                                                     @csrf
                                                     @method('DELETE')
                                                     <button type="button" class="mt-5 btn btn-danger btn-sm fw-bold cancel-btn">ยกเลิก</button>
                                                 </form>
+                                            @elseif (!$canRegister)
+                                                {{-- ถ้าปิดรับสมัครแล้ว -> แสดงปุ่ม "ปิดรับสมัคร" --}}
+                                                <button class="mt-5 btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
+                                            @elseif ($session->registrations->count() >= $session->capacity)
+                                                {{-- ถ้าที่นั่งเต็มแล้ว -> แสดงปุ่ม "เต็มแล้ว" --}}
+                                                <button class="mt-5 btn btn-warning btn-sm fw-bold text-dark" disabled>เต็มแล้ว</button>
                                             @else
-                                                @if ($canRegister)
-                                                    <form class="register-form text-center" action="{{ route('sessions.register', $session) }}" method="POST">
-                                                        @csrf
-                                                        <button type="button" class="mt-5 btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
-                                                    </form>
-                                                @else
-                                                    <button class="mt-5 btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
-                                                @endif
+                                                {{-- ถ้ายังว่าง -> แสดงปุ่ม "ลงทะเบียน" --}}
+                                                <form class="register-form text-center" action="{{ route('sessions.register', $session) }}" method="POST">
+                                                    @csrf
+                                                    <button type="button" class="mt-5 btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
+                                                </form>
                                             @endif
                                         @else
+                                            {{-- ถ้ายังไม่ได้ Login --}}
                                             <div class="d-flex text-center mt-2">
                                                 <a href="javascript:void(0)" class="mt-5 btn btn-primary btn-sm fw-bold login-alert-btn">สมัคร</a>
                                             </div>
                                         @endauth
                                     </div>
+                                    {{-- *** สิ้นสุดส่วนที่อัปเดต *** --}}
                                 </div>
                             @empty
                                 <p class="text-muted">ไม่มีรอบอบรมที่เปิดรับสมัคร</p>

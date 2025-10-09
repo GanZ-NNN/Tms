@@ -37,9 +37,9 @@
                         @endif
                     @else
                         {{-- ถ้ายังไม่ Login ให้แสดงเมนูหลักสูตรทั้งหมด --}}
-                        <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                        {{-- <x-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
                             {{ __('หลักสูตรทั้งหมด') }}
-                        </x-nav-link>
+                        </x-nav-link> --}}
                     @endauth
                 </div>
             </div>
@@ -128,9 +128,9 @@
                     </x-responsive-nav-link>
                 @endif
             @else
-                <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
+                {{-- <x-responsive-nav-link :href="route('programs.index')" :active="request()->routeIs('programs.index')">
                     {{ __('หลักสูตรทั้งหมด') }}
-                </x-responsive-nav-link>
+                </x-responsive-nav-link> --}}
             @endauth
         </div>
 
