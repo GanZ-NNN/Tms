@@ -54,47 +54,67 @@ class CertificateController extends Controller
         ]);
     }
 
-        public function collection(Request $request): View
-    {
-        $user = $request->user();
+       // CertificateController@collection
 
-        // 1. ดึง Certificate ทั้งหมดที่ผู้ใช้ได้รับแล้วจริงๆ
-        $issuedCertificates = $user->certificates()
-                                  ->with('session.program')
-                                  ->latest('issued_at')
-                                  ->get();
+public function collection(Request $request): View
+{
+    $user = $request->user();
 
-        // 2. ดึง "ประวัติการอบรมทั้งหมด" ที่จบแล้ว (status = completed)
-        $completedSessionsHistory = $user->registrations()
-            ->with(['session.program', 'session.attendances' => fn($q) => $q->where('user_id', $user->id)])
-            ->whereHas('session', fn($q) => $q->where('status', 'completed'))
-            ->get();
+    // 1. ดึง Certificate ที่ได้รับแล้ว (เหมือนเดิม)
+    $issuedCertificates = $user->certificates()->with('session.program')->latest('issued_at')->get();
 
-        // 3. กรองหา "Certificate ที่ไม่ผ่านเกณฑ์"
-        $unissuedCertificates = $completedSessionsHistory->filter(function ($registration) use ($issuedCertificates) {
-            
-            // เช็คก่อนว่ามี Certificate ออกให้สำหรับ Session นี้แล้วหรือยัง
-            $alreadyIssued = $issuedCertificates->contains('session_id', $registration->session_id);
-            if ($alreadyIssued) {
-                return false; // ถ้ามีแล้ว ไม่ต้องแสดงในส่วนที่ไม่ผ่าน
-            }
+    // 2. ดึงประวัติการอบรมทั้งหมดที่จบแล้ว
+    $completedSessionsHistory = $user->registrations()
+        ->with([
+            'session.program',
+            'session.attendances' => fn($q) => $q->where('user_id', $user->id),
+            'session.feedback' => fn($q) => $q->where('user_id', $user->id) // <-- เพิ่ม Eager Load
+        ])
+        ->whereHas('session', fn($q) => $q->where('status', 'completed'))
+        ->get();
 
-            // --- นี่คือ Logic การตัดสิน ---
-            // เงื่อนไข: "มาเรียน" (มี record ใน attendances)
-            $attended = $registration->session->attendances->isNotEmpty();
-            
-            // ถ้าไม่มาเรียน -> ถือว่าไม่ผ่านเกณฑ์
-            return !$attended;
+    // 3. กรองหา "Certificate ที่ไม่ผ่านเกณฑ์" (ส่วนที่แก้ไข)
+    $unissuedCertificates = $completedSessionsHistory->filter(function ($registration) use ($issuedCertificates, $user) {
+        
+        // ถ้ามี Certificate ออกให้แล้ว -> ไม่ต้องแสดงในส่วนนี้
+        if ($issuedCertificates->contains('session_id', $registration->session_id)) {
+            return false;
+        }
 
-        })->map(function ($registration) {
-            // สร้าง Object ปลอมๆ เพื่อให้ใช้ง่ายใน View
-            return (object)[
-                'session' => $registration->session,
-                'reason' => 'ไม่ผ่านเกณฑ์การเข้าเรียน' // กำหนดเหตุผล
-            ];
-        });
+        // --- นี่คือ Logic การตัดสินใหม่ ---
+        $reasons = [];
 
-        return view('certificates.collection', compact('issuedCertificates', 'unissuedCertificates'));
-    }
+        // เงื่อนไข 1: การเข้าเรียน
+        $attended = $registration->session->attendances->isNotEmpty();
+        if (!$attended) {
+            $reasons[] = 'ไม่ผ่านเกณฑ์การเข้าเรียน';
+        }
+
+        // เงื่อนไข 2: การส่ง Feedback
+        $submittedFeedback = $registration->session->feedback->isNotEmpty();
+        if (!$submittedFeedback) {
+            $reasons[] = 'ยังไม่ได้ส่งแบบประเมิน';
+        }
+        
+        // ถ้ามีเหตุผลที่ไม่ผ่านอย่างน้อย 1 ข้อ -> ถือว่าไม่ผ่านเกณฑ์
+        if (!empty($reasons)) {
+            // เก็บเหตุผลไว้ใน property ใหม่
+            $registration->reasonsForFailure = implode(' และ ', $reasons);
+            return true;
+        }
+        
+        // ถ้าผ่านทุกเงื่อนไข แต่ยังไม่มี Certificate (อาจจะกำลังรอ Admin สร้าง)
+        return false;
+
+    })->map(function ($registration) {
+        // สร้าง Object ปลอมๆ เพื่อให้ใช้ง่ายใน View
+        return (object)[
+            'session' => $registration->session,
+            'reason' => $registration->reasonsForFailure // ใช้เหตุผลที่เรารวบรวมไว้
+        ];
+    });
+
+    return view('certificates.collection', compact('issuedCertificates', 'unissuedCertificates'));
+}
 
 }
