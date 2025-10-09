@@ -42,22 +42,29 @@ class ProgramController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'detail' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|max:2048',
-        ]);
+{
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'detail' => 'nullable|string',
+        'category_id' => 'nullable|exists:categories,id',
+        'image' => 'nullable|image|max:2048',
+    ]);
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('program_images', 'public');
-        }
-
-        Program::create($data);
-
-        return redirect()->route('admin.programs.index')->with('success', 'Program created successfully.');
+    if ($request->hasFile('image')) {
+        $data['image'] = $request->file('image')->store('program_images', 'public');
     }
+
+    $program = Program::create($data);
+
+    if ($request->expectsJson()) {
+        return response()->json([
+            'message' => 'หลักสูตรถูกบันทึกเรียบร้อยแล้ว',
+            'program' => $program
+        ]);
+    }
+
+    return redirect()->route('admin.programs.index')->with('success', 'Program created successfully.');
+}
 
     public function edit(string $id)
     {
@@ -66,29 +73,46 @@ class ProgramController extends Controller
         return view('admin.programs.edit', compact('program', 'categories'));
     }
 
-    public function update(Request $request, Program $program)
-    {
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'detail' => 'nullable|string',
-            'category_id' => 'nullable|exists:categories,id',
-            'image' => 'nullable|image|max:2048',
+   public function update(Request $request, Program $program)
+{
+    $data = $request->validate([
+        'title' => 'required|string|max:255',
+        'category_id' => 'nullable|exists:categories,id',
+        'detail' => 'nullable|string',
+        'image' => 'nullable|image|max:2048',
+    ]);
+
+    if ($request->hasFile('image')) {
+        $data['image'] = $request->file('image')->store('programs', 'public');
+    }
+
+    $program->update($data);
+
+    // ถ้า request เป็น AJAX/JSON ให้ส่ง JSON กลับ
+    if ($request->expectsJson()) {
+        return response()->json(['message' => 'หลักสูตรถูกบันทึกเรียบร้อยแล้ว']);
+    }
+
+    return redirect()->route('admin.programs.edit', $program)->with('success', 'Program updated successfully.');
+}
+
+
+
+
+    public function destroy(Program $program, Request $request)
+{
+    $program->delete();
+
+    // ถ้าเป็น AJAX request
+    if ($request->expectsJson() || $request->ajax()) {
+        return response()->json([
+            'message' => 'ลบหลักสูตรเรียบร้อยแล้ว'
         ]);
-
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('program_images', 'public');
-        }
-
-        $program->update($data);
-
-        return redirect()->route('admin.programs.index')->with('success', 'Program updated successfully.');
     }
 
-    public function destroy(Program $program)
-    {
-        $program->delete();
-        return redirect()->route('admin.programs.index')->with('success', 'Program deleted successfully.');
-    }
+    return redirect()->route('admin.programs.index')->with('success', 'ลบหลักสูตรเรียบร้อยแล้ว');
+}
+
 
     public function show($id)
     {

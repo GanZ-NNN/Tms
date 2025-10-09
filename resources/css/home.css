@@ -209,38 +209,7 @@ html, body {
     }
 }
 
-/* Search Form: Input + Button ข้างๆ กัน */
-.section-search form {
-    display: flex;
-    flex-wrap: wrap;       /* ยอมให้ wrap บนมือถือ */
-    gap: 0.5rem;           /* ระยะห่างระหว่าง input กับ button */
-    align-items: right;
-    justify-content: left;
-    margin-top: 1.5rem;
-}
 
-/* Input */
-.section-search .form-control {
-    flex: 1;               /* ขยายเต็มพื้นที่ที่เหลือ */
-    min-width: 250px;      /* ขนาดขั้นต่ำ */
-    max-width: 400px;      /* ขนาดสูงสุด */
-    height: 55px;
-    border-radius: 0.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    border: 2px solid rgb(255, 255, 255);
-    padding: 0 1rem;
-
-}
-
-/* Button */
-.section-search .btn-primary {
-    height: 55px;
-    border-radius: 0.5rem;
-    font-weight: 700;
-    padding: 0 1.5rem;
-    box-shadow: 0 4px 12px rgba(0,123,255,0.3);
-    white-space: nowrap;   /* ป้องกันข้อความในปุ่มตัดบรรทัด */
-}
 
 /* ============================
    Responsive: Mobile

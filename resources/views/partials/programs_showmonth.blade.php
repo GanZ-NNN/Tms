@@ -5,7 +5,6 @@
         $now = Carbon::now();
         $nextMonth = $now->copy()->addMonth();
 
-        // ฟังก์ชันกรอง session ตามเดือน, ยังไม่ completed และเปิดรับสมัครแล้ว
         function filterSessionsByMonth($sessions, $month, $year, $now) {
             return $sessions->filter(fn($s) =>
                 $s->start_at &&
@@ -17,7 +16,6 @@
             )->sortBy('start_at');
         }
 
-        // periods array สำหรับเดือนนี้และเดือนหน้า
         $periods = [
             ['label' => '🟢 หลักสูตรของเดือนนี้', 'color' => 'green-600', 'month' => $now],
             ['label' => '🔵 หลักสูตรของเดือนหน้า', 'color' => 'blue-600', 'month' => $nextMonth]
@@ -26,33 +24,44 @@
 
     @foreach($periods as $period)
         @php
-            $programList = $programs->filter(fn($p) => filterSessionsByMonth($p->sessions, $period['month']->month, $period['month']->year, $now)->isNotEmpty());
+            // เก็บ sessions ของเดือนนั้นทั้งหมด
+            $sessionsInMonth = collect();
+            foreach ($programs as $program) {
+                $filtered = filterSessionsByMonth($program->sessions, $period['month']->month, $period['month']->year, $now);
+                foreach ($filtered as $session) {
+                    $session->program = $program; // เก็บ program ไว้กับ session
+                    $sessionsInMonth->push($session);
+                }
+            }
         @endphp
 
         <h2 class="text-2xl font-bold mb-4 text-{{ $period['color'] }}">{{ $period['label'] }}</h2>
         <div class="course-collection row g-4 justify-content-center">
-            @forelse($programList as $program)
+
+            @forelse($sessionsInMonth as $session)
                 @php
-                    $sessions = filterSessionsByMonth($program->sessions, $period['month']->month, $period['month']->year, $now);
-                    $levelName = $sessions->first()?->level ?? 'ไม่ระบุระดับ';
+                    $program = $session->program;
+                    $levelName = $session->level ?? 'ไม่ระบุระดับ';
+                    $regOpen = $session->registration_start_at ? Carbon::parse($session->registration_start_at) : null;
+                    $regClose = $session->registration_end_at ? Carbon::parse($session->registration_end_at) : null;
+                    $canRegister = $regOpen && $regClose ? $now->between($regOpen, $regClose) : false;
                 @endphp
 
-                <div class="col-12 col-sm-6 col-lg-4" id="program-{{ $program->id }}">
-                    <div class="course-card bg-white border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column h-100 hover-card program-card"
-                        data-title="{{ $program->title }}"
-                        data-detail="{{ $program->detail }}"
-                        data-image="{{ $program->image ? asset('storage/' . $program->image) : 'https://via.placeholder.com/400x200' }}">
+                <div class="col-12 col-sm-6 col-lg-4" id="session-{{ $session->id }}">
+    <div class="course-card bg-white border-0 shadow-sm rounded-4 overflow-hidden d-flex flex-column h-100 hover-card"
+        data-title="{{ $program->title }}"
+        data-detail="{{ $program->detail }}"
+        data-image="{{ $program->image ? asset('storage/' . $program->image) : 'https://via.placeholder.com/400x200' }}">
 
-                        <div class="course-image-wrapper">
-                            <img src="{{ $program->image ? asset('storage/' . $program->image) : 'https://via.placeholder.com/400x200' }}"
-                                class="card-img-top" alt="{{ $program->title }}">
-                        </div>
+        <div class="course-image-wrapper">
+            <img src="{{ $program->image ? asset('storage/' . $program->image) : 'https://via.placeholder.com/400x200' }}"
+                 class="card-img-top" alt="{{ $program->title }}">
+        </div>
 
                         <div class="p-3 flex-grow-1 d-flex flex-column justify-content-between">
                             <h5 class="fw-semibold mb-3 text-center" style="font-size: 1.5rem;">
                                 {{ Str::limit($program->title, 60) }}
                             </h5>
-
                             <div class="mt-3 p-3 text-center">
                                 <span class="fw-semibold text-dark">{{ ucfirst($levelName) }}</span> ·
                                 <span>{{ $program->category->name ?? 'Course' }}</span>
@@ -62,83 +71,69 @@
                         <div class="p-3 border-top">
                             <h6 class="fw-bold mb-2">รอบอบรมที่เปิดรับสมัคร:</h6>
 
-                            @forelse($sessions as $session)
-                                @php
-                                    $regOpen = $session->registration_start_at ? Carbon::parse($session->registration_start_at) : null;
-                                    $regClose = $session->registration_end_at ? Carbon::parse($session->registration_end_at) : null;
-                                    $canRegister = $regOpen && $regClose ? $now->between($regOpen, $regClose) : false;
-                                @endphp
-
-                                <div class="border-bottom py-2 d-flex justify-content-between align-items-start session-item">
-                                    <div class="me-2">
-                                        <div class="fw-semibold">
-                                            {{ $session->title ?? 'รอบที่ ' . $session->session_number }} |
-                                            <span class="text-muted small">{{ $session->start_at->format('d M Y') }} - {{ $session->end_at->format('d M Y') }}</span>
-                                        </div>
-                                        <div class="small text-muted">
-                                            <div class="mb-1"><i class="far fa-clock"></i> {{ $session->start_at->format('H:i') }} - {{ $session->end_at->format('H:i') }} น.</div>
-                                            <div class="mb-1"><i class="far fa-user"></i> {{ $session->trainer?->name ?? '-' }}</div>
-                                            <div class="mb-1"><i class="fas fa-map-marker-alt"></i> {{ $session->location ?? '-' }}</div>
-                                            <div class="mb-0"><i class="fas fa-users"></i> {{ $session->registrations->count() }} / {{ $session->capacity ?? '-' }}</div>
-                                        </div>
-
-                                        @if ($regOpen && $now->lt($regOpen))
-                                            <span class="badge bg-primary mt-1">🕓 เปิดรับสมัคร: {{ $regOpen->format('d M Y H:i') }}</span>
-                                        @elseif ($canRegister)
-                                            <span class="badge bg-success mt-1"> เปิดรับสมัคร (ถึง {{ $regClose->format('d M Y H:i') }})</span>
-                                        @elseif ($regClose && $now->gte($regClose))
-                                            <span class="badge bg-danger mt-1"> ปิดรับสมัครเมื่อ {{ $regClose->format('d M Y H:i') }}</span>
-                                        @endif
+                            <div class="border-bottom py-2 d-flex justify-content-between align-items-start session-item">
+                                <div class="me-2">
+                                    <div class="fw-semibold">
+                                        {{ $session->title ?? 'รอบที่ ' . $session->session_number }} |
+                                        <span class="text-muted small">{{ $session->start_at->format('d M Y') }} - {{ $session->end_at->format('d M Y') }}</span>
+                                    </div>
+                                    <div class="small text-muted">
+                                        <div class="mb-1"><i class="far fa-clock"></i> {{ $session->start_at->format('H:i') }} - {{ $session->end_at->format('H:i') }} น.</div>
+                                        <div class="mb-1"><i class="far fa-user"></i> {{ $session->trainer?->name ?? '-' }}</div>
+                                        <div class="mb-1"><i class="fas fa-map-marker-alt"></i> {{ $session->location ?? '-' }}</div>
+                                        <div class="mb-0"><i class="fas fa-users"></i> {{ $session->registrations->count() }} / {{ $session->capacity ?? '-' }}</div>
                                     </div>
 
-                                    {{-- *** นี่คือ Logic ปุ่มที่อัปเดตแล้ว *** --}}
-                                    <div>
-                                        @auth
-                                            @php
-                                                $userRegistration = $session->registrations->where('user_id', Auth::id())->first();
-                                            @endphp
-
-                                            @if ($userRegistration)
-                                                {{-- ถ้าลงทะเบียนแล้ว -> แสดงปุ่ม "ยกเลิก" --}}
-                                                <form class="cancel-form text-center" action="{{ route('registrations.cancel', $userRegistration) }}" method="POST">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="mt-5 btn btn-danger btn-sm fw-bold cancel-btn">ยกเลิก</button>
-                                                </form>
-                                            @elseif (!$canRegister)
-                                                {{-- ถ้าปิดรับสมัครแล้ว -> แสดงปุ่ม "ปิดรับสมัคร" --}}
-                                                <button class="mt-5 btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
-                                            @elseif ($session->registrations->count() >= $session->capacity)
-                                                {{-- ถ้าที่นั่งเต็มแล้ว -> แสดงปุ่ม "เต็มแล้ว" --}}
-                                                <button class="mt-5 btn btn-warning btn-sm fw-bold text-dark" disabled>เต็มแล้ว</button>
-                                            @else
-                                                {{-- ถ้ายังว่าง -> แสดงปุ่ม "ลงทะเบียน" --}}
-                                                <form class="register-form text-center" action="{{ route('sessions.register', $session) }}" method="POST">
-                                                    @csrf
-                                                    <button type="button" class="mt-5 btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
-                                                </form>
-                                            @endif
-                                        @else
-                                            {{-- ถ้ายังไม่ได้ Login --}}
-                                            <div class="d-flex text-center mt-2">
-                                                <a href="javascript:void(0)" class="mt-5 btn btn-primary btn-sm fw-bold login-alert-btn">สมัคร</a>
-                                            </div>
-                                        @endauth
-                                    </div>
-                                    {{-- *** สิ้นสุดส่วนที่อัปเดต *** --}}
+                                    @if ($regOpen && $now->lt($regOpen))
+                                        <span class="badge bg-primary mt-1">🕓 เปิดรับสมัคร: {{ $regOpen->format('d M Y H:i') }}</span>
+                                    @elseif ($canRegister)
+                                        <span class="badge bg-success mt-1"> เปิดรับสมัคร (ถึง {{ $regClose->format('d M Y H:i') }})</span>
+                                    @elseif ($regClose && $now->gte($regClose))
+                                        <span class="badge bg-danger mt-1"> ปิดรับสมัครเมื่อ {{ $regClose->format('d M Y H:i') }}</span>
+                                    @endif
                                 </div>
-                            @empty
-                                <p class="text-muted">ไม่มีรอบอบรมที่เปิดรับสมัคร</p>
-                            @endforelse
+
+                                <div>
+                                    @auth
+                                        @php
+                                            $userRegistration = $session->registrations->where('user_id', Auth::id())->first();
+                                        @endphp
+
+                                        @if ($userRegistration)
+                                            <form class="cancel-form text-center" action="{{ route('registrations.cancel', $userRegistration) }}" method="POST">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="mt-5 btn btn-danger btn-sm fw-bold cancel-btn">ยกเลิก</button>
+                                            </form>
+                                        @elseif (!$canRegister)
+                                            <button class="mt-5 btn btn-secondary btn-sm fw-bold" disabled>ปิดรับสมัคร</button>
+                                        @elseif ($session->registrations->count() >= $session->capacity)
+                                            <button class="mt-5 btn btn-warning btn-sm fw-bold text-dark" disabled>เต็มแล้ว</button>
+                                        @else
+                                            <form class="register-form text-center" action="{{ route('sessions.register', $session) }}" method="POST">
+                                                @csrf
+                                                <button type="button" class="mt-5 btn btn-success btn-sm fw-bold register-btn">ลงทะเบียน</button>
+                                            </form>
+                                        @endif
+                                    @else
+                                        <div class="d-flex text-center mt-2">
+                                            <a href="javascript:void(0)" class="mt-5 btn btn-primary btn-sm fw-bold login-alert-btn">สมัคร</a>
+                                        </div>
+                                    @endauth
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             @empty
-                <p class="text-center text-muted fs-5">❌ ไม่มีหลักสูตรที่เปิดรับสมัคร</p>
+                <p class="text-center text-muted fs-5">❌ ไม่มีรอบอบรมที่เปิดรับสมัคร</p>
             @endforelse
+
         </div>
     @endforeach
 </section>
+
 
 {{-- CSS --}}
 <style>
@@ -234,27 +229,32 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ✅ เปิด popup รายละเอียดเมื่อคลิกการ์ด
-    document.querySelectorAll('.program-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            if (e.target.closest('button') || e.target.closest('a')) return; // ป้องกันปุ่มใน card
-            const title = card.dataset.title;
-            const detail = card.dataset.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
-            const image = card.dataset.image;
+    document.querySelectorAll('.course-card').forEach(card => {
+    card.addEventListener('click', function(e) {
+        // ถ้าคลิกปุ่มหรือ a ให้ไม่ทำงาน
+        if (e.target.closest('button') || e.target.closest('a')) return;
 
-            Swal.fire({
-                title: title,
-                html: `
-                    <div style="text-align:center;">
-                        <img src="${image}" alt="${title}" style="width:100%;max-width:500px;border-radius:12px;margin-bottom:15px;">
-                        <div style="text-align:left; font-size:16px; line-height:1.6;">${detail}</div>
+        const title = card.dataset.title;
+        const detail = card.dataset.detail || 'ไม่มีรายละเอียดเพิ่มเติม';
+        const image = card.dataset.image;
+
+        Swal.fire({
+            title: `<h3 class="fw-bold">${title}</h3>`,
+            html: `
+                <div style="text-align:center;">
+                    <img src="${image}" alt="${title}" style="width:100%;max-width:500px;border-radius:12px;margin-bottom:20px;">
+                    <div style="text-align:left; font-size:16px; line-height:1.6;">
+                        ${detail.replace('<ul>', '<ul style="list-style-type: disc; padding-left: 2rem; margin: 0;">')}
                     </div>
-                `,
-                width: 700,
-                confirmButtonText: 'ปิด',
-                showCloseButton: true,
-            });
+                </div>
+            `,
+            width: '800px',
+            confirmButtonText: 'ปิด',
+            showCloseButton: true,
         });
     });
+});
+
 
 });
 

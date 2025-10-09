@@ -12,33 +12,33 @@ class HomeController extends Controller
      * Display the home page.
      */
 public function index(Request $request)
-    {
-        // เริ่มสร้าง Query สำหรับ Program
-        $query = Program::query();
+{
+    $query = Program::query()->with('category', 'sessions.trainer', 'sessions.registrations');
 
-        // **สำคัญ:** Eager Load ข้อมูลที่จำเป็นทั้งหมดสำหรับ Card
-        $query->with([
-            'category', 
-            'sessions' => function ($sessionQuery) {
-                // โหลด Session ทั้งหมดที่ยังไม่จบ เพื่อให้ Logic ใน Blade ตัดสินใจได้
-                $sessionQuery->where('status', '!=', 'completed')
-                             ->orderBy('start_at', 'asc');
-            },
-            'sessions.trainer', 
-            'sessions.level',
-            'sessions.registrations' // <-- สำคัญมาก สำหรับนับจำนวนคน
-        ]);
-
-        // Logic การค้นหาจาก Hero Banner
-        if ($request->filled('keyword')) {
-            $query->where('title', 'like', '%' . $request->keyword . '%');
-        }
-        
-        // ดึงข้อมูล Program ทั้งหมดที่ตรงเงื่อนไข
-        $programs = $query->latest()->get();
-        
-        return view('home', compact('programs'));
+    // กรองตาม keyword
+    if ($request->filled('keyword')) {
+        $query->where('title', 'like', '%' . $request->keyword . '%');
     }
+
+    // กรองตาม group
+    if ($request->filled('group')) {
+        $query->whereHas('category', function($q) use ($request) {
+            $q->where('group', $request->group);
+        });
+    }
+
+    // กรองตาม category
+    if ($request->filled('category_id')) {
+        $query->where('category_id', $request->category_id);
+    }
+
+    $programs = $query->latest()->get();
+
+    $groups = Category::select('group')->distinct()->get();
+    $categories = Category::all();
+
+    return view('home', compact('programs', 'groups', 'categories'));
+}
 
     /**
      * เมธอดนี้ไม่ได้ถูกเรียกใช้ใน Route ปัจจุบัน อาจจะลบทิ้งได้

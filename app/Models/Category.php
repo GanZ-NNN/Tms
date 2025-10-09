@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Category extends Model
 {
         use HasFactory;
-    protected $fillable = ['name'];
+    protected $fillable = ['group','name'];
 
     // ความสัมพันธ์กับ Program
     public function programs()
