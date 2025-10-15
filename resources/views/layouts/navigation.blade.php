@@ -47,9 +47,9 @@
             <!-- Settings Dropdown / Login & Register Links -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 <!-- Dark Mode Toggle -->
-                <div class="me-4">
+                {{-- <div class="me-4">
                     <x-dark-mode-toggle />
-                </div>
+                </div> --}}
 
                 @auth
                     <x-dropdown align="right" width="48">
